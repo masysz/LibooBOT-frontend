@@ -7,7 +7,7 @@ import GlobalProvider from './Provider';
 const dmSans = Outfit({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'Buffy ',
+    title: 'LIBOO TON BOT ',
     description: 'Telegram clicker bot'
 }
 

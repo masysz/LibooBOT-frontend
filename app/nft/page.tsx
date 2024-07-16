@@ -14,10 +14,10 @@ const Nft: FunctionComponent<NftProps> = (): ReactElement => {
                 <CustomImage src={images.buffy_nft} alt="Buffy NFT" />
             </div>
             <p className="text-white text-center mb-5">
-                Discover the <span className="text-orange-400">BUFFY DUROV LIMITED NFT COLLECTION</span> – featuring <span className="font-medium">665</span> unique NFTs showcasing Buffy and Pavel Durov, coming soon on the TON Blockchain.
+                Discover the <span className="text-orange-400">LIFE BOOSTER NFT COLLECTION</span> – featuring <span className="font-medium">more than 1250</span> unique NFTs showcasing LIBO character with a ton of utilities, coming soon on the TON Blockchain.
             </p>
             <p className="text-white text-center">
-                Top performers with high referrals and points in the game will secure coveted NFT whitelist spots
+                Top users with high referrals and points in the game will win a change to grab a rare NFT.
             </p>
         </main>
     );
