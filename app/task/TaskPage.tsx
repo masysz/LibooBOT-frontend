@@ -130,7 +130,7 @@ const TaskPage: FunctionComponent<TaskPageProps> = (): ReactElement => {
             isDone: isJoinChannelBtnClicked,
             actionFunction: () => {
                 setIsJoinChannelBtnClicked(true)
-                window.open("https://t.me/BuffyDurov", "_blank");
+                window.open("https://t.me/liboochannel_ton", "_blank");
             },
             verificationFunction: () => handleVerifyTask(Task.TELEGRAM)
         },
