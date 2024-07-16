@@ -18,31 +18,33 @@ export const referralMetrics: ReferralMetricsProps[] = [
     },
     {
         friends: 3,
-        bonus: 10000
+        bonus: 10000,
+        tonBonus: 0.2,
     },
     {
         friends: 15,
-        bonus: 40000
+        bonus: 40000,
+        tonBonus: 0.4
     },
     {
         friends: 30,
-        bonus: 140000
-        tonBonus: 0.5
+        bonus: 140000,
+        tonBonus: 0.8
     },
     {
         friends: 100,
-        bonus: 300000
+        bonus: 300000,
         tonBonus: 1.2
     },
     {
         friends: 200,
-        bonus: 700000
+        bonus: 700000,
         tonBonus: 3
     },
     {
         friends: 500,
         bonus: 1500000,
-        tonBonus: 10
+        tonBonus: 8
     },
     {
         friends: 1000,
