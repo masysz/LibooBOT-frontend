@@ -57,13 +57,15 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     const handleClick = () => {
         if (timesClickedPerSession === undefined || sessionLimit - timesClickedPerSession <= 0) return;
 
-        setTaps(prevTaps => prevTaps + (1 * userProfileInformation.level));
-        updateTimesClickedPerSession(timesClickedPerSession + 1);
-        setIsClicked(true);
+        if (userProfileInformation) {
+            setTaps(prevTaps => prevTaps + (1 * userProfileInformation.level));
+            updateTimesClickedPerSession(timesClickedPerSession + 1);
+            setIsClicked(true);
 
-        setTimeout(() => {
-            setIsClicked(false);
-        }, 300); // Reset click animation state after 300ms
+            setTimeout(() => {
+                setIsClicked(false);
+            }, 300); // Reset click animation state after 300ms
+        }
     };
 
     const swapColorBasedOnStatus = () => {
