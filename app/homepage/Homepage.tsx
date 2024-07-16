@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ReactElement, FunctionComponent, useState, useContext, useEffect, useCallback } from "react";
 import images from "@/public/images";
 import { AnimatePresence, motion } from "framer-motion";
@@ -21,44 +21,42 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
         timesClickedPerSession, updateTimesClickedPerSession,
     } = useContext(ApplicationContext) as ApplicationContextData;
 
-    const [taps, setTaps] = useState<number>(0);
+    const [localPoints, setLocalPoints] = useState<number>(0);
     const [isClicked, setIsClicked] = useState(false);
+    const [syncError, setSyncError] = useState<boolean>(false);
 
     const handleUpdateUserPoints = useCallback(async () => {
-        if (taps === 0) return;
+        if (localPoints === 0) return;
 
         const data: PointsUpdateRequest = {
             userId: userProfileInformation?.userId as string,
-            points: taps,
+            points: localPoints,
         };
 
         try {
             await updateUserPoints(data);
+            setLocalPoints(0);
             fetchUserProfileInformation();
+            setSyncError(false);
         } catch (error) {
             console.error(error);
+            setSyncError(true);
         }
-    }, [taps, updateUserPoints, userProfileInformation?.userId, fetchUserProfileInformation]);
+    }, [localPoints, updateUserPoints, userProfileInformation?.userId, fetchUserProfileInformation]);
 
     useEffect(() => {
-        if (userProfileInformation) {
-            setTaps(userProfileInformation.points ?? 0);
-        }
-    }, [userProfileInformation]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
+        const syncInterval = setInterval(() => {
             handleUpdateUserPoints();
-        }, 1000); // Save points every second
+        }, 1000); // Sync points every second
 
-        return () => clearTimeout(timer);
-    }, [taps, handleUpdateUserPoints]);
+        return () => clearInterval(syncInterval);
+    }, [handleUpdateUserPoints]);
 
     const handleClick = () => {
         if (timesClickedPerSession === undefined || sessionLimit - timesClickedPerSession <= 0) return;
 
         if (userProfileInformation) {
-            setTaps(prevTaps => prevTaps + (1 * userProfileInformation.level));
+            setLocalPoints(prevPoints => prevPoints + (1 * userProfileInformation.level));
             updateTimesClickedPerSession(timesClickedPerSession + 1);
             setIsClicked(true);
 
@@ -69,18 +67,15 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
     };
 
     const swapColorBasedOnStatus = () => {
-        if (metrics(taps)?.status === Metrics.NOOB) {
-            return "text-green-500/60";
-        } else if (metrics(taps)?.status === Metrics.BEGINNER) {
-            return "text-yellow-400/60";
-        } else if (metrics(taps)?.status === Metrics.INTERMEDIATE) {
-            return "text-red-200/60";
-        } else if (metrics(taps)?.status === Metrics.PRO) {
-            return "text-blue-300/60";
-        } else if (metrics(taps)?.status === Metrics.MASTER) {
-            return "text-purple-300/60";
-        } else if (metrics(taps)?.status === Metrics.LEGEND) {
-            return "text-white/60";
+        const status = metrics(localPoints + (userProfileInformation?.points ?? 0))?.status;
+        switch (status) {
+            case Metrics.NOOB: return "text-green-500/60";
+            case Metrics.BEGINNER: return "text-yellow-400/60";
+            case Metrics.INTERMEDIATE: return "text-red-200/60";
+            case Metrics.PRO: return "text-blue-300/60";
+            case Metrics.MASTER: return "text-purple-300/60";
+            case Metrics.LEGEND: return "text-white/60";
+            default: return "";
         }
     };
 
@@ -94,8 +89,8 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
                                 <CustomImage src={images.coin} alt="Coin" />
                             </span>
                             <h1 className="text-[40px] text-white font-extrabold">
-                                {taps.toLocaleString()}
-                                {metrics(taps)?.pointSuffix}
+                                {(userProfileInformation.points + localPoints).toLocaleString()}
+                                {metrics(localPoints + userProfileInformation.points)?.pointSuffix}
                             </h1>
                         </div>
                         <div className="flex flex-row gap-3 items-center">
@@ -104,7 +99,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
                                     <Icons.Trophy className="opacity-40" />
                                 </span>
                                 <p className={`${swapColorBasedOnStatus()} text-sm`}>
-                                    {metrics(taps)?.status}
+                                    {metrics(localPoints + userProfileInformation.points)?.status}
                                 </p>
                             </div>
                             <span className="h-4 w-[1px] bg-slate-50/50 block" />
@@ -141,7 +136,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
                             onClick={handleClick}
                             whileTap={{
                                 scale: 0.9,
-                                filter: "brightness(1.25)",
+                                filter: "brightness(1.2)",
                                 transition: { duration: 0.1 },
                             }}
                             className="w-60 h-60 relative cursor-pointer"
@@ -156,6 +151,12 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
                             <span className="text-base">
                                 {sessionLimit - timesClickedPerSession}/{sessionLimit}
                             </span>
+                        </div>
+                    )}
+
+                    {syncError && (
+                        <div className="text-red-500 text-sm">
+                            Failed to sync points. Retrying...
                         </div>
                     )}
                 </>
