@@ -380,16 +380,16 @@ const Plutos = () => {
         <Spinner />
       ) : (
         <Animate>
-    <div className="w-full flex justify-center flex-col items-center overflow-hidden">
-      <div className="flex flex-row justify-center items-center mb-4 p-4 bg-blue-900 rounded-lg shadow-lg">
-        <div className="flex flex-col items-center p-3 mx-2 bg-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
-          Welcome<br />{name}
+    <div className="w-full flex justify-center items-center overflow-hidden">
+      <div className="flex flex-row justify-center items-center mb-4 p-4 bg-white rounded-lg shadow-md">
+        <div className="flex items-center justify-center mx-2 px-4 py-2 bg-blue-100 text-blue-700 text-sm font-bold rounded-full shadow">
+          {name}
         </div>
-        <div className="flex flex-col items-center p-3 mx-2 bg-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
-          Earn per tap:<br /> +{tapValue.value}
+        <div className="flex items-center justify-center mx-2 px-4 py-2 bg-gray-100 text-black text-sm font-bold rounded-full shadow">
+          +{tapValue.value} Tap
         </div>
-        <div className="flex flex-col items-center p-3 mx-2 bg-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
-          Booster per tap:<br /> +{tapValue.value * 5}
+        <div className="flex items-center justify-center mx-2 px-4 py-2 bg-gray-100 text-black text-sm font-bold rounded-full shadow">
+          +{tapValue.value * 5} Booster tap
         </div>
       </div>
 
