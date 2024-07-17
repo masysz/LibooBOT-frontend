@@ -415,7 +415,7 @@ const Plutos = () => {
               <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
             </div>
             <div className="w-full flex justify-center items-center relative">
-              <div className="bg-[#cc0000] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
+              <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
               <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
                 <div className="before"></div>
                 <div className="after"></div>
