@@ -392,7 +392,6 @@ const Plutos = () => {
       Booster per tap:<br /> +{tapValue.value * 5}
     </div>
   </div>
-</div>
 
 
             <div className="flex space-x-[2px] justify-center items-center">
