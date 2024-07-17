@@ -12,6 +12,10 @@
   import Levels from "./Components/Levels";
   import flash from "../src/images/flash.webp";
   import { EnergyContext } from "./context/EnergyContext";
+  import Campaigns from './pages/Campaigns';
+
+// Add the route
+<Route path="/campaigns" component={Campaigns} />
 
   const slideUp = keyframes`
     0% {
