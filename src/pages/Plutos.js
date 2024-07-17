@@ -380,18 +380,18 @@ const Plutos = () => {
         <Spinner />
       ) : (
         <Animate>
-<div className="w-full flex justify-center flex-col items-center overflow-hidden">
-  <div className="flex flex-col sm:flex-row justify-center items-center mb-4 p-4 bg-blue-100 rounded-lg shadow-md">
-    <div className="bg-blue-500 text-white text-sm font-extrabold text-center p-3 mb-2 sm:mb-0 sm:mr-2 rounded-lg shadow-lg shadow-blue-500/50">
-      Welcome<br />{name}
-    </div>
-    <div className="bg-blue-500 text-white text-sm font-extrabold text-center p-3 mb-2 sm:mb-0 sm:mr-2 rounded-lg shadow-lg shadow-blue-500/50">
-      Earn per tap:<br /> +{tapValue.value}
-    </div>
-    <div className="bg-blue-500 text-white text-sm font-extrabold text-center p-3 rounded-lg shadow-lg shadow-blue-500/50">
-      Booster per tap:<br /> +{tapValue.value * 5}
-    </div>
-  </div>
+    <div className="w-full flex justify-center flex-col items-center overflow-hidden">
+      <div className="flex flex-row justify-center items-center mb-4 p-4 bg-blue-900 rounded-lg shadow-lg">
+        <div className="flex flex-col items-center p-3 mx-2 bg-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
+          Welcome<br />{name}
+        </div>
+        <div className="flex flex-col items-center p-3 mx-2 bg-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
+          Earn per tap:<br /> +{tapValue.value}
+        </div>
+        <div className="flex flex-col items-center p-3 mx-2 bg-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
+          Booster per tap:<br /> +{tapValue.value * 5}
+        </div>
+      </div>
 
 
             <div className="flex space-x-[2px] justify-center items-center">
