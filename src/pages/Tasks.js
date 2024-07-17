@@ -397,7 +397,7 @@ const levelsAction = () => {
 
 {/*  */}
 
-<div onClick={taskFour} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+{/* <div onClick={taskFour} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
 <div className='flex flex-1 items-center space-x-2'>
 
@@ -418,11 +418,11 @@ const levelsAction = () => {
         </div>
     </div>
 
-</div>
+</div> */}
 
 {/*  */}
 
-<div className=''>
+{/* <div className=''>
 {taskCompleted4 ? (
                                     <>
 
@@ -437,7 +437,7 @@ const levelsAction = () => {
                                     )}
 </div>
 
-</div>
+</div> */}
 
 {/*  */}
 

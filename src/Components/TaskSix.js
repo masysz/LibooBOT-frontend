@@ -68,7 +68,7 @@ const TaskSix = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://www.instagram.com");
+    window.open("https://www.instagram.com/getospirit");
 
     setTimeout(() => {
       setShowTaskButton(false);

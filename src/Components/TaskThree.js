@@ -68,7 +68,7 @@ const TaskThree = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://www.x.com/@poppycatsol");
+    window.open("https://x.com/getospirits");
 
     setTimeout(() => {
       setShowTaskButton(false);

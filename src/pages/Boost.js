@@ -14,6 +14,7 @@ import { db } from '../firebase'; // Adjust the path as needed
 import { useUser } from "../context/userContext";
 import { IoClose } from "react-icons/io5";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import Spinner from '../Components/Spinner';
 
 
 
@@ -176,7 +177,7 @@ const chargingUpgradeCosts = [0, 2000, 30000, 100000, 200000];
 
 const Boost = () => {
 
-  const { balance, id, freeGuru, refiller, setRefiller, setFreeGuru, setTapGuru, fullTank, setFullTank, setMainTap, startTimer, timeRefill, setTimeRefill, tapValue, setTapValue, battery, setEnergy, setBattery, setBalance, refBonus } = useUser();
+  const { balance, id, freeGuru, refiller, setRefiller, setFreeGuru, setTapGuru, fullTank, setFullTank, setMainTap, startTimer, timeRefill, setTimeRefill, tapValue, setTapValue, battery, setEnergy, setBattery, setBalance, refBonus, loading } = useUser();
   const [openInfo, setOpenInfo] = useState(false);
   const [openInfoTwo, setOpenInfoTwo] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
@@ -420,9 +421,9 @@ const Boost = () => {
 
   return (
     <>
-      {/* {loading ? (
+      {loading ? (
         <Spinner />
-      ) : ( */}
+      ) : (
         <Animate>
           <div className="w-full justify-center flex-col space-y-3 px-5">
             <div className="flex flex-col w-full">
@@ -485,7 +486,7 @@ const Boost = () => {
                     </div>
 
                     <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru">Full Tank</span>
+                      <span className="font-semibold tapguru">Full Energy</span>
                       {fullTank> 0 ? (
    <span className="font-medium tapguru2">{fullTank}/3</span>
                       ) : (
@@ -701,7 +702,7 @@ const Boost = () => {
             <div
               className={`${
                 isUpgradeModalVisible  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -713,7 +714,7 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center shadow-lg shadow-red/50">
                     <img alt="claim" src={multi} className="w-[80px]" />
                   </div>
                   <h3 className="font-semibold text-[32px] py-4">
@@ -740,9 +741,9 @@ const Boost = () => {
                   <button
                                        onClick={handleUpgrade}
                                        disabled={!hasSufficientBalance}
-                    className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#ffba4c] to-[#aa6900]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#f96800] to-[#c30000]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
-                    {isUpgrading ? 'Boosting...' : hasSufficientBalance ? 'Get it!' : 'Insufficient Balance'}
+                    {isUpgrading ? 'Boosting...' : hasSufficientBalance ? 'Go ahead!' : 'Insufficient Balance'}
                   </button>
                 </div>
               </div>
@@ -753,7 +754,7 @@ const Boost = () => {
             <div
               className={`${
                 isUpgradeModalVisibleEn  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -792,9 +793,9 @@ const Boost = () => {
                   <button
                                        onClick={handleEnergyUpgrade}
                                        disabled={!hasSufficientBalanceEn}
-                    className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#ffba4c] to-[#aa6900]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#f96800] to-[#c30000]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
-                    {isUpgrading ? 'Boosting...' : hasSufficientBalanceEn ? 'Get it!' : 'Insufficient Balance'}
+                    {isUpgrading ? 'Boosting...' : hasSufficientBalanceEn ? 'Go ahead!' : 'Insufficient Balance'}
                   </button>
                 </div>
               </div>
@@ -805,7 +806,7 @@ const Boost = () => {
             <div
               className={`${
                 isUpgradeModalVisibleEnc  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -844,9 +845,9 @@ const Boost = () => {
                   <button
                                        onClick={handlerRechargeUpgrade}
                                        disabled={!hasSufficientBalanceEnc}
-                    className={`${!hasSufficientBalanceEnc ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#ffba4c] to-[#aa6900]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`${!hasSufficientBalanceEnc ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#f96800] to-[#c30000]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
-                    {isUpgrading ? 'Boosting...' : hasSufficientBalanceEnc ? 'Get it!' : 'Insufficient Balance'}
+                    {isUpgrading ? 'Boosting...' : hasSufficientBalanceEnc ? 'Go ahead!' : 'Insufficient Balance'}
                   </button>
                 </div>
               </div>
@@ -858,7 +859,7 @@ const Boost = () => {
             <div
               className={`${
                 guru  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -896,9 +897,9 @@ const Boost = () => {
                   <button
                                         onClick={handleTapGuru}
                                        
-                    className={`bg-gradient-to-b gradient from-[#ffba4c] to-[#aa6900] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`bg-gradient-to-b gradient from-[#f96800] to-[#c30000] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
-                   Get it!
+                   Go ahead!
                   </button>
                 </div>
               </div>
@@ -909,7 +910,7 @@ const Boost = () => {
             <div
               className={`${
                 tank  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -925,7 +926,7 @@ const Boost = () => {
                     <img alt="claim" src={gastank} className="w-[80px]" />
                   </div>
                   <h3 className="font-semibold text-[32px] py-4">
-                Full Tank
+                Full Energy
                   </h3>
                   <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
                 Fill your energy to the max
@@ -947,9 +948,9 @@ const Boost = () => {
                   <button
                                         onClick={handleFullTank}
                                        
-                    className={`bg-gradient-to-b gradient from-[#ffba4c] to-[#aa6900] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`bg-gradient-to-b gradient from-[#f96800] to-[#c30000] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
-                   Get it!
+                   Go ahead!
                   </button>
                 </div>
               </div>
@@ -1045,7 +1046,7 @@ const Boost = () => {
           </div>
           <Outlet />
         </Animate>
-      {/* )} */}
+      )}
     </>
   );
 };

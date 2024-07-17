@@ -8,9 +8,11 @@ import { useUser } from "../context/userContext";
 import { db } from "../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import "../App.css"; // Pastikan file CSS Anda terimport
+import Spinner from '../Components/Spinner';
+import Animate from '../Components/Animate';
 
 const Connect = () => {
-    const { id, taskCompleted, setTaskCompleted } = useUser();
+    const { id, taskCompleted, setTaskCompleted, loading } = useUser();
     const taskID = "connect_3000"; // Assign a unique ID to this task
     const [isConnectModalVisible, setIsConnectModalVisible] = useState(false);
     const [isCopied, setIsCopied] = useState(false); // State untuk menandai apakah alamat sudah dicopy
@@ -84,6 +86,10 @@ const Connect = () => {
 
     return (
         <>
+        {loading ? (
+        <Spinner />
+      ) : (
+        <Animate>
             <div onClick={() => setIsConnectModalVisible(true)} className="bg-cards rounded-[10px] p-[14px] flex justify-between items-center">
                 <div className="flex flex-1 items-center space-x-2">
                     <div>
@@ -105,7 +111,7 @@ const Connect = () => {
             </div>
 
             {/* Connect Modal */}
-            <div className={`${isConnectModalVisible ? "visible" : "invisible"} absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}>
+            <div className={`${isConnectModalVisible ? "visible" : "invisible"} absolute bottom-0 left-0 right-0 h-fit bg-[#1e2340f7] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}>
                 <div className="w-full flex flex-col justify-between py-8">
                     <button onClick={() => setIsConnectModalVisible(false)} className="flex items-center justify-center absolute right-8 top-8 text-center rounded-[12px] font-medium text-[16px]">
                         <IoClose size={24} className="text-[#9a96a6]" />
@@ -153,6 +159,8 @@ const Connect = () => {
             </div>
 
             <Outlet />
+            </Animate>
+        )}
         </>
     );
 };

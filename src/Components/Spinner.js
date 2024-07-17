@@ -2,6 +2,7 @@ import React from 'react'
 
 const Spinner = () => {
   return (
+    <div className="spinner-background">
 <div className="spinner">
 <div className="spin1 animate-spin">
     <div className="spin2">
@@ -25,6 +26,7 @@ const Spinner = () => {
 
 </div></div>
     
+</div>
 </div>
   )
 }

@@ -68,7 +68,7 @@ const TaskFive = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://www.tiktok.com");
+    window.open("https://www.tiktok.com/@getospirits");
 
     setTimeout(() => {
       setShowTaskButton(false);

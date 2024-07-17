@@ -575,7 +575,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 6000);
   }, []);
 
   useEffect(() => {
