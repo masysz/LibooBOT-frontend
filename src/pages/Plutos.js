@@ -380,18 +380,20 @@ const Plutos = () => {
         <Spinner />
       ) : (
         <Animate>
-          <div className="w-full flex justify-center flex-col overflow-hidden">
-          <div className="flex flex-row justify-center items-center mb-2">
-  <div className="bg-[#6b0003] text-[#fff] text-[12px] font-extrabold text-center p-2 mr-2 rounded-[10px] shadow-lg shadow-white/50">
-  Welcome<br />{name}
-  </div>
-  <div className="bg-[#6b0003] text-[#fff] text-[12px] font-extrabold text-center p-2 mr-2 rounded-[10px] shadow-lg shadow-white/50">
-    Earn per tap:<br /> +{tapValue.value}
-  </div>
-  <div className="bg-[#6b0003] text-[#fff] text-[12px] font-extrabold text-center p-2 rounded-[10px] shadow-lg shadow-white/50">
-    Booster per tap:<br /> +{tapValue.value * 5}
+<div className="w-full flex justify-center flex-col items-center overflow-hidden">
+  <div className="flex flex-col sm:flex-row justify-center items-center mb-4 p-4 bg-blue-100 rounded-lg shadow-md">
+    <div className="bg-blue-500 text-white text-sm font-extrabold text-center p-3 mb-2 sm:mb-0 sm:mr-2 rounded-lg shadow-lg shadow-blue-500/50">
+      Welcome<br />{name}
+    </div>
+    <div className="bg-blue-500 text-white text-sm font-extrabold text-center p-3 mb-2 sm:mb-0 sm:mr-2 rounded-lg shadow-lg shadow-blue-500/50">
+      Earn per tap:<br /> +{tapValue.value}
+    </div>
+    <div className="bg-blue-500 text-white text-sm font-extrabold text-center p-3 rounded-lg shadow-lg shadow-blue-500/50">
+      Booster per tap:<br /> +{tapValue.value * 5}
+    </div>
   </div>
 </div>
+
 
             <div className="flex space-x-[2px] justify-center items-center">
               <div className="w-[50px] h-[50px]">
