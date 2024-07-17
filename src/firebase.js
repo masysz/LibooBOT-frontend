@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBXgBykiefZ5oPv8KsAEbrJrFXJNVzJ9Fo",
-  authDomain: "apptelebot.firebaseapp.com",
-  projectId: "apptelebot",
-  storageBucket: "apptelebot.appspot.com",
-  messagingSenderId: "464223544142",
-  appId: "1:464223544142:web:c3fdb64c21d75439f1f41f"
-
+  apiKey: "AIzaSyDu-0ieXh2EsuWyUT8-_0Ats0KyVIUQfrc",
+  authDomain: "liboo-project.firebaseapp.com",
+  projectId: "liboo-project",
+  storageBucket: "liboo-project.appspot.com",
+  messagingSenderId: "39018843470",
+  appId: "1:39018843470:web:1f45f4960aad56029d621f"
+  
 };
 
 const app = initializeApp(firebaseConfig);
