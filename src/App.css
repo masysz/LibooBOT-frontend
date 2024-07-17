@@ -1,6 +1,6 @@
 body{
   background: linear-gradient(to bottom, #191b33, #1b202d);
-  background-color: #332519;
+  background-color: #7e9dd6;
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
@@ -129,8 +129,8 @@ body{
 }
 
 .spinner {
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
   position: fixed;
   border-radius: 50%;
   top: 50%;
@@ -142,9 +142,9 @@ body{
 }
 
 .spin1 {
-  width: 140px;
+  width: 100px;
   border: 10px solid transparent;
-  height: 140px;
+  height: 100px;
   position: relative;
   border-radius: 50%;
   display: flex;
@@ -156,19 +156,19 @@ body{
 .spin2 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-left-color: #ff4500; /* Bright orange color */
+  border-left-color: #336bb6a6; /* Bright orange color */
 }
 
 .spin3 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-right-color: #ff6347; /* Tomato color */
+  border-right-color: #4781ff; /* Tomato color */
   transform: rotate(70deg);
   z-index: 10;
 }
@@ -176,10 +176,10 @@ body{
 .spin4 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-right-color: #ff8c00; /* Dark orange color */
+  border-right-color: #001aff; /* Dark orange color */
   transform: rotate(140deg);
   z-index: 10;
 }
@@ -187,10 +187,10 @@ body{
 .spin5 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-top-color: #ffa500; /* Orange color */
+  border-top-color: #5f9fff; /* Orange color */
   transform: rotate(210deg);
   z-index: 20;
 }
@@ -198,10 +198,10 @@ body{
 .spin6 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-top-color: #ff6347; /* Tomato color */
+  border-top-color: #4a78f8; /* Tomato color */
   transform: rotate(280deg);
   z-index: 20;
 }
@@ -209,10 +209,10 @@ body{
 .spin7 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-top-color: #ff4500; /* Bright orange color */
+  border-top-color: #3168ff; /* Bright orange color */
   transform: rotate(32deg);
   z-index: 30;
 }
@@ -220,10 +220,10 @@ body{
 .spin8 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-top-color: #ff6347; /* Tomato color */
+  border-top-color: #5e75fa; /* Tomato color */
   transform: rotate(-28deg);
   z-index: 30;
 }
@@ -231,10 +231,10 @@ body{
 .spin9 {
   border: 10px solid transparent;
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border-top-color: #ff8c00; /* Dark orange color */
+  border-top-color: #006eff; /* Dark orange color */
   transform: rotate(41deg);
   z-index: 25;
 }
@@ -261,8 +261,8 @@ body{
 
 .custom-shadow {
   box-shadow: 
-    0 -4px 10px 0 rgba(255, 0, 0, 0.5),
-    0 -4px 20px 0 rgba(255, 0, 0, 0.3),
-    0 -4px 30px 0 rgba(255, 0, 0, 0.2);
+    0 -4px 10px 0 rgba(0, 68, 255, 0.5),
+    0 -4px 20px 0 rgba(0, 4, 255, 0.3),
+    0 -4px 30px 0 rgba(0, 81, 255, 0.2);
 }
 
