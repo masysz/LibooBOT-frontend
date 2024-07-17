@@ -9,6 +9,7 @@ import {
 import Home from "./pages/Home";
 import ErrorCom from "./Components/ErrorCom";
 import Tasks from "./pages/Tasks";
+import Campaigns from './pages/Campaigns';
 import Boost from "./pages/Boost";
 import Stats from "./pages/Stats";
 import Connect from "./pages/ConnectWallet";
@@ -42,9 +43,14 @@ const router = createBrowserRouter([
         element: <Boost />,
       },
       {
+        path:"/campaigns",
+        element: <Campaigns />,
+      },
+      {
         path:"/connect",
         element: <Connect />,
       },
+      
     ]
 
   },
