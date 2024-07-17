@@ -43,6 +43,10 @@ const router = createBrowserRouter([
         element: <Boost />,
       },
       {
+        path:"/stats",
+        element: <Stats />,
+      },
+      {
         path:"/campaigns",
         element: <Campaigns />,
       },
