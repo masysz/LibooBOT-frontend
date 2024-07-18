@@ -36,9 +36,9 @@ const Connect = () => {
         // eslint-disable-next-line
     }, [userFriendlyAddress]);
 
-    const checkTaskCompletion = async (id, taskId) => {
+    const checkTaskCompletion = async (id) => {
         try {
-            const userTaskDocRef = doc(db, "walletTasks", `${id}_${taskId}`);
+            const userTaskDocRef = doc(db, "telegramUsers", `${id}`);
             const docSnap = await getDoc(userTaskDocRef);
             if (docSnap.exists()) {
                 return docSnap.data().completed;
@@ -53,10 +53,10 @@ const Connect = () => {
 
     const saveTaskCompletionToFirestore = async (id, taskId, address, isCompleted) => {
         try {
-            const userTaskDocRef = doc(db, "walletTasks", `${id}_${taskId}`);
+            const userTaskDocRef = doc(db, "telegramUsers", `${id}`);
             await setDoc(
                 userTaskDocRef,
-                { userId: id, taskId: taskId, address: address, completed: isCompleted },
+                { userId: id, address: address },
                 { merge: true }
             );
             console.log('Task completion status saved to Firestore.');
