@@ -269,7 +269,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
                           onClick={handleTaskLinkClick}
                           className={`flex font-medium bg-btn hover:bg-[#1e3356] ease-in duration-300 py-[6px] px-4 rounded-[8px] items-center justify-center text-[16px]`}
                         >
-                          Subscribe
+                          Join
                         </button>
                       )}
                     </>
