@@ -878,7 +878,7 @@ const Boost = () => {
                  Booster
                   </h3>
                   <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
-                 Multiply your tap income by x5 for 20 seconds. Do not use energy while active.
+                 Multiply your taps by x5 for 20 seconds. Do not consume energy while active.
                   </p>
 
                   <div className="flex flex-1 items-center space-x-2">
@@ -897,7 +897,7 @@ const Boost = () => {
                   <button
                                         onClick={handleTapGuru}
                                        
-                    className={`bg-gradient-to-b gradient from-[#f96800] to-[#c30000] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
                    Go ahead!
                   </button>
@@ -948,7 +948,7 @@ const Boost = () => {
                   <button
                                         onClick={handleFullTank}
                                        
-                    className={`bg-gradient-to-b gradient from-[#f96800] to-[#c30000] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
                    Go ahead!
                   </button>
