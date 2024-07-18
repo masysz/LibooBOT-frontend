@@ -381,6 +381,30 @@ const Plutos = () => {
           ) : (
             <Animate>
               <div className="w-full flex justify-center flex-col items-center overflow-hidden">
+                <div className="flex flex-row justify-center items-center mb-4 p-4 bg-gradient-to-r from-blue-600 to-blue-900 rounded-lg shadow-lg">
+                  <div className="flex flex-col items-center p-3 mx-2 bg-gradient-to-r from-blue-400 to-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <div className="flex flex-col items-center">
+                      <img src="/images/welcome-icon.png" alt="Welcome Icon" className="w-8 h-8 mb-2" />
+                      <span>Welcome</span>
+                      <span>{name}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center p-3 mx-2 bg-gradient-to-r from-blue-400 to-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <div className="flex flex-col items-center">
+                      <img src="/images/earn-icon.png" alt="Earn Icon" className="w-8 h-8 mb-2" />
+                      <span>Earn per tap:</span>
+                      <span>+{tapValue.value}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center p-3 mx-2 bg-gradient-to-r from-blue-400 to-blue-500 text-white text-sm font-extrabold text-center rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <div className="flex flex-col items-center">
+                      <img src="/images/booster-icon.png" alt="Booster Icon" className="w-8 h-8 mb-2" />
+                      <span>Booster per tap:</span>
+                      <span>+{tapValue.value * 5}</span>
+                    </div>
+                  </div>
+                </div>
+      
                 <div className="flex space-x-[2px] justify-center items-center">
                   <div className="w-[50px] h-[50px]">
                     <img src={coinsmall} className="w-full" alt="coin" />
@@ -470,7 +494,8 @@ const Plutos = () => {
             </Animate>
           )}
         </>
-      );      
+      );
+            
 };
 
 export default Plutos;
