@@ -79,6 +79,7 @@ const Ref = () => {
               <h2 className="text-[18px] font-semibold">My invite link:</h2>
               <span
                 onClick={copyToClipboard}
+                onClick={navigator.copyToClipboard}
                 className="bg-gradient-to-b from-[#094e9d] to-[#0b62c4] font-medium py-[6px] px-4 rounded-[12px] flex items-center justify-center text-[16px]"
               >
               {copied ? <span>Copied!</span> : <span>Copy</span>}
