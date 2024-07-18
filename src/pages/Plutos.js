@@ -94,7 +94,7 @@ const Plutos = () => {
 
     // Play the sound
     if (tapValue.value > 0) {
-      play();
+     // play();
     }
     triggerHapticFeedback();
 
