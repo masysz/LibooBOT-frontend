@@ -85,7 +85,7 @@ const TaskFour = ({ showModal, setShowModal }) => {
     }
 
     const response = await fetch(
-      `https://api.telegram.org/bot7436444125:AAGB8IwBNOvRbpW-AjR0HPvMOC0qGSTnILU/getChatMember?chat_id=@geto_spirit_announcement&user_id=${id}`
+      `https://api.telegram.org/bot7219246213:AAHJV1pqqvWo6AXL_sTPWOTm1j1RvIn2jrA/getChatMember?chat_id=@liboochannel_ton&user_id=${id}`
     );
     const data = await response.json();
 
