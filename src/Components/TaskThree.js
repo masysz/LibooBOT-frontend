@@ -68,7 +68,7 @@ const TaskThree = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://x.com/LibooProject");
+    window.open("https://x.com/LibooProject", "_blank");
 
     setTimeout(() => {
       setShowTaskButton(false);
