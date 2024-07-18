@@ -4,17 +4,17 @@ import { useUser } from '../context/userContext';
 
 
 const userLevels = [
-    { name: 'Warm', icon: '/warm.webp', tapBalanceRequired: 500000 },
-    { name: 'Light', icon: '/light.webp', tapBalanceRequired: 1000000 },
-    { name: 'Blaze', icon: '/blaze.webp', tapBalanceRequired: 2000000 },
-    { name: 'Flame', icon: '/flame.webp', tapBalanceRequired: 4000000 },
-    { name: 'Hot', icon: '/hot.webp', tapBalanceRequired: 8000000 },
-    { name: 'Burning', icon: '/burning.webp', tapBalanceRequired: 25000000 },
-    { name: 'Burning1', icon: '/burning.webp', tapBalanceRequired: 50000000 },
-    { name: 'Burning2', icon: '/burning.webp', tapBalanceRequired: 100000000 },
-    { name: 'Burning3', icon: '/burning.webp', tapBalanceRequired: 1000000000 },
-    { name: 'Burning4', icon: '/burning.webp', tapBalanceRequired: 10000000000 },
-    { name: 'Burning5', icon: '/burning.webp', tapBalanceRequired: 20000000000 },
+    { name: 'Liboo Novice', icon: '/warm.webp', tapBalanceRequired: 500000 },
+    { name: 'Liboo Apprentice', icon: '/light.webp', tapBalanceRequired: 1000000 },
+    { name: 'Liboo Adept', icon: '/blaze.webp', tapBalanceRequired: 2000000 },
+    { name: 'Liboo Journeyman', icon: '/flame.webp', tapBalanceRequired: 4000000 },
+    { name: 'Liboo Veteran', icon: '/hot.webp', tapBalanceRequired: 8000000 },
+    { name: 'Liboo Expert', icon: '/burning.webp', tapBalanceRequired: 25000000 },
+    { name: 'Liboo Virtuoso', icon: '/burning.webp', tapBalanceRequired: 50000000 },
+    { name: 'Liboo Champion', icon: '/burning.webp', tapBalanceRequired: 100000000 },
+    { name: 'Liboo Legend', icon: '/burning.webp', tapBalanceRequired: 1000000000 },
+    { name: 'Libo Maestro', icon: '/burning.webp', tapBalanceRequired: 10000000000 },
+    { name: 'Liboo Destroyer', icon: '/burning.webp', tapBalanceRequired: 20000000000 },
   ];
   
   

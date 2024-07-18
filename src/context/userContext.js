@@ -308,28 +308,28 @@ export const UserProvider = ({ children }) => {
   };
 
   const updateUserLevel = async (userId, newTapBalance) => {
-    let newLevel = { id: 1, name: "Warm", imgUrl: "/warm.webp", imgTap: "/coin-1.webp", imgBoost: "/coins-1.webp" };
+    let newLevel = { id: 1, name: "Liboo Novice", imgUrl: "/warm.webp", imgTap: "/coin-1.webp", imgBoost: "/coins-1.webp" };
 
     if (newTapBalance >= 500000 && newTapBalance < 1000000) {
-      newLevel = { id: 2, name: "Light", imgUrl: "/light.webp", imgTap: "/coin-2.webp", imgBoost: "/coins-2.webp" };
+      newLevel = { id: 2, name: "Liboo Apprentice", imgUrl: "/light.webp", imgTap: "/coin-2.webp", imgBoost: "/coins-2.webp" };
     } else if (newTapBalance >= 1000000 && newTapBalance < 2000000) {
-      newLevel = { id: 3, name: "Blaze", imgUrl: "/blaze.webp", imgTap: "/coin-3.webp", imgBoost: "/coins-3.webp" };
+      newLevel = { id: 3, name: "Liboo Adept", imgUrl: "/blaze.webp", imgTap: "/coin-3.webp", imgBoost: "/coins-3.webp" };
     } else if (newTapBalance >= 2000000 && newTapBalance < 4000000) {
-      newLevel = { id: 4, name: "Flame", imgUrl: "/flame.webp", imgTap: "/coin-4.webp", imgBoost: "/coins-4.webp" };
+      newLevel = { id: 4, name: "Liboo Journeyman", imgUrl: "/flame.webp", imgTap: "/coin-4.webp", imgBoost: "/coins-4.webp" };
     } else if (newTapBalance >= 4000000 && newTapBalance < 8000000) {
-      newLevel = { id: 5, name: "Hot", imgUrl: "/hot.webp", imgTap: "/coin-5.webp", imgBoost: "/coins-5.webp" };
+      newLevel = { id: 5, name: "Liboo Veteran", imgUrl: "/hot.webp", imgTap: "/coin-5.webp", imgBoost: "/coins-5.webp" };
     } else if (newTapBalance >= 8000000 && newTapBalance < 25000000) {
-      newLevel = { id: 6, name: "Burning", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 6, name: "Liboo Expert", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     } else if (newTapBalance >= 25000000 && newTapBalance < 50000000) {
-      newLevel = { id: 7, name: "Burning1", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 7, name: "Liboo Virtuoso", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     } else if (newTapBalance >= 50000000 && newTapBalance < 100000000) {
-      newLevel = { id: 8, name: "Burning2", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 8, name: "Liboo Champion", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     } else if (newTapBalance >= 100000000 && newTapBalance < 1000000000) {
-      newLevel = { id: 9, name: "Burning3", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 9, name: "Liboo Legend", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     } else if (newTapBalance >= 1000000000 && newTapBalance < 10000000000) {
-      newLevel = { id: 10, name: "Burning4", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 10, name: "Liboo Maestro", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     } else if (newTapBalance >= 10000000000) {
-      newLevel = { id: 11, name: "Burning5", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 11, name: "Liboo Destroyer", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     }
     
 

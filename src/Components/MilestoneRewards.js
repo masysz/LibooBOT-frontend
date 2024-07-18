@@ -7,18 +7,19 @@ import congratspic from "../images/celebrate.gif";
 import coinsmall from "../images/coinsmall.webp";
 
 const milestones = [
-  { name: 'Warm', icon: '/warm.webp', tapBalanceRequired: 500000, reward: 50000 },
-  { name: 'Light', icon: '/light.webp', tapBalanceRequired: 1000000, reward: 100000 },
-  { name: 'Blaze', icon: '/blaze.webp', tapBalanceRequired: 2000000, reward: 250000 },
-  { name: 'Flame', icon: '/flame.webp', tapBalanceRequired: 4000000, reward: 500000 },
-  { name: 'Hot', icon: '/hot.webp', tapBalanceRequired: 8000000, reward: 1000000 },
-  { name: 'Burning', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 1500000 },
-  { name: 'Burning1', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
-  { name: 'Burning2', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
-  { name: 'Burning3', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
-  { name: 'Burning4', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
-  { name: 'Burning5', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
+  { name: 'Liboo Novice', icon: '/warm.webp', tapBalanceRequired: 500000, reward: 50000 },
+  { name: 'Liboo Apprentice', icon: '/light.webp', tapBalanceRequired: 1000000, reward: 100000 },
+  { name: 'Liboo Adept', icon: '/blaze.webp', tapBalanceRequired: 2000000, reward: 250000 },
+  { name: 'Liboo Journeyman', icon: '/flame.webp', tapBalanceRequired: 4000000, reward: 500000 },
+  { name: 'Liboo Veteran', icon: '/hot.webp', tapBalanceRequired: 8000000, reward: 1000000 },
+  { name: 'Liboo Expert', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 1500000 },
+  { name: 'Liboo Virtuoso', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
+  { name: 'Liboo Champion', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
+  { name: 'Liboo Legend', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
+  { name: 'Liboo Maestro', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
+  { name: 'Liboo Destroyer', icon: '/burning.webp', tapBalanceRequired: 25000000, reward: 250000 },
  ];
+
 
 const MilestoneRewards = () => {
   const { tapBalance, balance, setBalance, id, claimedMilestones, setClaimedMilestones } = useUser();
