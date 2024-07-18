@@ -394,7 +394,8 @@ const Plutos = () => {
       </div>
 
 
-      <div className="w-[50px] h-[50px]">
+      <div className="flex space-x-[2px] justify-center items-center">
+              <div className="w-[50px] h-[50px]">
                 <img src={coinsmall} className="w-full" alt="coin" />
               </div>
               <h1 className="text-[#fff] text-[42px] font-extrabold">
