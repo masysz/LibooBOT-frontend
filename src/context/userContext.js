@@ -16,7 +16,7 @@ export const UserProvider = ({ children }) => {
   const [balance, setBalance] = useState(0);
   // const [totalBalance, setTotalBalance] = useState(0);
   const [tapBalance, setTapBalance] = useState(0);
-  const [level, setLevel] = useState({ id: 1, name: "Warm", imgUrl: '/warm.webp', imgTap: '/coin-1.webp', imgBoost: '/coins-1.webp' }); // Initial level as an object with id and name
+  const [level, setLevel] = useState({ id: 1, name: "Liboo Novice", imgUrl: '/warm.webp', imgTap: '/coin-1.webp', imgBoost: '/coins-1.webp' }); // Initial level as an object with id and name
   const [tapValue, setTapValue] = useState({level: 1, value: 1});
   const [timeRefill, setTimeRefill] = useState({level: 1, duration: 10, step: 600});
   const [id, setId] = useState("");
