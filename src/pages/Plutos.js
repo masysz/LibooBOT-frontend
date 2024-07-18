@@ -394,20 +394,21 @@ const Plutos = () => {
       </div>
 
 
-            <div className="flex space-x-[2px] justify-center items-center">
-              <div className="w-[50px] h-[50px]">
-                <img src={coinsmall} className="w-full" alt="coin" />
-              </div>
-              <h1 className="text-[#fff] text-[42px] font-extrabold">
-                {formatNumber(balance + refBonus)} <br />
-              </h1>
-            </div>
-            <div className="w-full ml-[6px] flex space-x-1 items-center justify-center">
-              <img
-                src={level.imgUrl}
-                className="w-[25px] relative"
-                alt="bronze"
-              />
+      <div className="flex space-x-2 justify-center items-center bg-opacity-80 bg-black p-2 rounded-lg shadow-lg">
+        <div className="w-[50px] h-[50px]">
+          <img src={coinsmall} className="w-full" alt="coin" />
+        </div>
+        <h1 className="text-white text-4xl font-extrabold">
+          {formatNumber(balance + refBonus)}
+        </h1>
+      </div>
+
+      <div className="w-full ml-1 flex space-x-1 items-center justify-center bg-opacity-80 bg-black p-1 rounded-lg shadow-lg mt-2">
+        <img
+          src={level.imgUrl}
+          className="w-[25px] relative"
+          alt="bronze"
+        />
               <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
                 {level.name}
               </h2>
