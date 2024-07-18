@@ -251,7 +251,7 @@ body {
 
 .taskbg{
   background: linear-gradient(to bottom,  #0033ff, #06398c);
-  background-color: #0033ff;
+  background-color: #1a1f2e;
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
