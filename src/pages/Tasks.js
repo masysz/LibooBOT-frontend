@@ -309,23 +309,23 @@ const levelsAction = () => {
 
                 {/*  */}
 
-                <div onClick={taskTwo} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+                   <div onClick={taskTwo} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
 <div className='flex flex-1 items-center space-x-2'>
 
     <div className=''>
-        <img src={youtubeicon} alt="taskbook" className='w-[50px]'/>
+        <img src={telegramicon} alt="taskbook" className='w-[50px]'/>
     </div>
     <div className='flex flex-col space-y-1'>
         <span className='font-semibold'>
-            Subscribe our Youtube
+            Join Our Telegram Group
         </span>
         <div className='flex items-center space-x-1'>
         <span className="w-[20px] h-[20px]">
 <img src={coinsmall} className="w-full" alt="coin"/>
 </span>
 <span className='font-medium'>
-100 000
+80 000
 </span>
         </div>
     </div>
@@ -439,9 +439,7 @@ const levelsAction = () => {
 
 </div> */}
 
-{/*  */}
-
-<div onClick={taskFive} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+{/* <div onClick={taskFive} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
 <div className='flex flex-1 items-center space-x-2'>
 
@@ -462,11 +460,11 @@ const levelsAction = () => {
         </div>
     </div>
 
-</div>
+</div> */}
 
-{/*  */}
 
-<div className=''>
+
+{/* <div className=''>
 {taskCompleted5 ? (
                                     <>
 
@@ -481,7 +479,9 @@ const levelsAction = () => {
                                     )}
 </div>
 
-</div>
+</div> */}
+
+
 
 {/*  */}
 
@@ -527,9 +527,7 @@ const levelsAction = () => {
 
 </div>
 
-{/*  */}
-
-<div onClick={taskSeven} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+{/* <div onClick={taskSeven} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
 <div className='flex flex-1 items-center space-x-2'>
 
@@ -551,10 +549,10 @@ const levelsAction = () => {
     </div>
 
 </div>
+ */}
 
-{/*  */}
 
-<div className=''>
+{/* <div className=''>
 {taskCompleted7 ? (
                                     <>
 
@@ -573,7 +571,9 @@ const levelsAction = () => {
 
 
 
-            </div>
+            </div> */}
+
+
 
 
 

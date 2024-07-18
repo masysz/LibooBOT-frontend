@@ -68,7 +68,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://youtube.com/@getospirit");
+    window.open("https://t.me/liboo_chat");
 
     setTimeout(() => {
       setShowTaskButton(false);
@@ -85,7 +85,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
     }
 
     const response = await fetch(
-      `https://api.telegram.org/bot7219246213:AAHJV1pqqvWo6AXL_sTPWOTm1j1RvIn2jrA/getChatMember?chat_id=@liboochannel_ton&user_id=${id}`
+      `https://api.telegram.org/bot7219246213:AAHJV1pqqvWo6AXL_sTPWOTm1j1RvIn2jrA/getChatMember?chat_id=@liboo_chat&user_id=${id}`
     );
     const data = await response.json();
 
@@ -103,7 +103,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
     } else {
       setTimeout(() => {
         setMessage(
-          "Please subscribe Youtube channel first before you can claim this task bonus."
+          "Please join our group first before you can claim this task bonus."
         );
       }, 1000);
       setCounter(15);
@@ -185,8 +185,8 @@ const TaskTwo = ({ showModal, setShowModal }) => {
     }, 2000);
 
     if (isVerified) {
-      const newCount = balance + 100000;
-      const newCount2 = tapBalance + 100000;
+      const newCount = balance + 80000;
+      const newCount2 = tapBalance + 80000;
       setBalance(newCount);
       setTapBalance(newCount2);
       setMessage("");
