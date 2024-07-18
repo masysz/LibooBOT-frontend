@@ -721,7 +721,7 @@ const Boost = () => {
                    Multitap
                   </h3>
                   <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
-                  Increase amount of GETO you can earn per one tap <br/>
+                  Increase amount of LIBOO you can earn per one tap <br/>
                   +1 per tap for each level
                   </p>
 
@@ -741,7 +741,7 @@ const Boost = () => {
                   <button
                                        onClick={handleUpgrade}
                                        disabled={!hasSufficientBalance}
-                    className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#f96800] to-[#c30000]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
                     {isUpgrading ? 'Boosting...' : hasSufficientBalance ? 'Go ahead!' : 'Insufficient Balance'}
                   </button>
@@ -793,7 +793,7 @@ const Boost = () => {
                   <button
                                        onClick={handleEnergyUpgrade}
                                        disabled={!hasSufficientBalanceEn}
-                    className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#f96800] to-[#c30000]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+                    className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
                   >
                     {isUpgrading ? 'Boosting...' : hasSufficientBalanceEn ? 'Go ahead!' : 'Insufficient Balance'}
                   </button>
