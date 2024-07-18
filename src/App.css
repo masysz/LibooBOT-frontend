@@ -1,6 +1,6 @@
 body {
   background: linear-gradient(to bottom, #191b33, #1b202d); /* Fallback gradient */
-  background-image: ('./images/background-image-png');
+  background-image: url('./images/background-image.png');
   background-size: cover;
   background-position: center;
   color: #fff;
@@ -9,6 +9,7 @@ body {
   position: relative;
   overflow: hidden; /* Ensure the overlay covers the entire viewport */
 }
+
 
 
 
