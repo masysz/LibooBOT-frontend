@@ -16,7 +16,7 @@ const Ref = () => {
  
   const copyToClipboard = () => {
 
-   const reflink = `https://t.me/geto_spirit_bot?start=r${id}`
+   const reflink = `https://t.me/Liboo_tonbot?start=r${id}`
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(reflink).then(() => {

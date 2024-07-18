@@ -1,9 +1,24 @@
-body{
-  background: linear-gradient(to bottom, #191b33, #1b202d);
-  background-color: #7e9dd6;
+body {
+  background: linear-gradient(to bottom, #191b33, #1b202d); /* Fallback gradient */
+  background-image: url('https://i.pinimg.com/736x/74/85/58/748558c9ac42990ede9da398e6f10653.jpg');
+  background-size: cover;
+  background-position: center;
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
+  position: relative;
+  overflow: hidden; /* Ensure the overlay covers the entire viewport */
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7); /* Dark overlay */
+  pointer-events: none; /* Ensure the overlay doesn't interfere with clicks */
 }
 
 .cards__container{
