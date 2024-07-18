@@ -477,7 +477,7 @@ const Plutos = () => {
                 </div>
                 <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
                   <div
-                    className="bg-[#0047a3] h-full rounded-full transition-width duration-100"
+                    className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
                     style={{ width: `${energyPercentage}%` }}
                   ></div>
                 </div>
