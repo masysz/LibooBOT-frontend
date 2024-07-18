@@ -221,10 +221,9 @@ const TaskTwo = ({ showModal, setShowModal }) => {
                             </button> */}
             </div>
             <div className="flex w-full flex-col">
-              <h1 className="text-[20px] font-semibold">Subscribe our Youtube Channel</h1>
+              <h1 className="text-[20px] font-semibold">Join our Telegram Group</h1>
               <p className="text-[#9a96a6] text-[16px] font-medium pt-1 pb-10">
-                Subscribe our youtube channel to get regular updates about this airdrop
-                bot and its great potentials
+                Join our telegram group to chat with the community, keep informated about updates, and many more!
               </p>
 
               <p className="w-full text-center text-[14px] font-semibold text-[#49ee49] pb-4">
@@ -238,7 +237,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
                   <div className="flex flex-col space-y-1">
                     <span className="font-semibold">Reward</span>
                     <div className="flex items-center">
-                      <span className="font-medium">100 000</span>
+                      <span className="font-medium">80 000</span>
                     </div>
                   </div>
                 </div>
@@ -250,7 +249,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
                 <div className="flex flex-1 items-center space-x-2">
                   <div className="flex flex-col space-y-1">
                     <span className="font-semibold">
-                      Subscribe Youtube
+                      Join Group
                     </span>
 
                     {message && (
