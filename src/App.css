@@ -1,6 +1,6 @@
 body {
   background: linear-gradient(to bottom, #191b33, #1b202d); /* Fallback gradient */
-  background-image: url('https://i.pinimg.com/736x/74/85/58/748558c9ac42990ede9da398e6f10653.jpg');
+  background-image: ('./images/background-image-png');
   background-size: cover;
   background-position: center;
   color: #fff;
