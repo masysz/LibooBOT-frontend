@@ -250,7 +250,7 @@ body {
 
 
 .taskbg{
-  background: linear-gradient(to bottom, #0033ff, #06398c2d);
+  background: linear-gradient(to bottom,  #0033ff, #06398c);
   background-color: #0033ff;
   color: #fff;
   height: var(--tg-viewport-stable-height);
