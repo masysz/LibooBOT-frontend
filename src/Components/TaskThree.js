@@ -68,7 +68,7 @@ const TaskThree = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://x.com/LibooProject", "_blank");
+    window.open("https://libooproject.website/twitter-redirection/", "_blank");
 
     setTimeout(() => {
       setShowTaskButton(false);
