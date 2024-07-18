@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(to bottom, #191b33, #1b202d); /* Fallback gradient */
+  background: linear-gradient(to bottom, #0033ff, #06398c2d); /* Fallback gradient */
   background-image: url('./images/background-image.png');
   background-size: cover;
   background-position: center;
@@ -20,7 +20,8 @@ body {
 }
 
 .taskhead{
-  background: linear-gradient(to bottom, #191b33, #1b202d);
+  background: linear-gradient(to bottom, #0033ff, #06398c
+  );
 }
 .heading{
   text-align: center;
@@ -249,8 +250,8 @@ body {
 
 
 .taskbg{
-  background: linear-gradient(to bottom, #191b33, #1b202d);
-  background-color: #191b33;
+  background: linear-gradient(to bottom, #0033ff, #06398c2d);
+  background-color: #0033ff;
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */

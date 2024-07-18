@@ -32,7 +32,7 @@ const Home = () => {
         tele.ready();
         tele.expand();
         
-        window.Telegram.WebApp.setHeaderColor('#191b33'); // Set header color to red
+        window.Telegram.WebApp.setHeaderColor('#0033ff'); // Set header color to red
 
               // Haptic feedback
       if (tele.HapticFeedback) {
