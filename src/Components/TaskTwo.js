@@ -354,7 +354,7 @@ const TaskTwo = ({ showModal, setShowModal }) => {
                         alt="Coin Icon"
                       />
                     </div>
-                    <div className="font-bold text-[20px]">100 000</div>
+                    <div className="font-bold text-[20px]">80 000</div>
                   </div>
                 </div>
 
