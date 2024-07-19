@@ -6,7 +6,6 @@ import { AnimatePresence } from "framer-motion";
 import Footer from "../Components/Footer";
 import { UserProvider } from "../context/userContext";
 
-
 const tele = window.Telegram.WebApp;
 const Home = () => {
 
