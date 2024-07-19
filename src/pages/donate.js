@@ -132,7 +132,6 @@ const Donate = () => {
           image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null
         };
         
-        // Fetch leaderboard for each campaign
         const leaderboardQuery = query(
           collection(db, `campaigns/${doc.id}/donations`),
           orderBy('amount', 'desc'),
@@ -146,7 +145,6 @@ const Donate = () => {
         
         return { ...campaignData, leaderboard };
       }));
-      console.log("Processed campaigns:", campaignsList);
       setCampaigns(campaignsList);
     } catch (error) {
       console.error("Error fetching campaigns:", error);
@@ -166,12 +164,8 @@ const Donate = () => {
   }, []);
 
   const handleDonationSubmit = useCallback(async () => {
-    if (donationAmount <= 0 || isNaN(donationAmount)) {
-      alert("Please enter a valid donation amount.");
-      return;
-    }
-    if (donationAmount > balance) {
-      alert("Insufficient balance!");
+    if (donationAmount <= 0 || isNaN(donationAmount) || donationAmount > balance) {
+      alert("Please enter a valid donation amount within your balance.");
       return;
     }
     if (!id || !username) {
@@ -193,22 +187,16 @@ const Donate = () => {
         }
 
         const currentCampaignData = campaignDoc.data();
-        const newCampaignPoints = currentCampaignData.pointsRaised + donationAmount;
+        const newCampaignPoints = Math.min(currentCampaignData.pointsRaised + donationAmount, currentCampaignData.targetPoints);
         const newUserBalance = userDoc.data().balance - donationAmount;
 
-        if (newUserBalance < 0) {
-          throw "Insufficient balance!";
-        }
-
         // Update leaderboard
-        const newDonation = { username, amount: donationAmount };
-        let updatedLeaderboard = [...(currentCampaignData.leaderboard || []), newDonation];
-        updatedLeaderboard.sort((a, b) => b.amount - a.amount);
-        updatedLeaderboard = updatedLeaderboard.slice(0, 5); // Keep top 5
+        const updatedLeaderboard = updateLeaderboard(currentCampaignData.leaderboard, username, donationAmount);
 
         transaction.update(campaignRef, { 
           pointsRaised: newCampaignPoints,
-          leaderboard: updatedLeaderboard
+          leaderboard: updatedLeaderboard,
+          isCompleted: newCampaignPoints >= currentCampaignData.targetPoints
         });
         transaction.update(userRef, { balance: newUserBalance });
         transaction.set(donationRef, {
@@ -224,11 +212,9 @@ const Donate = () => {
           campaign.id === selectedCampaign.id
             ? { 
                 ...campaign, 
-                pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: [
-                  { username, amount: donationAmount },
-                  ...campaign.leaderboard
-                ].sort((a, b) => b.amount - a.amount).slice(0, 5)
+                pointsRaised: Math.min(campaign.pointsRaised + donationAmount, campaign.targetPoints),
+                leaderboard: updateLeaderboard(campaign.leaderboard, username, donationAmount),
+                isCompleted: campaign.pointsRaised + donationAmount >= campaign.targetPoints
               }
             : campaign
         )
@@ -245,15 +231,25 @@ const Donate = () => {
     }
   }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance]);
 
+  const updateLeaderboard = (leaderboard, username, amount) => {
+    const existingDonorIndex = leaderboard.findIndex(donor => donor.username === username);
+    let updatedLeaderboard = [...leaderboard];
+    
+    if (existingDonorIndex !== -1) {
+      updatedLeaderboard[existingDonorIndex].amount += amount;
+    } else {
+      updatedLeaderboard.push({ username, amount });
+    }
+    
+    return updatedLeaderboard.sort((a, b) => b.amount - a.amount).slice(0, 5);
+  };
+
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   };
 
   const renderCampaignImage = (campaign) => {
-    if (!campaign.image) {
-      console.log(`No image URL for campaign: ${campaign.id}`);
-      return null;
-    }
+    if (!campaign.image) return null;
     return (
       <CampaignImage 
         src={campaign.image} 
@@ -266,13 +262,8 @@ const Donate = () => {
     );
   };
 
-  if (userLoading || isLoading) {
-    return <Spinner />;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  if (userLoading || isLoading) return <Spinner />;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <Animate>
@@ -301,8 +292,9 @@ const Donate = () => {
                 <button 
                   onClick={() => handleCampaignClick(campaign)} 
                   className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                  disabled={campaign.isCompleted}
                 >
-                  View Campaign
+                  {campaign.isCompleted ? "Campaign Completed" : "View Campaign"}
                 </button>
               </CampaignCard>
             ))}
@@ -359,20 +351,20 @@ const Donate = () => {
                 onChange={(e) => setDonationAmount(Number(e.target.value))}
                 className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
                 placeholder="Enter donation amount"
+                disabled={selectedCampaign.isCompleted}
               />
               <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
             </div>
             <button
               onClick={handleDonationSubmit}
               className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
-              disabled={donationAmount <= 0 || donationAmount > balance}
+              disabled={donationAmount <= 0 || donationAmount > balance || selectedCampaign.isCompleted}
             >
-              Confirm Donation
+              {selectedCampaign.isCompleted ? "Campaign Completed" : "Confirm Donation"}
             </button>
           </div>
         </div>
       )}
-
      
 <div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
           <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
