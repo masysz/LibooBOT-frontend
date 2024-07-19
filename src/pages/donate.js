@@ -52,6 +52,7 @@ const ProgressBar = styled.div`
   height: 100%;
   background-color: #3d47ff;
   border-radius: 5px;
+  width: ${props => `min(100%, ${(props.progress / props.target) * 100}%)`};
 `;
 
 const Description = styled.p`
@@ -166,6 +167,28 @@ const Donate = () => {
     setShowPopup(true);
   }, []);
 
+  const updateLeaderboard = (leaderboard, username, amount) => {
+    const existingUserIndex = leaderboard.findIndex(donor => donor.username === username);
+    let updatedLeaderboard;
+
+    if (existingUserIndex !== -1) {
+      // Usuario existe, actualizar su cantidad
+      updatedLeaderboard = leaderboard.map((donor, index) => 
+        index === existingUserIndex 
+          ? { ...donor, amount: donor.amount + amount }
+          : donor
+      );
+    } else {
+      // Usuario nuevo, agregar al leaderboard
+      updatedLeaderboard = [...leaderboard, { username, amount }];
+    }
+
+    // Ordenar el leaderboard y tomar los top 5
+    return updatedLeaderboard
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+  };
+
   const handleDonationSubmit = useCallback(async () => {
     if (donationAmount <= 0 || isNaN(donationAmount)) {
       alert("Please enter a valid donation amount.");
@@ -216,10 +239,7 @@ const Donate = () => {
             ? { 
                 ...campaign, 
                 pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: [
-                  { username, amount: donationAmount },
-                  ...campaign.leaderboard
-                ].sort((a, b) => b.amount - a.amount).slice(0, 5)
+                leaderboard: updateLeaderboard(campaign.leaderboard, username, donationAmount)
               }
             : campaign
         )
@@ -287,7 +307,7 @@ const Donate = () => {
                   </span>
                 </div>
                 <ProgressBarContainer>
-                  <ProgressBar style={{ width: `${(campaign.pointsRaised / campaign.targetPoints) * 100}%` }} />
+                  <ProgressBar progress={campaign.pointsRaised} target={campaign.targetPoints} />
                 </ProgressBarContainer>
                 <button 
                   onClick={() => handleCampaignClick(campaign)} 
@@ -320,7 +340,7 @@ const Donate = () => {
                 </span>
               </div>
               <ProgressBarContainer>
-                <ProgressBar style={{ width: `${(selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100}%` }} />
+                <ProgressBar progress={selectedCampaign.pointsRaised} target={selectedCampaign.targetPoints} />
               </ProgressBarContainer>
             </div>
             
