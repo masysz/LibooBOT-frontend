@@ -28,6 +28,13 @@ const Container = styled.div`
   height: 100%;
   margin-bottom: 100px;
   overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const CampaignCard = styled.div`
