@@ -8,12 +8,27 @@ import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
 
+function ensureDocumentIsScrollable() {
+  const isScrollable = document.documentElement.scrollHeight > window.innerHeight;
+  if (!isScrollable) {
+    document.documentElement.style.setProperty(
+      "height",
+      "calc(100vh + 1px)",
+      "important"
+    );
+  }
+}
+
+
+
 const Container = styled.div`
   position: relative;
   text-align: center;
   width: 100%;
   height: 100%;
+  margin-bottom: 100px;
   overflow-y: auto;
+  max-height: calc(100vh - 100px);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -106,7 +121,7 @@ const LeaderboardUsername = styled.span`
 
 const LeaderboardPoints = styled.span`
   font-weight: 800;
-  color: #ffffff;
+  color: #fffff;
 `;
 
 const Donate = () => {
@@ -121,20 +136,57 @@ const Donate = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    ensureDocumentIsScrollable();
+    window.addEventListener('resize', ensureDocumentIsScrollable);
+    return () => {
+      window.removeEventListener('resize', ensureDocumentIsScrollable);
+    };
+  }, []);
+
+  useEffect(() => {
     const container = containerRef.current;
-    if (container) {
-      container.style.height = `${window.innerHeight}px`;
-    }
-    
-    const handleResize = () => {
-      if (container) {
-        container.style.height = `${window.innerHeight}px`;
-      }
+    let startY;
+
+    const handleTouchStart = (e) => {
+      startY = e.touches[0].clientY;
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const handleTouchMove = (e) => {
+      if (!startY) {
+        return;
+      }
+
+      const currentY = e.touches[0].clientY;
+      const scrollTop = container.scrollTop;
+      const scrollHeight = container.scrollHeight;
+      const clientHeight = container.clientHeight;
+
+      // Prevenir el scroll hacia arriba cuando estamos en la parte superior
+      if (scrollTop <= 0 && currentY > startY) {
+        e.preventDefault();
+      }
+
+      // Prevenir el scroll hacia abajo cuando estamos en la parte inferior
+      if (scrollTop + clientHeight >= scrollHeight && currentY < startY) {
+        e.preventDefault();
+      }
+
+      startY = null;
+    };
+
+    if (container) {
+      container.addEventListener('touchstart', handleTouchStart);
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchmove', handleTouchMove);
+      }
+    };
   }, []);
+
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
