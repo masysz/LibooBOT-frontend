@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from "styled-components";
@@ -7,6 +7,23 @@ import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
+
+// Ensure the document is scrollable
+function ensureDocumentIsScrollable() {
+  const isScrollable =
+    document.documentElement.scrollHeight > window.innerHeight;
+  // Check if the document is scrollable
+  if (!isScrollable) {
+    document.documentElement.style.setProperty(
+      "height",
+      "calc(100vh + 1px)",
+      "important"
+    );
+  }
+}
+
+// Call ensureDocumentIsScrollable function when the entire page has loaded.
+window.addEventListener("load", ensureDocumentIsScrollable);
 
 const Container = styled.div`
   position: relative;
@@ -120,6 +137,26 @@ const Donate = () => {
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const preventCollapse = (event) => {
+      if (window.scrollY === 0) {
+        window.scrollTo(0, 1);
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("touchstart", preventCollapse);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("touchstart", preventCollapse);
+      }
+    };
+  }, []);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -291,7 +328,7 @@ const Donate = () => {
 
   return (
     <Animate>
-      <Container>
+      <Container ref={containerRef}>
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>

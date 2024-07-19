@@ -18,7 +18,7 @@ import Plutos from "./pages/Plutos";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 
 const manifestUrl =
-  "https://raw.githubusercontent.com/vshaltd/kdf/main/public/tonconnect-manifest.json";
+  "https://github.com/kiwiplusapp/LibooBOT-frontend/blob/main/public/tonconnect-manifest.json";
 
 const router = createBrowserRouter([
   {
