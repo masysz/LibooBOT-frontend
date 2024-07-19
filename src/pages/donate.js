@@ -140,6 +140,7 @@ const Donate = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    window.Telegram.WebApp.disableVerticalSwipes()
     const preventCollapse = (event) => {
       if (window.scrollY === 0) {
         window.scrollTo(0, 1);
