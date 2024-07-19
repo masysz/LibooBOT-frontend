@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from "styled-components";
@@ -15,9 +15,8 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-bottom: 100px;
-  overflow-y: auto;
+  overflow-y: scroll;
   max-height: calc(100vh - 100px);
-  scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
@@ -30,10 +29,6 @@ const CampaignCard = styled.div`
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-  &:hover {
-    transform: translateY(-5px);
-  }
 `;
 
 const CampaignImage = styled.img`
@@ -50,14 +45,12 @@ const ProgressBarContainer = styled.div`
   background-color: #1a1f3d;
   border-radius: 5px;
   margin-top: 10px;
-  overflow: hidden;
 `;
 
 const ProgressBar = styled.div`
   height: 100%;
   background-color: #3d47ff;
   border-radius: 5px;
-  transition: width 0.5s ease-in-out;
 `;
 
 const Description = styled.p`
@@ -116,25 +109,6 @@ const LeaderboardPoints = styled.span`
   color: #3d47ff;
 `;
 
-const Button = styled.button`
-  width: 100%;
-  background: linear-gradient(to bottom, #3d47ff, #575fff);
-  color: white;
-  font-weight: 600;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  &:hover:not(:disabled) {
-    opacity: 0.9;
-  }
-`;
-
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -158,25 +132,21 @@ const Donate = () => {
           image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null
         };
         
+        // Fetch leaderboard for each campaign
         const leaderboardQuery = query(
           collection(db, `campaigns/${doc.id}/donations`),
           orderBy('amount', 'desc'),
           limit(5)
         );
         const leaderboardSnapshot = await getDocs(leaderboardQuery);
-        const leaderboard = leaderboardSnapshot.docs.reduce((acc, donationDoc) => {
-          const { username, amount } = donationDoc.data();
-          const existingDonor = acc.find(donor => donor.username === username);
-          if (existingDonor) {
-            existingDonor.amount += amount;
-          } else {
-            acc.push({ username, amount });
-          }
-          return acc;
-        }, []).sort((a, b) => b.amount - a.amount).slice(0, 5);
+        const leaderboard = leaderboardSnapshot.docs.map(donationDoc => ({
+          username: donationDoc.data().username,
+          amount: donationDoc.data().amount
+        }));
         
         return { ...campaignData, leaderboard };
       }));
+      console.log("Processed campaigns:", campaignsList);
       setCampaigns(campaignsList);
     } catch (error) {
       console.error("Error fetching campaigns:", error);
@@ -230,17 +200,11 @@ const Donate = () => {
           throw "Insufficient balance!";
         }
 
-        let updatedLeaderboard = [...(currentCampaignData.leaderboard || [])];
-        const existingDonorIndex = updatedLeaderboard.findIndex(donor => donor.username === username);
-        
-        if (existingDonorIndex !== -1) {
-          updatedLeaderboard[existingDonorIndex].amount += donationAmount;
-        } else {
-          updatedLeaderboard.push({ username, amount: donationAmount });
-        }
-        
+        // Update leaderboard
+        const newDonation = { username, amount: donationAmount };
+        let updatedLeaderboard = [...(currentCampaignData.leaderboard || []), newDonation];
         updatedLeaderboard.sort((a, b) => b.amount - a.amount);
-        updatedLeaderboard = updatedLeaderboard.slice(0, 5);
+        updatedLeaderboard = updatedLeaderboard.slice(0, 5); // Keep top 5
 
         transaction.update(campaignRef, { 
           pointsRaised: newCampaignPoints,
@@ -261,7 +225,10 @@ const Donate = () => {
             ? { 
                 ...campaign, 
                 pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: updateLeaderboard(campaign.leaderboard, username, donationAmount)
+                leaderboard: [
+                  { username, amount: donationAmount },
+                  ...campaign.leaderboard
+                ].sort((a, b) => b.amount - a.amount).slice(0, 5)
               }
             : campaign
         )
@@ -278,24 +245,11 @@ const Donate = () => {
     }
   }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance]);
 
-  const updateLeaderboard = (leaderboard, username, amount) => {
-    const updatedLeaderboard = [...leaderboard];
-    const existingDonorIndex = updatedLeaderboard.findIndex(donor => donor.username === username);
-    
-    if (existingDonorIndex !== -1) {
-      updatedLeaderboard[existingDonorIndex].amount += amount;
-    } else {
-      updatedLeaderboard.push({ username, amount });
-    }
-    
-    return updatedLeaderboard.sort((a, b) => b.amount - a.amount).slice(0, 5);
-  };
-
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   };
 
-  const renderCampaignImage = useCallback((campaign) => {
+  const renderCampaignImage = (campaign) => {
     if (!campaign.image) {
       console.log(`No image URL for campaign: ${campaign.id}`);
       return null;
@@ -310,28 +264,7 @@ const Donate = () => {
         }}
       />
     );
-  }, []);
-
-  const memoizedCampaigns = useMemo(() => (
-    campaigns.map(campaign => (
-      <CampaignCard key={campaign.id}>
-        {renderCampaignImage(campaign)}
-        <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-        <Description>{campaign['short-description'] || 'No description available'}</Description>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[18px] font-medium">
-            {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-          </span>
-        </div>
-        <ProgressBarContainer>
-          <ProgressBar style={{ width: `${(campaign.pointsRaised / campaign.targetPoints) * 100}%` }} />
-        </ProgressBarContainer>
-        <Button onClick={() => handleCampaignClick(campaign)}>
-          View Campaign
-        </Button>
-      </CampaignCard>
-    ))
-  ), [campaigns, handleCampaignClick, renderCampaignImage]);
+  };
 
   if (userLoading || isLoading) {
     return <Spinner />;
@@ -352,7 +285,27 @@ const Donate = () => {
           <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
 
           <div className="w-full flex flex-col space-y-4 pb-20">
-            {memoizedCampaigns}
+            {campaigns.map(campaign => (
+              <CampaignCard key={campaign.id}>
+                {renderCampaignImage(campaign)}
+                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
+                <Description>{campaign['short-description'] || 'No description available'}</Description>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[18px] font-medium">
+                    {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                  </span>
+                </div>
+                <ProgressBarContainer>
+                  <ProgressBar style={{ width: `${(campaign.pointsRaised / campaign.targetPoints) * 100}%` }} />
+                </ProgressBarContainer>
+                <button 
+                  onClick={() => handleCampaignClick(campaign)} 
+                  className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                >
+                  View Campaign
+                </button>
+              </CampaignCard>
+            ))}
           </div>
         </div>
       </Container>
@@ -392,28 +345,42 @@ const Donate = () => {
                       <LeaderboardRank>{index + 1}.</LeaderboardRank>
                       <LeaderboardUsername>{donor.username}</LeaderboardUsername>
                     </div>
-                    <LeaderboardPoints>{formatNumber(donor.amount)}</LeaderboardPoints>
+                    <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
                   </LeaderboardItem>
                 ))}
               </LeaderboardList>
             </LeaderboardContainer>
-
-            <div className="mt-4">
-              <h3 className="text-[18px] font-semibold mb-2">Make a Donation</h3>
+            
+            <div className="mb-4">
+              <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
               <input
                 type="number"
                 value={donationAmount}
-                onChange={(e) => setDonationAmount(parseFloat(e.target.value) || 0)}
-                placeholder="Enter amount"
-                className="w-full p-2 rounded-md border border-gray-400"
+                onChange={(e) => setDonationAmount(Number(e.target.value))}
+                className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
+                placeholder="Enter donation amount"
               />
-              <Button onClick={handleDonationSubmit} disabled={donationAmount <= 0 || donationAmount > balance}>
-                Donate {donationAmount > 0 ? `($${donationAmount})` : ""}
-              </Button>
+              <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
             </div>
+            <button
+              onClick={handleDonationSubmit}
+              className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
+              disabled={donationAmount <= 0 || donationAmount > balance}
+            >
+              Confirm Donation
+            </button>
           </div>
         </div>
       )}
+
+     
+<div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
+          <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
+            <IoCheckmarkCircle size={24} />
+            <span className="text-[16px] font-semibold">Donation Successful!</span>
+          </div>
+        </div>
+     
     </Animate>
   );
 };
