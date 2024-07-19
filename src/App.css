@@ -8,6 +8,7 @@ body {
   touch-action: none; /* Prevent touch actions */
   position: relative;
   overflow: hidden; /* Ensure the overlay covers the entire viewport */
+  overflow-y: auto;
 }
 
 
