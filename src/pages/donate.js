@@ -8,19 +8,19 @@ import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
 
+const ScrollPadding = styled.div`
+  height: 1px;
+  opacity: 0;
+`;
+
 const Container = styled.div`
   position: relative;
-  display: inline-block;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   width: 100%;
-  height: 100%;
-  margin-bottom: 100px;
-  overflow-y: scroll;
-  max-height: calc(100vh - 100px);
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const CampaignCard = styled.div`
@@ -45,12 +45,14 @@ const ProgressBarContainer = styled.div`
   background-color: #1a1f3d;
   border-radius: 5px;
   margin-top: 10px;
+  overflow: hidden;
 `;
 
 const ProgressBar = styled.div`
   height: 100%;
   background-color: #3d47ff;
   border-radius: 5px;
+  transition: width 0.3s ease-in-out;
 `;
 
 const Description = styled.p`
@@ -118,6 +120,19 @@ const Donate = () => {
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
+
+  useEffect(() => {
+    const preventCollapse = () => {
+      if (window.scrollY === 0) {
+        window.scrollTo(0, 1);
+      }
+    };
+
+    window.addEventListener('scroll', preventCollapse);
+    preventCollapse(); // Initial call to ensure we're not at the top
+
+    return () => window.removeEventListener('scroll', preventCollapse);
+  }, []);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -187,7 +202,7 @@ const Donate = () => {
         }
 
         const currentCampaignData = campaignDoc.data();
-        const newCampaignPoints = Math.min(currentCampaignData.pointsRaised + donationAmount, currentCampaignData.targetPoints);
+        const newCampaignPoints = currentCampaignData.pointsRaised + donationAmount;
         const newUserBalance = userDoc.data().balance - donationAmount;
 
         // Update leaderboard
@@ -212,7 +227,7 @@ const Donate = () => {
           campaign.id === selectedCampaign.id
             ? { 
                 ...campaign, 
-                pointsRaised: Math.min(campaign.pointsRaised + donationAmount, campaign.targetPoints),
+                pointsRaised: campaign.pointsRaised + donationAmount,
                 leaderboard: updateLeaderboard(campaign.leaderboard, username, donationAmount),
                 isCompleted: campaign.pointsRaised + donationAmount >= campaign.targetPoints
               }
@@ -262,97 +277,104 @@ const Donate = () => {
     );
   };
 
+  const calculateProgressPercentage = (pointsRaised, targetPoints) => {
+    const percentage = (pointsRaised / targetPoints) * 100;
+    return Math.min(percentage, 100); // Cap at 100%
+  };
+
   if (userLoading || isLoading) return <Spinner />;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <Animate>
       <Container>
-        <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
-          {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
+        <ScrollPadding />
+        <div className="flex-grow">
+          <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
+            {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
+          </div>
+
+          <div className="w-full flex justify-center flex-col items-center">
+            <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
+
+            <div className="w-full flex flex-col space-y-4 pb-20">
+              {campaigns.map(campaign => (
+                <CampaignCard key={campaign.id}>
+                  {renderCampaignImage(campaign)}
+                  <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
+                  <Description>{campaign['short-description'] || 'No description available'}</Description>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[18px] font-medium">
+                      {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                    </span>
+                  </div>
+                  <ProgressBarContainer>
+                    <ProgressBar style={{ width: `${calculateProgressPercentage(campaign.pointsRaised, campaign.targetPoints)}%` }} />
+                  </ProgressBarContainer>
+                  <button 
+                    onClick={() => handleCampaignClick(campaign)} 
+                    className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                    disabled={campaign.isCompleted}
+                  >
+                    {campaign.isCompleted ? "Campaign Completed" : "View Campaign"}
+                  </button>
+                </CampaignCard>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="w-full flex justify-center flex-col items-center">
-          <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
-
-          <div className="w-full flex flex-col space-y-4 pb-20">
-            {campaigns.map(campaign => (
-              <CampaignCard key={campaign.id}>
-                {renderCampaignImage(campaign)}
-                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-                <Description>{campaign['short-description'] || 'No description available'}</Description>
+        {showPopup && selectedCampaign && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
+                <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
+                  <IoClose size={24} />
+                </button>
+              </div>
+              {renderCampaignImage(selectedCampaign)}
+              <Description>{selectedCampaign['large-description'] || 'No detailed description available'}</Description>
+              <div className="mb-4">
+                <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[18px] font-medium">
-                    {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                  <span className="text-[16px]">
+                    {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
                   </span>
                 </div>
                 <ProgressBarContainer>
-                  <ProgressBar style={{ width: `${(campaign.pointsRaised / campaign.targetPoints) * 100}%` }} />
+                  <ProgressBar style={{ width: `${calculateProgressPercentage(selectedCampaign.pointsRaised, selectedCampaign.targetPoints)}%` }} />
                 </ProgressBarContainer>
-                <button 
-                  onClick={() => handleCampaignClick(campaign)} 
-                  className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
-                  disabled={campaign.isCompleted}
-                >
-                  {campaign.isCompleted ? "Campaign Completed" : "View Campaign"}
-                </button>
-              </CampaignCard>
-            ))}
-          </div>
-        </div>
-      </Container>
-
-      {showPopup && selectedCampaign && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
-              <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
-                <IoClose size={24} />
-              </button>
-            </div>
-            {renderCampaignImage(selectedCampaign)}
-            <Description>{selectedCampaign['large-description'] || 'No detailed description available'}</Description>
-            <div className="mb-4">
-              <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[16px]">
-                  {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
-                </span>
               </div>
-              <ProgressBarContainer>
-                <ProgressBar style={{ width: `${(selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100}%` }} />
-              </ProgressBarContainer>
-            </div>
-            
-            <LeaderboardContainer>
-              <LeaderboardTitle>
-                <IoTrophy size={24} color="#ffd700" />
-                Top Donors
-              </LeaderboardTitle>
-              <LeaderboardList>
-                {selectedCampaign.leaderboard.map((donor, index) => (
-                  <LeaderboardItem key={index}>
-                    <div>
-                      <LeaderboardRank>{index + 1}.</LeaderboardRank>
-                      <LeaderboardUsername>{donor.username}</LeaderboardUsername>
-                    </div>
-                    <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
-                  </LeaderboardItem>
-                ))}
-              </LeaderboardList>
-            </LeaderboardContainer>
-            
-            <div className="mb-4">
-              <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
-              <input
-                type="number"
-                value={donationAmount}
-                onChange={(e) => setDonationAmount(Number(e.target.value))}
-                className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
-                placeholder="Enter donation amount"
-                disabled={selectedCampaign.isCompleted}
-              />
+              
+              <LeaderboardContainer>
+                <LeaderboardTitle>
+                  <IoTrophy size={24} color="#ffd700" />
+                  Top Donors
+                </LeaderboardTitle>
+                <LeaderboardList>
+                  {selectedCampaign.leaderboard.map((donor, index) => (
+                    <LeaderboardItem key={index}>
+                      <div>
+                        <LeaderboardRank>{index + 1}.</LeaderboardRank>
+                        <LeaderboardUsername>{donor.username}</LeaderboardUsername>
+                      </div>
+                      <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
+                    </LeaderboardItem>
+                  ))}
+                </LeaderboardList>
+              </LeaderboardContainer>
+              
+              <div className="mb-4">
+                <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
+                <input
+                  type="number"
+                  value={donationAmount}
+                  onChange={(e) => setDonationAmount(Number(e.target.value))}
+                  className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
+                  placeholder="Enter donation amount"
+                  disabled={selectedCampaign.isCompleted}
+                />
               <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
             </div>
             <button
@@ -372,7 +394,7 @@ const Donate = () => {
             <span className="text-[16px] font-semibold">Donation Successful!</span>
           </div>
         </div>
-     
+        </Container>
     </Animate>
   );
 };
