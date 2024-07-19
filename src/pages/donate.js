@@ -15,7 +15,13 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-bottom: 100px;
+  overflow-y: scroll;
   max-height: calc(100vh - 100px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const CampaignCard = styled.div`
@@ -323,7 +329,7 @@ const Donate = () => {
 
       {showPopup && selectedCampaign && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh]">
+          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
               <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
