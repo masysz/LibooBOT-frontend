@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
-import { IoClose, IoCheckmarkCircle } from "react-icons/io5";
+import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
 
 const Container = styled.div`
@@ -62,17 +62,21 @@ const Description = styled.p`
 `;
 
 const LeaderboardContainer = styled.div`
-  background-color: #2a2f4e;
+  background-color: #343b66;
   border-radius: 15px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 `;
 
-const LeaderboardTitle = styled.h2`
-  font-size: 24px;
-  font-weight: semibold;
+const LeaderboardTitle = styled.h3`
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
 const LeaderboardList = styled.ul`
@@ -85,10 +89,25 @@ const LeaderboardItem = styled.li`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #3d3d3d;
+  border-bottom: 1px solid #4a5280;
   &:last-child {
     border-bottom: none;
   }
+`;
+
+const LeaderboardRank = styled.span`
+  font-weight: 600;
+  color: #ffd700;
+  margin-right: 10px;
+`;
+
+const LeaderboardUsername = styled.span`
+  color: #ffffff;
+`;
+
+const LeaderboardPoints = styled.span`
+  font-weight: 600;
+  color: #3d47ff;
 `;
 
 const Donate = () => {
@@ -98,9 +117,8 @@ const Donate = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { balance, setBalance, loading: userLoading, id } = useUser();
+  const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
-  const [leaderboard, setLeaderboard] = useState([]);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -108,10 +126,26 @@ const Donate = () => {
     try {
       const campaignsCollection = collection(db, 'campaigns');
       const campaignsSnapshot = await getDocs(campaignsCollection);
-      const campaignsList = campaignsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null
+      const campaignsList = await Promise.all(campaignsSnapshot.docs.map(async doc => {
+        const campaignData = {
+          id: doc.id,
+          ...doc.data(),
+          image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null
+        };
+        
+        // Fetch leaderboard for each campaign
+        const leaderboardQuery = query(
+          collection(db, `campaigns/${doc.id}/donations`),
+          orderBy('amount', 'desc'),
+          limit(5)
+        );
+        const leaderboardSnapshot = await getDocs(leaderboardQuery);
+        const leaderboard = leaderboardSnapshot.docs.map(donationDoc => ({
+          username: donationDoc.data().username,
+          amount: donationDoc.data().amount
+        }));
+        
+        return { ...campaignData, leaderboard };
       }));
       console.log("Processed campaigns:", campaignsList);
       setCampaigns(campaignsList);
@@ -123,29 +157,9 @@ const Donate = () => {
     }
   }, []);
 
-  const fetchLeaderboard = useCallback(async () => {
-    try {
-      const leaderboardQuery = query(
-        collection(db, 'telegramUsers'),
-        orderBy('totalDonated', 'desc'),
-        limit(5)
-      );
-      const leaderboardSnapshot = await getDocs(leaderboardQuery);
-      const leaderboardData = leaderboardSnapshot.docs.map(doc => ({
-        id: doc.id,
-        name: doc.data().name,
-        totalDonated: doc.data().totalDonated || 0
-      }));
-      setLeaderboard(leaderboardData);
-    } catch (error) {
-      console.error("Error fetching leaderboard:", error);
-    }
-  }, []);
-
   useEffect(() => {
     fetchCampaigns();
-    fetchLeaderboard();
-  }, [fetchCampaigns, fetchLeaderboard]);
+  }, [fetchCampaigns]);
 
   const handleCampaignClick = useCallback((campaign) => {
     setSelectedCampaign(campaign);
@@ -161,7 +175,7 @@ const Donate = () => {
       alert("Insufficient balance!");
       return;
     }
-    if (!id) {
+    if (!id || !username) {
       alert("You must be logged in to donate.");
       return;
     }
@@ -170,6 +184,7 @@ const Donate = () => {
       await runTransaction(db, async (transaction) => {
         const campaignRef = doc(db, 'campaigns', selectedCampaign.id);
         const userRef = doc(db, 'telegramUsers', id.toString());
+        const donationRef = doc(collection(db, `campaigns/${selectedCampaign.id}/donations`));
 
         const campaignDoc = await transaction.get(campaignRef);
         const userDoc = await transaction.get(userRef);
@@ -180,16 +195,17 @@ const Donate = () => {
 
         const newCampaignPoints = campaignDoc.data().pointsRaised + donationAmount;
         const newUserBalance = userDoc.data().balance - donationAmount;
-        const newTotalDonated = (userDoc.data().totalDonated || 0) + donationAmount;
 
         if (newUserBalance < 0) {
           throw "Insufficient balance!";
         }
 
         transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
-        transaction.update(userRef, { 
-          balance: newUserBalance,
-          totalDonated: newTotalDonated
+        transaction.update(userRef, { balance: newUserBalance });
+        transaction.set(donationRef, {
+          username: username,
+          amount: donationAmount,
+          timestamp: new Date()
         });
       });
 
@@ -197,13 +213,17 @@ const Donate = () => {
       setCampaigns(prevCampaigns => 
         prevCampaigns.map(campaign =>
           campaign.id === selectedCampaign.id
-            ? { ...campaign, pointsRaised: campaign.pointsRaised + donationAmount }
+            ? { 
+                ...campaign, 
+                pointsRaised: campaign.pointsRaised + donationAmount,
+                leaderboard: [
+                  { username, amount: donationAmount },
+                  ...campaign.leaderboard
+                ].sort((a, b) => b.amount - a.amount).slice(0, 5)
+              }
             : campaign
         )
       );
-      
-      // Refresh leaderboard after donation
-      fetchLeaderboard();
       
       setCongrats(true);
       setTimeout(() => setCongrats(false), 3000);
@@ -214,7 +234,7 @@ const Donate = () => {
       console.error("Error processing donation:", error);
       alert("An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, selectedCampaign, db, setBalance, fetchLeaderboard]);
+  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance]);
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
@@ -254,18 +274,6 @@ const Donate = () => {
 
         <div className="w-full flex justify-center flex-col items-center">
           <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
-          
-          <LeaderboardContainer>
-            <LeaderboardTitle>Top Donors</LeaderboardTitle>
-            <LeaderboardList>
-              {leaderboard.map((user, index) => (
-                <LeaderboardItem key={user.id}>
-                  <span>{index + 1}. {user.name}</span>
-                  <span>{formatNumber(user.totalDonated)} points</span>
-                </LeaderboardItem>
-              ))}
-            </LeaderboardList>
-          </LeaderboardContainer>
 
           <div className="w-full flex flex-col space-y-4 pb-20">
             {campaigns.map(campaign => (
@@ -315,6 +323,25 @@ const Donate = () => {
                 <ProgressBar style={{ width: `${(selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100}%` }} />
               </ProgressBarContainer>
             </div>
+            
+            <LeaderboardContainer>
+              <LeaderboardTitle>
+                <IoTrophy size={24} color="#ffd700" />
+                Top Donors
+              </LeaderboardTitle>
+              <LeaderboardList>
+                {selectedCampaign.leaderboard.map((donor, index) => (
+                  <LeaderboardItem key={index}>
+                    <div>
+                      <LeaderboardRank>{index + 1}.</LeaderboardRank>
+                      <LeaderboardUsername>{donor.username}</LeaderboardUsername>
+                    </div>
+                    <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
+                  </LeaderboardItem>
+                ))}
+              </LeaderboardList>
+            </LeaderboardContainer>
+            
             <div className="mb-4">
               <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
               <input
@@ -337,14 +364,13 @@ const Donate = () => {
         </div>
       )}
 
-      <div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
-        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
-          <IoCheckmarkCircle size={24} className=""/>
-          <span className="font-medium">
-            Thank you for your donation!
-          </span>
+<div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
+          <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
+            <IoCheckmarkCircle size={24} />
+            <span className="text-[16px] font-semibold">Donation Successful!</span>
+          </div>
         </div>
-      </div>
+     
     </Animate>
   );
 };
