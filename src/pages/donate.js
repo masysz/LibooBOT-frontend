@@ -203,9 +203,20 @@ const Donate = () => {
 
         // Update leaderboard
         const newDonation = { username, amount: donationAmount };
-        let updatedLeaderboard = [...(currentCampaignData.leaderboard || []), newDonation];
+        let updatedLeaderboard = currentCampaignData.leaderboard || [];
+        const existingDonorIndex = updatedLeaderboard.findIndex(donor => donor.username === username);
+
+        if (existingDonorIndex !== -1) {
+          // Update existing donor's amount
+          updatedLeaderboard[existingDonorIndex].amount += donationAmount;
+        } else {
+          // Add new donor
+          updatedLeaderboard.push(newDonation);
+        }
+
+        // Sort and keep top 5
         updatedLeaderboard.sort((a, b) => b.amount - a.amount);
-        updatedLeaderboard = updatedLeaderboard.slice(0, 5); // Keep top 5
+        updatedLeaderboard = updatedLeaderboard.slice(0, 5);
 
         transaction.update(campaignRef, { 
           pointsRaised: newCampaignPoints,
@@ -226,10 +237,15 @@ const Donate = () => {
             ? { 
                 ...campaign, 
                 pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: [
-                  { username, amount: donationAmount },
-                  ...campaign.leaderboard
-                ].sort((a, b) => b.amount - a.amount).slice(0, 5)
+                leaderboard: campaign.leaderboard.map(donor => 
+                  donor.username === username 
+                    ? { ...donor, amount: donor.amount + donationAmount }
+                    : donor
+                ).concat(
+                  campaign.leaderboard.find(donor => donor.username === username) 
+                    ? [] 
+                    : [{ username, amount: donationAmount }]
+                ).sort((a, b) => b.amount - a.amount).slice(0, 5)
               }
             : campaign
         )
