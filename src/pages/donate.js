@@ -16,11 +16,11 @@ const Container = styled.div`
   height: 100%;
   margin-bottom: 100px;
   overflow-y: scroll;
-  
   max-height: calc(100vh - 100px);
- 
   -ms-overflow-style: none;
-
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const CampaignCard = styled.div`
@@ -106,7 +106,7 @@ const LeaderboardUsername = styled.span`
 
 const LeaderboardPoints = styled.span`
   font-weight: 600;
-  color: #fffff;
+  color: #3d47ff;
 `;
 
 const Donate = () => {
@@ -202,20 +202,9 @@ const Donate = () => {
 
         // Update leaderboard
         const newDonation = { username, amount: donationAmount };
-        let updatedLeaderboard = currentCampaignData.leaderboard || [];
-        const existingDonorIndex = updatedLeaderboard.findIndex(donor => donor.username === username);
-
-        if (existingDonorIndex !== -1) {
-          // Update existing donor's amount
-          updatedLeaderboard[existingDonorIndex].amount += donationAmount;
-        } else {
-          // Add new donor
-          updatedLeaderboard.push(newDonation);
-        }
-
-        // Sort and keep top 5
+        let updatedLeaderboard = [...(currentCampaignData.leaderboard || []), newDonation];
         updatedLeaderboard.sort((a, b) => b.amount - a.amount);
-        updatedLeaderboard = updatedLeaderboard.slice(0, 5);
+        updatedLeaderboard = updatedLeaderboard.slice(0, 5); // Keep top 5
 
         transaction.update(campaignRef, { 
           pointsRaised: newCampaignPoints,
@@ -236,15 +225,10 @@ const Donate = () => {
             ? { 
                 ...campaign, 
                 pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: campaign.leaderboard.map(donor => 
-                  donor.username === username 
-                    ? { ...donor, amount: donor.amount + donationAmount }
-                    : donor
-                ).concat(
-                  campaign.leaderboard.find(donor => donor.username === username) 
-                    ? [] 
-                    : [{ username, amount: donationAmount }]
-                ).sort((a, b) => b.amount - a.amount).slice(0, 5)
+                leaderboard: [
+                  { username, amount: donationAmount },
+                  ...campaign.leaderboard
+                ].sort((a, b) => b.amount - a.amount).slice(0, 5)
               }
             : campaign
         )
@@ -328,7 +312,7 @@ const Donate = () => {
 
       {showPopup && selectedCampaign && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] -y-auto">
+          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
               <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
