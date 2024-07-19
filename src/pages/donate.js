@@ -193,14 +193,24 @@ const Donate = () => {
           throw "Document does not exist!";
         }
 
-        const newCampaignPoints = campaignDoc.data().pointsRaised + donationAmount;
+        const currentCampaignData = campaignDoc.data();
+        const newCampaignPoints = currentCampaignData.pointsRaised + donationAmount;
         const newUserBalance = userDoc.data().balance - donationAmount;
 
         if (newUserBalance < 0) {
           throw "Insufficient balance!";
         }
 
-        transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
+        // Update leaderboard
+        const newDonation = { username, amount: donationAmount };
+        let updatedLeaderboard = [...(currentCampaignData.leaderboard || []), newDonation];
+        updatedLeaderboard.sort((a, b) => b.amount - a.amount);
+        updatedLeaderboard = updatedLeaderboard.slice(0, 5); // Keep top 5
+
+        transaction.update(campaignRef, { 
+          pointsRaised: newCampaignPoints,
+          leaderboard: updatedLeaderboard
+        });
         transaction.update(userRef, { balance: newUserBalance });
         transaction.set(donationRef, {
           username: username,
@@ -303,7 +313,7 @@ const Donate = () => {
 
       {showPopup && selectedCampaign && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
               <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
@@ -364,6 +374,7 @@ const Donate = () => {
         </div>
       )}
 
+     
 <div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
           <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
             <IoCheckmarkCircle size={24} />
