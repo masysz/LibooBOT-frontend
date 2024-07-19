@@ -5,7 +5,8 @@ import styled from "styled-components";
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoCheckmarkCircle } from "react-icons/io5";
+import congratspic from '../images/congrats.png';
 
 const Container = styled.div`
   position: relative;
@@ -63,6 +64,7 @@ const Donate = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id } = useUser();
+  const [congrats, setCongrats] = useState(false);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -140,14 +142,17 @@ const Donate = () => {
         )
       );
       
-      alert(`Thank you for your donation of ${donationAmount} points to ${selectedCampaign.title}!`);
+      // Mostrar la animación de felicitaciones
+      setCongrats(true);
+      setTimeout(() => setCongrats(false), 3000); // Ocultar después de 3 segundos
+
       setShowPopup(false);
       setDonationAmount(0);
     } catch (error) {
       console.error("Error processing donation:", error);
       alert("An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, selectedCampaign, db]);
+  }, [donationAmount, balance, id, selectedCampaign, db, setBalance]);
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
@@ -181,6 +186,10 @@ const Donate = () => {
   return (
     <Animate>
       <Container>
+        <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
+          {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
+        </div>
+
         <div className="w-full flex justify-center flex-col items-center">
           <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
           <div className="w-full flex flex-col space-y-4 pb-20">
@@ -252,6 +261,15 @@ const Donate = () => {
           </div>
         </div>
       )}
+
+      <div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
+        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
+          <IoCheckmarkCircle size={24} className=""/>
+          <span className="font-medium">
+            Thank you for your donation!
+          </span>
+        </div>
+      </div>
     </Animate>
   );
 };
