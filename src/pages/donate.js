@@ -7,23 +7,6 @@ import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
-window.Telegram.WebApp.disableVerticalSwipes()
-// Ensure the document is scrollable
-function ensureDocumentIsScrollable() {
-  const isScrollable =
-    document.documentElement.scrollHeight > window.innerHeight;
-  // Check if the document is scrollable
-  if (!isScrollable) {
-    document.documentElement.style.setProperty(
-      "height",
-      "calc(100vh + 1px)",
-      "important"
-    );
-  }
-}
-
-// Call ensureDocumentIsScrollable function when the entire page has loaded.
-window.addEventListener("load", ensureDocumentIsScrollable);
 
 const Container = styled.div`
   position: relative;
@@ -32,13 +15,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-bottom: 100px;
-  overflow-y: scroll;
   max-height: calc(100vh - 100px);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const CampaignCard = styled.div`
@@ -139,25 +116,6 @@ const Donate = () => {
   const [congrats, setCongrats] = useState(false);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    window.Telegram.WebApp.disableVerticalSwipes()
-    const preventCollapse = (event) => {
-      if (window.scrollY === 0) {
-        window.scrollTo(0, 1);
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("touchstart", preventCollapse);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener("touchstart", preventCollapse);
-      }
-    };
-  }, []);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -365,7 +323,7 @@ const Donate = () => {
 
       {showPopup && selectedCampaign && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
               <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
