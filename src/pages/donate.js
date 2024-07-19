@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { doc, collection, getDocs, runTransaction } from 'firebase/firestore';
+import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from "styled-components";
 import Animate from '../Components/Animate';
@@ -15,8 +15,13 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-bottom: 100px;
-  overflow-y: auto;
+  overflow-y: scroll;
   max-height: calc(100vh - 100px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const CampaignCard = styled.div`
@@ -56,6 +61,36 @@ const Description = styled.p`
   line-height: 1.4;
 `;
 
+const LeaderboardContainer = styled.div`
+  background-color: #2a2f4e;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const LeaderboardTitle = styled.h2`
+  font-size: 24px;
+  font-weight: semibold;
+  margin-bottom: 15px;
+`;
+
+const LeaderboardList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+const LeaderboardItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #3d3d3d;
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -65,6 +100,7 @@ const Donate = () => {
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id } = useUser();
   const [congrats, setCongrats] = useState(false);
+  const [leaderboard, setLeaderboard] = useState([]);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -87,9 +123,29 @@ const Donate = () => {
     }
   }, []);
 
+  const fetchLeaderboard = useCallback(async () => {
+    try {
+      const leaderboardQuery = query(
+        collection(db, 'telegramUsers'),
+        orderBy('totalDonated', 'desc'),
+        limit(5)
+      );
+      const leaderboardSnapshot = await getDocs(leaderboardQuery);
+      const leaderboardData = leaderboardSnapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().name,
+        totalDonated: doc.data().totalDonated || 0
+      }));
+      setLeaderboard(leaderboardData);
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchCampaigns();
-  }, [fetchCampaigns]);
+    fetchLeaderboard();
+  }, [fetchCampaigns, fetchLeaderboard]);
 
   const handleCampaignClick = useCallback((campaign) => {
     setSelectedCampaign(campaign);
@@ -124,13 +180,17 @@ const Donate = () => {
 
         const newCampaignPoints = campaignDoc.data().pointsRaised + donationAmount;
         const newUserBalance = userDoc.data().balance - donationAmount;
+        const newTotalDonated = (userDoc.data().totalDonated || 0) + donationAmount;
 
         if (newUserBalance < 0) {
           throw "Insufficient balance!";
         }
 
         transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
-        transaction.update(userRef, { balance: newUserBalance });
+        transaction.update(userRef, { 
+          balance: newUserBalance,
+          totalDonated: newTotalDonated
+        });
       });
 
       setBalance(prevBalance => prevBalance - donationAmount);
@@ -142,9 +202,11 @@ const Donate = () => {
         )
       );
       
-      // Mostrar la animación de felicitaciones
+      // Refresh leaderboard after donation
+      fetchLeaderboard();
+      
       setCongrats(true);
-      setTimeout(() => setCongrats(false), 3000); // Ocultar después de 3 segundos
+      setTimeout(() => setCongrats(false), 3000);
 
       setShowPopup(false);
       setDonationAmount(0);
@@ -152,7 +214,7 @@ const Donate = () => {
       console.error("Error processing donation:", error);
       alert("An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, selectedCampaign, db, setBalance]);
+  }, [donationAmount, balance, id, selectedCampaign, db, setBalance, fetchLeaderboard]);
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
@@ -192,6 +254,19 @@ const Donate = () => {
 
         <div className="w-full flex justify-center flex-col items-center">
           <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
+          
+          <LeaderboardContainer>
+            <LeaderboardTitle>Top Donors</LeaderboardTitle>
+            <LeaderboardList>
+              {leaderboard.map((user, index) => (
+                <LeaderboardItem key={user.id}>
+                  <span>{index + 1}. {user.name}</span>
+                  <span>{formatNumber(user.totalDonated)} points</span>
+                </LeaderboardItem>
+              ))}
+            </LeaderboardList>
+          </LeaderboardContainer>
+
           <div className="w-full flex flex-col space-y-4 pb-20">
             {campaigns.map(campaign => (
               <CampaignCard key={campaign.id}>
