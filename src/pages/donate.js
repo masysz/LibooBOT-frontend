@@ -107,8 +107,8 @@ const LeaderboardUsername = styled.span`
 `;
 
 const LeaderboardPoints = styled.span`
-  font-weight: 600;
-  color: #3d47ff;
+  font-weight: 800;
+  color: #fffff;
 `;
 
 const Donate = () => {
