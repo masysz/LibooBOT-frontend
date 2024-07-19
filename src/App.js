@@ -12,7 +12,7 @@
   import Levels from "./Components/Levels";
   import flash from "../src/images/flash.webp";
   import { EnergyContext } from "./context/EnergyContext";
-
+  window.Telegram.WebApp.disableVerticalSwipes()
 
   const slideUp = keyframes`
     0% {
@@ -84,7 +84,7 @@
             ? "wobble-top"
             : "wobble-bottom";
 
-          Remove previous animations
+         
         imageRef.current.classList.remove(
           "wobble-top",
           "wobble-bottom",
@@ -92,43 +92,43 @@
           "wobble-right"
         );
 
-          Add the new animation class
+     
         imageRef.current.classList.add(animationClass);
 
-          Remove the animation class after animation ends to allow re-animation on the same side
+      
         setTimeout(() => {
           imageRef.current.classList.remove(animationClass);
-        }, 500);   duration should match the animation duration in CSS
+        }, 500);   
 
-          Increment the count
+          
         const rect = e.target.getBoundingClientRect();
         const newClick = {
-          id: Date.now(),   Unique identifier
+          id: Date.now(),   
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
         };
 
-        const updatedCount = count + 2;   Increment count by 5
+        const updatedCount = count + 2;   
         const updatedEnergy = energy - 2;
 
         setClicks((prevClicks) => [...prevClicks, newClick]);
         setCount(updatedCount);
         setEnergy(updatedEnergy);
-        setDisplayEnergy(updatedEnergy);   Update display energy
+        setDisplayEnergy(updatedEnergy);  
 
         updateUserStatsInFirestore(idme, updatedCount, updatedEnergy);
 
-          Remove the click after the animation duration
+         
         setTimeout(() => {
           setClicks((prevClicks) =>
             prevClicks.filter((click) => click.id !== newClick.id)
           );
-        }, 1000);   Match this duration with the animation duration
+        }, 1000);  
       }
     };
 
     useEffect(() => {
-        Fetch username and user ID from Telegram Web App context
+      window.Telegram.WebApp.disableVerticalSwipes()
       const telegramName =
         window.Telegram.WebApp.initDataUnsafe?.user?.first_name;
       const telegramLastName =
@@ -152,7 +152,7 @@
         saveRefereeIdToFirestore();
       }
 
-        Fetch count and energy from Firestore when component mounts
+      
       if (telegramUserid) {
         fetchUserStatsFromFirestore(telegramUserid)
           .then((userStats) => {
@@ -162,13 +162,13 @@
             } else {
               setCount(userStats.count);
               setEnergy(userStats.energy);
-              setDisplayEnergy(userStats.energy);   Update display energy
+              setDisplayEnergy(userStats.energy); 
             }
-            setLoading(false);   Set loading to false after fetching count
+            setLoading(false);   
           })
           .catch(() => {
-            setCount(0);   Set count to 0 if fetching fails
-            setEnergy(500);   Set energy to 500 if fetching fails
+            setCount(0);  
+            setEnergy(500);   
             setLoading(false);
           });
       }
@@ -176,7 +176,7 @@
     }, []);
 
     const saveRefereeIdToFirestore = async () => {
-        Fetch username and user ID from Telegram Web App context
+      
       const telegramUsername =
         window.Telegram.WebApp.initDataUnsafe?.user?.username;
       const telegramUserid = window.Telegram.WebApp.initDataUnsafe?.user?.id;
@@ -190,7 +190,7 @@
       const queryParams = new URLSearchParams(window.location.search);
       let refereeId = queryParams.get("ref");
       if (refereeId) {
-          Remove all non-numeric characters
+        
         refereeId = refereeId.replace(/\D/g, "");
       }
 
@@ -223,9 +223,9 @@
             fullname: fullname,
             username: finalUsername,
             userId: userid,
-            count: 0,   Initialize count
-            energy: 500,   Initialize energy
-            refereeId: refereeId || null,   Store refereeId if present
+            count: 0,   
+            energy: 500,   
+            refereeId: refereeId || null,   
             timestamp: new Date(),
           });
             console.log("User data stored:", { username, userid, refereeId });
@@ -343,10 +343,4 @@
   }
 
   export default App;
-  apiKey: "AIzaSyDu-0ieXh2EsuWyUT8-_0Ats0KyVIUQfrc",
-  authDomain: "liboo-project.firebaseapp.com",
-  projectId: "liboo-project",
-  storageBucket: "liboo-project.appspot.com",
-  messagingSenderId: "39018843470",
-  appId: "1:39018843470:web:1f45f4960aad56029d621f",
-  measurementId: "G-B3JGVLEECV"
+  
