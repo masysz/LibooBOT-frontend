@@ -7,7 +7,7 @@ import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
-
+window.Telegram.WebApp.disableVerticalSwipes()
 // Ensure the document is scrollable
 function ensureDocumentIsScrollable() {
   const isScrollable =
