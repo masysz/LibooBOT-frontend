@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from "styled-components";
@@ -120,19 +120,20 @@ const Donate = () => {
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const preventCollapse = () => {
-      if (window.scrollY === 0) {
+      if (window.scrollY === 0 && !showPopup) {
         window.scrollTo(0, 1);
       }
     };
 
     window.addEventListener('scroll', preventCollapse);
-    preventCollapse(); // Initial call to ensure we're not at the top
+    preventCollapse();
 
     return () => window.removeEventListener('scroll', preventCollapse);
-  }, []);
+  }, [showPopup]);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -176,6 +177,11 @@ const Donate = () => {
   const handleCampaignClick = useCallback((campaign) => {
     setSelectedCampaign(campaign);
     setShowPopup(true);
+    setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0;
+      }
+    }, 0);
   }, []);
 
   const handleDonationSubmit = useCallback(async () => {
@@ -205,13 +211,13 @@ const Donate = () => {
         const newCampaignPoints = currentCampaignData.pointsRaised + donationAmount;
         const newUserBalance = userDoc.data().balance - donationAmount;
 
-        // Update leaderboard
         const updatedLeaderboard = updateLeaderboard(currentCampaignData.leaderboard, username, donationAmount);
+        const isCompleted = newCampaignPoints >= currentCampaignData.targetPoints;
 
         transaction.update(campaignRef, { 
           pointsRaised: newCampaignPoints,
           leaderboard: updatedLeaderboard,
-          isCompleted: newCampaignPoints >= currentCampaignData.targetPoints
+          isCompleted: isCompleted
         });
         transaction.update(userRef, { balance: newUserBalance });
         transaction.set(donationRef, {
@@ -219,27 +225,49 @@ const Donate = () => {
           amount: donationAmount,
           timestamp: new Date()
         });
+
+        if (isCompleted) {
+          const allCampaignsQuery = query(collection(db, 'campaigns'));
+          const allCampaignsSnapshot = await getDocs(allCampaignsQuery);
+          allCampaignsSnapshot.docs.forEach(doc => {
+            if (doc.id !== selectedCampaign.id) {
+              transaction.update(doc.ref, {
+                isActive: doc.data().isCompleted ? false : true
+              });
+            }
+          });
+        }
       });
 
-      setBalance(prevBalance => prevBalance - donationAmount);
       setCampaigns(prevCampaigns => 
-        prevCampaigns.map(campaign =>
-          campaign.id === selectedCampaign.id
-            ? { 
-                ...campaign, 
-                pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: updateLeaderboard(campaign.leaderboard, username, donationAmount),
-                isCompleted: campaign.pointsRaised + donationAmount >= campaign.targetPoints
-              }
-            : campaign
-        )
+        prevCampaigns.map(campaign => {
+          if (campaign.id === selectedCampaign.id) {
+            const newPoints = campaign.pointsRaised + donationAmount;
+            const isCompleted = newPoints >= campaign.targetPoints;
+            return { 
+              ...campaign, 
+              pointsRaised: newPoints,
+              leaderboard: updateLeaderboard(campaign.leaderboard, username, donationAmount),
+              isCompleted: isCompleted
+            };
+          } else if (campaign.id !== selectedCampaign.id && !campaign.isCompleted) {
+            return { ...campaign, isActive: true };
+          }
+          return campaign;
+        })
       );
-      
+
+      setBalance(prevBalance => prevBalance - donationAmount);
       setCongrats(true);
       setTimeout(() => setCongrats(false), 3000);
 
       setShowPopup(false);
       setDonationAmount(0);
+
+      if (selectedCampaign.pointsRaised + donationAmount >= selectedCampaign.targetPoints) {
+        alert("Congratulations! Your donation has completed this campaign!");
+      }
+
     } catch (error) {
       console.error("Error processing donation:", error);
       alert("An error occurred while processing your donation. Please try again.");
@@ -279,7 +307,7 @@ const Donate = () => {
 
   const calculateProgressPercentage = (pointsRaised, targetPoints) => {
     const percentage = (pointsRaised / targetPoints) * 100;
-    return Math.min(percentage, 100); // Cap at 100%
+    return Math.min(percentage, 100);
   };
 
   if (userLoading || isLoading) return <Spinner />;
@@ -287,7 +315,7 @@ const Donate = () => {
 
   return (
     <Animate>
-      <Container>
+      <Container ref={containerRef}>
         <ScrollPadding />
         <div className="flex-grow">
           <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
@@ -313,7 +341,11 @@ const Donate = () => {
                   </ProgressBarContainer>
                   <button 
                     onClick={() => handleCampaignClick(campaign)} 
-                    className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                    className={`mt-4 w-full px-4 py-2 rounded-[8px] text-white font-semibold ${
+                      campaign.isCompleted 
+                        ? "bg-gray-500 cursor-not-allowed" 
+                        : "bg-gradient-to-b from-[#3d47ff] to-[#575fff]"
+                    }`}
                     disabled={campaign.isCompleted}
                   >
                     {campaign.isCompleted ? "Campaign Completed" : "View Campaign"}
@@ -326,27 +358,46 @@ const Donate = () => {
 
         {showPopup && selectedCampaign && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
+            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
-                <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
+                <button onClick={() => setShowPopup(false)} className="text-white">
                   <IoClose size={24} />
                 </button>
               </div>
               {renderCampaignImage(selectedCampaign)}
-              <Description>{selectedCampaign['large-description'] || 'No detailed description available'}</Description>
+              <Description>{selectedCampaign['short-description'] || 'No description available'}</Description>
               <div className="mb-4">
-                <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[16px]">
-                    {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
-                  </span>
-                </div>
+                <span className="text-[18px] font-medium">
+                  {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
+                </span>
                 <ProgressBarContainer>
                   <ProgressBar style={{ width: `${calculateProgressPercentage(selectedCampaign.pointsRaised, selectedCampaign.targetPoints)}%` }} />
                 </ProgressBarContainer>
               </div>
-              
+              <div className="mb-4">
+                <label htmlFor="donationAmount" className="block text-sm font-medium text-gray-300 mb-2">
+                  Donation Amount
+                </label>
+                <input
+                  type="number"
+                  id="donationAmount"
+                  value={donationAmount}
+                  onChange={(e) => setDonationAmount(Number(e.target.value))}
+                  className="w-full px-3 py-2 bg-[#2a2f4e] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
+                  max={balance}
+                />
+              </div>
+              <button
+                onClick={handleDonationSubmit}
+                className="w-full px-4 py-2 bg-gradient-to-b from-[#3d47ff] to-[#575fff] text-white font-semibold rounded-[8px]"
+                disabled={donationAmount <= 0 || donationAmount > balance}
+              >
+                Donate {donationAmount} Points
+              </button>
+              <p className="mt-2 text-sm text-gray-400">Your current balance: {formatNumber(balance)} points</p>
+
               <LeaderboardContainer>
                 <LeaderboardTitle>
                   <IoTrophy size={24} color="#ffd700" />
@@ -356,7 +407,7 @@ const Donate = () => {
                   {selectedCampaign.leaderboard.map((donor, index) => (
                     <LeaderboardItem key={index}>
                       <div>
-                        <LeaderboardRank>{index + 1}.</LeaderboardRank>
+                        <LeaderboardRank>#{index + 1}</LeaderboardRank>
                         <LeaderboardUsername>{donor.username}</LeaderboardUsername>
                       </div>
                       <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
@@ -364,37 +415,10 @@ const Donate = () => {
                   ))}
                 </LeaderboardList>
               </LeaderboardContainer>
-              
-              <div className="mb-4">
-                <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
-                <input
-                  type="number"
-                  value={donationAmount}
-                  onChange={(e) => setDonationAmount(Number(e.target.value))}
-                  className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
-                  placeholder="Enter donation amount"
-                  disabled={selectedCampaign.isCompleted}
-                />
-              <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
             </div>
-            <button
-              onClick={handleDonationSubmit}
-              className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
-              disabled={donationAmount <= 0 || donationAmount > balance || selectedCampaign.isCompleted}
-            >
-              {selectedCampaign.isCompleted ? "Campaign Completed" : "Confirm Donation"}
-            </button>
           </div>
-        </div>
-      )}
-     
-<div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
-          <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
-            <IoCheckmarkCircle size={24} />
-            <span className="text-[16px] font-semibold">Donation Successful!</span>
-          </div>
-        </div>
-        </Container>
+        )}
+      </Container>
     </Animate>
   );
 };
