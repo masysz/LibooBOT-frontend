@@ -7,6 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Home from "./pages/Home";
+import Donate from "./pages/donate";
 import ErrorCom from "./Components/ErrorCom";
 import Tasks from "./pages/Tasks";
 import Boost from "./pages/Boost";
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path:"/connect",
         element: <Connect />,
+      },
+      {
+        path:"/donate",
+        element: <Donate />,
       },
       
     ]

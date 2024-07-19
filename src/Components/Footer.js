@@ -2,7 +2,7 @@ import React from "react";
 import ref from "../images/ref4.webp";
 import boost from "../images/booster2.webp";
 import tasks from "../images/tasks2.webp";
-import stats from "../images/stats.webp";
+import donate from "../images/stats.webp";
 import tonwallet from "../images/wallet2.webp";
 import coinsmall from "../images/coins-6.webp";
 import { NavLink } from "react-router-dom";
@@ -81,9 +81,25 @@ ${
       {/*  */}
 
       <NavLink
-        to="/connect"
+        to="/Donate"
         className={({ isActive }) => {
           return `
+
+${
+            isActive
+              ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
+              : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
+}
+              `;
+                  }}
+                >
+                  <img src={donate} className="w-[32px] -mb-1" alt="ref" />
+                  <span className="font-medium">Donate</span>
+                </NavLink>
+                <NavLink
+                  to="/connect"
+                  className={({ isActive }) => {
+                    return `         
 
 ${
   isActive

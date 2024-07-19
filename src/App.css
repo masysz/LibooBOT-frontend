@@ -274,3 +274,29 @@ body {
     0 -4px 30px 0 rgba(0, 81, 255, 0.2);
 }
 
+/* src/styles/Donate.css */
+.donate-page {
+  padding: 20px;
+}
+
+.campaign-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.campaign-card {
+  margin: 10px;
+  width: 300px;
+}
+
+.donation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
