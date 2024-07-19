@@ -15,13 +15,10 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   margin-bottom: 100px;
-  overflow-y: scroll;
+  overflow: hidden; /* Prevents scrolling issues */
   max-height: calc(100vh - 100px);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  touch-action: pan-y; /* Allows vertical scrolling only */
+  overscroll-behavior: contain; /* Prevents scroll chaining */
 `;
 
 const CampaignCard = styled.div`
@@ -30,6 +27,7 @@ const CampaignCard = styled.div`
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevents content overflow */
 `;
 
 const CampaignImage = styled.img`
@@ -68,6 +66,7 @@ const LeaderboardContainer = styled.div`
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden; /* Prevents content overflow */
 `;
 
 const LeaderboardTitle = styled.h3`
@@ -254,144 +253,87 @@ const Donate = () => {
       console.error("Error processing donation:", error);
       alert("An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance]);
-
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-  };
-
-  const renderCampaignImage = (campaign) => {
-    if (!campaign.image) {
-      console.log(`No image URL for campaign: ${campaign.id}`);
-      return null;
-    }
-    return (
-      <CampaignImage 
-        src={campaign.image} 
-        alt={campaign.title} 
-        onError={(e) => {
-          console.error(`Error loading image for campaign ${campaign.id}:`, e);
-          e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
-        }}
-      />
-    );
-  };
-
-  if (userLoading || isLoading) {
-    return <Spinner />;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  }, [donationAmount, balance, id, username, selectedCampaign, updateLeaderboard, setBalance]);
 
   return (
-    <Animate>
-      <Container>
-        <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
-          {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
-        </div>
-
-        <div className="w-full flex justify-center flex-col items-center">
-          <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
-
-          <div className="w-full flex flex-col space-y-4 pb-20">
-            {campaigns.map(campaign => (
-              <CampaignCard key={campaign.id}>
-                {renderCampaignImage(campaign)}
-                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-                <Description>{campaign['short-description'] || 'No description available'}</Description>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[18px] font-medium">
-                    {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-                  </span>
-                </div>
-                <ProgressBarContainer>
-                  <ProgressBar progress={campaign.pointsRaised} target={campaign.targetPoints} />
-                </ProgressBarContainer>
-                <button 
-                  onClick={() => handleCampaignClick(campaign)} 
-                  className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
-                >
-                  View Campaign
-                </button>
-              </CampaignCard>
-            ))}
+    <Container>
+      {isLoading && <Spinner />}
+      {error && <div>Error: {error}</div>}
+      {congrats && (
+        <Animate>
+          <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#4caf50', color: '#fff', padding: '10px 20px', borderRadius: '5px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+            <IoCheckmarkCircle size={24} /> Thank you for your donation!
           </div>
-        </div>
-      </Container>
-
+        </Animate>
+      )}
+      <h1>Donate Points</h1>
+      <div>
+        {campaigns.map(campaign => (
+          <CampaignCard key={campaign.id} onClick={() => handleCampaignClick(campaign)}>
+            {campaign.image && <CampaignImage src={campaign.image} alt={campaign.title} />}
+            <h2>{campaign.title}</h2>
+            <Description>{campaign.description}</Description>
+            <ProgressBarContainer>
+              <ProgressBar progress={campaign.pointsRaised} target={campaign.targetPoints} />
+            </ProgressBarContainer>
+          </CampaignCard>
+        ))}
+      </div>
       {showPopup && selectedCampaign && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
-              <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
-                <IoClose size={24} />
-              </button>
-            </div>
-            {renderCampaignImage(selectedCampaign)}
-            <Description>{selectedCampaign['large-description'] || 'No detailed description available'}</Description>
-            <div className="mb-4">
-              <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[16px]">
-                  {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
-                </span>
-              </div>
-              <ProgressBarContainer>
-                <ProgressBar progress={selectedCampaign.pointsRaised} target={selectedCampaign.targetPoints} />
-              </ProgressBarContainer>
-            </div>
-            
-            <LeaderboardContainer>
-              <LeaderboardTitle>
-                <IoTrophy size={24} color="#ffd700" />
-                Top Donors
-              </LeaderboardTitle>
-              <LeaderboardList>
-                {selectedCampaign.leaderboard.map((donor, index) => (
-                  <LeaderboardItem key={index}>
-                    <div>
-                      <LeaderboardRank>{index + 1}.</LeaderboardRank>
-                      <LeaderboardUsername>{donor.username}</LeaderboardUsername>
-                    </div>
-                    <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
-                  </LeaderboardItem>
-                ))}
-              </LeaderboardList>
-            </LeaderboardContainer>
-            
-            <div className="mb-4">
-              <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
-              <input
-                type="number"
-                value={donationAmount}
-                onChange={(e) => setDonationAmount(Number(e.target.value))}
-                className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
-                placeholder="Enter donation amount"
-              />
-              <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
-            </div>
+        <div className="popup" style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#2a2f4e',
+          padding: '20px',
+          borderRadius: '15px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000
+        }}>
+          <IoClose
+            size={24}
+            style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }}
+            onClick={() => setShowPopup(false)}
+          />
+          <h2>Donate to {selectedCampaign.title}</h2>
+          <p>{selectedCampaign.description}</p>
+          <ProgressBarContainer>
+            <ProgressBar progress={selectedCampaign.pointsRaised} target={selectedCampaign.targetPoints} />
+          </ProgressBarContainer>
+          <div>
+            <input
+              type="number"
+              value={donationAmount}
+              onChange={(e) => setDonationAmount(Number(e.target.value))}
+              placeholder="Enter amount"
+              min="1"
+              style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+            />
             <button
               onClick={handleDonationSubmit}
-              className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
-              disabled={donationAmount <= 0 || donationAmount > balance}
+              style={{ width: '100%', padding: '10px', backgroundColor: '#4caf50', color: '#fff', border: 'none', borderRadius: '5px' }}
             >
-              Confirm Donation
+              Donate
             </button>
           </div>
+          <LeaderboardContainer>
+            <LeaderboardTitle>
+              <IoTrophy /> Leaderboard
+            </LeaderboardTitle>
+            <LeaderboardList>
+              {selectedCampaign.leaderboard.map((donor, index) => (
+                <LeaderboardItem key={index}>
+                  <LeaderboardRank>{index + 1}.</LeaderboardRank>
+                  <LeaderboardUsername>{donor.username}</LeaderboardUsername>
+                  <LeaderboardPoints>{donor.amount} pts</LeaderboardPoints>
+                </LeaderboardItem>
+              ))}
+            </LeaderboardList>
+          </LeaderboardContainer>
         </div>
       )}
-
-<div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
-          <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
-            <IoCheckmarkCircle size={24} />
-            <span className="text-[16px] font-semibold">Donation Successful!</span>
-          </div>
-        </div>
-     
-    </Animate>
+    </Container>
   );
 };
 
