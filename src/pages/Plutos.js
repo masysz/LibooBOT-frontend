@@ -71,7 +71,7 @@ const Plutos = () => {
   const accumulatedEnergyRef = useRef(energy);
   const accumulatedTapBalanceRef = useRef(tapBalance);
   const refillTimeoutRef = useRef(null); // Add this line
-  
+  window.Telegram.WebApp.isVerticalSwipesEnabled.false();
 
   function triggerHapticFeedback() {
     const isAndroid = /Android/i.test(navigator.userAgent);
@@ -79,7 +79,6 @@ const Plutos = () => {
   
     if (isIOS && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
       window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-      window.Telegram.WebApp.isVerticalSwipesEnabled.false();
     } else if (isAndroid && 'vibrate' in navigator) {
       // Use the vibration API on Android
       navigator.vibrate(50); // Vibrate for 50ms
@@ -375,83 +374,113 @@ const Plutos = () => {
 
       
 
-      return (
-        <>
-          {loading ? (
-            <Spinner />
-          ) : (
-            <Animate>
-              <div className="w-full h-screen flex flex-col justify-start items-center p-4">
-                {/* Top Section */}
-                <div className="w-full flex flex-col items-center space-y-2 mb-4">
-                  <div className="flex items-center space-x-2">
-                    <img src={coinsmall} className="w-10 h-10" alt="coin" />
-                    <h1 className="text-white text-4xl font-extrabold">
-                      {formatNumber(balance + refBonus)}
-                    </h1>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <img src={level.imgUrl} className="w-6 h-6" alt="level" />
-                    <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-lg font-medium">
-                      {level.name}
-                    </h2>
-                    <MdOutlineKeyboardArrowRight className="w-5 h-5 text-[#9d99a9]" />
-                  </div>
-                </div>
-    
-                {/* Energy Bar - Now above the main image */}
-                <div className="w-full max-w-md flex flex-col items-center space-y-2 mb-4">
-                  <div className="flex items-center space-x-2 text-white">
-                    <img alt="flash" src={flash} className="w-5 h-5" />
-                    <div>
-                      <span className="text-lg font-bold">{energy.toFixed(0)}</span>
-                      <span className="text-sm font-medium">/ {battery.energy}</span>
-                    </div>
-                  </div>
-                  <div className="w-full h-4 bg-energybar rounded-full border border-borders2 overflow-hidden">
-                    <div
-                      className="h-full bg-[#3f88e8] rounded-full transition-all duration-300 ease-out"
-                      style={{ width: `${energyPercentage}%` }}
-                    ></div>
-                  </div>
-                </div>
-    
-                {/* Middle Section - Logo */}
-                <div className="flex-1 flex items-center justify-center relative">
-                  <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full"></div>
-                  <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
-                    <div className="before"></div>
-                    <div className="after"></div>
-                  </div>
-                  <div className="relative">
-                    <img
-                      src="/lihgt.gif"
-                      alt="background"
-                      className={`absolute w-[350px] rotate-45 ${tapGuru ? 'block' : 'hidden'}`}
-                    />
+  return (
+    <>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Animate>
+    <div >
+      <div >
+        
+      </div>
+
+
+      <div className="flex space-x-[2px] justify-center items-center">
+              <div className="w-[50px] h-[50px]">
+                <img src={coinsmall} className="w-full" alt="coin" />
+              </div>
+              <h1 className="text-[#fff] text-[42px] font-extrabold">
+                {formatNumber(balance + refBonus)} <br />
+              </h1>
+            </div>
+            <div className="w-full ml-[6px] flex space-x-1 items-center justify-center">
+              <img
+                src={level.imgUrl}
+                className="w-[25px] relative"
+                alt="bronze"
+              />
+              <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
+                {level.name}
+              </h2>
+              <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
+            </div>
+            <div className="w-full flex justify-center items-center relative">
+              <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
+              <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
+                <div className="before"></div>
+                <div className="after"></div>
+              </div>
+              <div className="w-[350px] h-[350px] relative flex items-center justify-center">
+                <img
+                  src="/lihgt.gif"
+                  alt="err"
+                  className={`absolute w-[350px] rotate-45 mb-[100px] ${tapGuru ? 'block' : 'hidden'}`}
+                />
+                <div className="image-container">
+                  {mainTap && (
                     <Container>
-                      <img 
-                        onPointerDown={mainTap ? handleClick : handleClickGuru}
-                        ref={imageRef}
-                        src={mainTap ? level.imgTap : level.imgBoost}
-                        alt="Tap"
-                        className="wobble-image w-[250px] select-none"
-                      />
+                      
+                        <img 
+                          onPointerDown={handleClick}
+                          ref={imageRef}
+                          src={level.imgTap}
+                          alt="Wobble"
+                          className="wobble-image !w-[250px] select-none"
+                        />
+                      
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{mainTap ? tapValue.value : tapValue.value * 5}
+                          +{tapValue.value}
                         </SlideUpText>
                       ))}
                     </Container>
+                  )}
+                  {tapGuru && (
+                    <Container>
+                      
+                        <img
+                          onPointerDown={handleClickGuru}
+                          ref={imageRef}
+                          src={level.imgBoost}
+                          alt="Wobble"
+                          className="wobble-image !w-[250px] select-none"
+                          
+                        />
+                      
+                      {clicks.map((click) => (
+                        <SlideUpText key={click.id} x={click.x} y={click.y}>
+                          +{tapValue.value * 5}
+                        </SlideUpText>
+                      ))}
+                    </Container>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
+              <div className="flex flex-col w-full items-center justify-center">
+                <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
+                  <img alt="flash" src={flash} className="w-[20px]" />
+                  <div>
+                    <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
+                    <span className="text-[14px] font-medium">/ {battery.energy}</span>
                   </div>
                 </div>
-    
-                <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+                <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
+                  <div
+                    className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
+                    style={{ width: `${energyPercentage}%` }}
+                  ></div>
+                </div>
               </div>
-            </Animate>
-          )}
-        </>
-      );
-    };
-    
-    export default Plutos;
+            </div>
+            <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+          </div>
+        </Animate>
+      )}
+    </>
+  );
+};
+
+export default Plutos;
