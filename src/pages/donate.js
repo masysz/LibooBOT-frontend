@@ -1,99 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
-import styled from "styled-components";
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
-
-const CampaignCard = styled.div`
-  background-color: #2a2f4e;
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const CampaignImage = styled.img`
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 15px;
-`;
-
-const ProgressBarContainer = styled.div`
-  width: 100%;
-  height: 10px;
-  background-color: #1a1f3d;
-  border-radius: 5px;
-  margin-top: 10px;
-`;
-
-const ProgressBar = styled.div`
-  height: 100%;
-  background-color: #3d47ff;
-  border-radius: 5px;
-  width: ${props => `min(100%, ${(props.progress / props.target) * 100}%)`};
-`;
-
-const Description = styled.p`
-  font-size: 14px;
-  color: #b8b8b8;
-  margin-bottom: 15px;
-  line-height: 1.4;
-`;
-
-const LeaderboardContainer = styled.div`
-  background-color: #343b66;
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-`;
-
-const LeaderboardTitle = styled.h3`
-  font-size: 20px;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const LeaderboardList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-`;
-
-const LeaderboardItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #4a5280;
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const LeaderboardRank = styled.span`
-  font-weight: 600;
-  color: #ffd700;
-  margin-right: 10px;
-`;
-
-const LeaderboardUsername = styled.span`
-  color: #ffffff;
-`;
-
-const LeaderboardPoints = styled.span`
-  font-weight: 800;
-  color: #ffffff;
-`;
 
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -254,9 +166,10 @@ const Donate = () => {
       return null;
     }
     return (
-      <CampaignImage 
+      <img 
         src={campaign.image} 
-        alt={campaign.title} 
+        alt={campaign.title}
+        className="w-full h-[200px] object-cover rounded-[10px] mb-4"
         onError={(e) => {
           console.error(`Error loading image for campaign ${campaign.id}:`, e);
           e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
@@ -286,25 +199,28 @@ const Donate = () => {
           <div className="flex-1 overflow-y-auto pb-20">
             <div className="w-full flex flex-col space-y-4">
               {campaigns.map(campaign => (
-                <CampaignCard key={campaign.id}>
+                <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
                   {renderCampaignImage(campaign)}
                   <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-                  <Description>{campaign['short-description'] || 'No description available'}</Description>
+                  <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[18px] font-medium">
                       {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
                     </span>
                   </div>
-                  <ProgressBarContainer>
-                    <ProgressBar progress={campaign.pointsRaised} target={campaign.targetPoints} />
-                  </ProgressBarContainer>
+                  <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px] mb-4'>
+                    <div 
+                      className='h-full bg-[#3d47ff] rounded-[5px]' 
+                      style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }}
+                    ></div>
+                  </div>
                   <button 
                     onClick={() => handleCampaignClick(campaign)} 
-                    className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                    className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
                   >
                     View Campaign
                   </button>
-                </CampaignCard>
+                </div>
               ))}
             </div>
           </div>
@@ -321,7 +237,7 @@ const Donate = () => {
               </button>
             </div>
             {renderCampaignImage(selectedCampaign)}
-            <Description>{selectedCampaign['large-description'] || 'No detailed description available'}</Description>
+            <p className="text-[14px] text-[#b8b8b8] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
             <div className="mb-4">
               <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
               <div className="flex items-center justify-between mb-2">
@@ -329,28 +245,31 @@ const Donate = () => {
                   {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
                 </span>
               </div>
-              <ProgressBarContainer>
-                <ProgressBar progress={selectedCampaign.pointsRaised} target={selectedCampaign.targetPoints} />
-              </ProgressBarContainer>
+              <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px]'>
+                <div 
+                  className='h-full bg-[#3d47ff] rounded-[5px]' 
+                  style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }}
+                ></div>
+              </div>
             </div>
             
-            <LeaderboardContainer>
-              <LeaderboardTitle>
+            <div className="bg-[#343b66] rounded-[15px] p-5 mb-4">
+              <h3 className="text-[20px] font-semibold mb-4 flex items-center gap-2">
                 <IoTrophy size={24} color="#ffd700" />
                 Top Donors
-              </LeaderboardTitle>
-              <LeaderboardList>
+              </h3>
+              <ul className="list-none p-0">
                 {selectedCampaign.leaderboard.map((donor, index) => (
-                  <LeaderboardItem key={donor.id}>
+                  <li key={donor.id} className="flex justify-between items-center py-2 border-b border-[#4a5280] last:border-b-0">
                     <div>
-                      <LeaderboardRank>{index + 1}.</LeaderboardRank>
-                      <LeaderboardUsername>{donor.username}</LeaderboardUsername>
+                      <span className="font-semibold text-[#ffd700] mr-2">{index + 1}.</span>
+                      <span className="text-white">{donor.username}</span>
                     </div>
-                    <LeaderboardPoints>{formatNumber(donor.amount)} points</LeaderboardPoints>
-                  </LeaderboardItem>
+                    <span className="font-bold text-white">{formatNumber(donor.amount)} points</span>
+                  </li>
                 ))}
-              </LeaderboardList>
-            </LeaderboardContainer>
+              </ul>
+            </div>
             
             <div className="mb-4">
               <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
@@ -374,13 +293,12 @@ const Donate = () => {
         </div>
       )}
 
-<div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
-          <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
-            <IoCheckmarkCircle size={24} />
-            <span className="text-[16px] font-semibold">Donation Successful!</span>
-          </div>
+      <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
+        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
+          <IoCheckmarkCircle size={24} />
+          <span className="text-[16px] font-semibold">Donation Successful!</span>
         </div>
-     
+      </div>
     </Animate>
   );
 };
