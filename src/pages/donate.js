@@ -23,8 +23,9 @@ const Donate = () => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
-      window.Telegram.WebApp.isVerticalSwipesEnabled
+            window.Telegram.WebApp.isVerticalSwipesEnabled(true);
 
+console.log(window.Telegram.WebApp.isVerticalSwipesEnabled)
     }
   }, []);
 
