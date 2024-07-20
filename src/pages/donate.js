@@ -198,7 +198,7 @@ window.Telegram.WebApp.disableVerticalSwipes()
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
         <div  className="flex-1 touch-auto pb-20" >
-          <div ref={scrollRef} className="flex-1 overflow-y-auto pb-20" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-20" style={{ WebkitOverflowScrolling: 'touch' }}>
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
                 {campaign.image && (
