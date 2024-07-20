@@ -64,29 +64,14 @@ const Donate = () => {
   useEffect(() => {
     fetchCampaigns();
   }, [fetchCampaigns]);
-t
-  useEffect(() => {
-  
-    // Attach a click event listener to handle the back navigation
-    const handleBackButtonClick = () => {
-      setCampaigns(false);
-    };
 
-      
-    if (fetchCampaigns) {
+
+    
+    
       window.Telegram.WebApp.BackButton.show();
-      window.Telegram.WebApp.BackButton.onClick(handleBackButtonClick);
-    } else {
-      window.Telegram.WebApp.BackButton.hide();
-      window.Telegram.WebApp.BackButton.offClick(handleBackButtonClick);
-    }
+     
   
-    // Cleanup handler when component unmounts
-    return () => {
-      window.Telegram.WebApp.BackButton.offClick(handleBackButtonClick);
 
-    };
-  }, [fetchCampaigns]);
 
   const handleCampaignClick = useCallback((campaign) => {
     setSelectedCampaign(campaign);
