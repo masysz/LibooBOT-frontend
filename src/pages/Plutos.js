@@ -12,9 +12,7 @@ import coinsmall from "../images/coinsmall.webp";
 import useSound from 'use-sound';
 import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
-import { FaGift } from 'react-icons/fa'; // Import the gift icon
-import WheelOfFortune from '../Components/WheelOfFortune';
-import spinIcon from '../images/spin-icon.png';
+
 
 const slideUp = keyframes`
   0% {
@@ -48,7 +46,7 @@ const Container = styled.div`
 `;
 
 const Plutos = () => {
-  const [showWheel, setShowWheel] = useState(false);
+
   const imageRef = useRef(null);
   const [play] = useSound(boopSfx);
   const [play2] = useSound(burnSfx);
@@ -370,123 +368,104 @@ const Plutos = () => {
   };
       
 
-  {showWheel && (
-    <div className="mt-8 w-full flex justify-center">
-      <WheelOfFortune />
-    </div>
-  )}
-  return (
-    <>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Animate>
-          <div className="w-full flex justify-center flex-col items-center overflow-hidden">
-            <div className="flex space-x-[2px] justify-center items-center mt-8">
-              <div className="w-[50px] h-[50px]">
-                <img src={coinsmall} className="w-full" alt="coin" />
+  
+    return (
+      <>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <Animate>
+            <div className="w-full flex justify-center flex-col items-center overflow-hidden">
+              <div className="flex space-x-[2px] justify-center items-center mt-8">
+                <div className="w-[50px] h-[50px]">
+                  <img src={coinsmall} className="w-full" alt="coin" />
+                </div>
+                <h1 className="text-[#fff] text-[42px] font-extrabold">
+                  {formatNumber(balance)}
+                </h1>
               </div>
-              <h1 className="text-[#fff] text-[42px] font-extrabold">
-                {formatNumber(balance)}
-              </h1>
-            </div>
-            <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
-              <img
-                src={level.imgUrl}
-                className="w-[25px] relative"
-                alt="bronze"
-              />
-              <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
-                {level.name}
-              </h2>
-              <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
-            </div>
-            <div className="w-full flex justify-center items-center relative mt-8">
-              <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
-              <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
-                <div className="before"></div>
-                <div className="after"></div>
-              </div>
-              <div className="w-[350px] h-[350px] relative flex items-center justify-center">
+              <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
                 <img
-                  src="/lihgt.gif"
-                  alt="err"
-                  className={`absolute w-[350px] rotate-45 mb-[100px] ${tapGuru ? 'block' : 'hidden'}`}
+                  src={level.imgUrl}
+                  className="w-[25px] relative"
+                  alt="bronze"
                 />
-                <div className="image-container">
-                  {mainTap && (
-                    <Container>
-                      <img 
-                        onPointerDown={handleClick}
-                        ref={imageRef}
-                        src={level.imgTap}
-                        alt="Wobble"
-                        className="wobble-image !w-[250px] select-none"
-                      />
-                      {clicks.map((click) => (
-                        <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{tapValue.value}
-                        </SlideUpText>
-                      ))}
-                    </Container>
-                  )}
-                  {tapGuru && (
-                    <Container>
-                      <img
-                        onPointerDown={handleClickGuru}
-                        ref={imageRef}
-                        src={level.imgBoost}
-                        alt="Wobble"
-                        className="wobble-image !w-[250px] select-none"
-                      />
-                      {clicks.map((click) => (
-                        <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{tapValue.value * 5}
-                        </SlideUpText>
-                      ))}
-                    </Container>
-                  )}
-                </div>
+                <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
+                  {level.name}
+                </h2>
+                <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
               </div>
-            </div>
-            
-            <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-              <div className="flex flex-col w-full items-center justify-center">
-                <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
-                  <img alt="flash" src={flash} className="w-[20px]" />
-                  <div>
-                    <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
-                    <span className="text-[14px] font-medium">/ {battery.energy}</span>
-                  </div>
-                  <img 
-                    src={spinIcon} 
-                    alt="Spin" 
-                    className="w-[30px] h-[30px] ml-4 cursor-pointer"
-                    onClick={() => setShowWheel(true)}
+              <div className="w-full flex justify-center items-center relative mt-8">
+                <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
+                <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
+                  <div className="before"></div>
+                  <div className="after"></div>
+                </div>
+                <div className="w-[350px] h-[350px] relative flex items-center justify-center">
+                  <img
+                    src="/lihgt.gif"
+                    alt="err"
+                    className={`absolute w-[350px] rotate-45 mb-[100px] ${tapGuru ? 'block' : 'hidden'}`}
                   />
-                </div>
-                <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
-                  <div
-                    className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
-                    style={{ width: `${energyPercentage}%` }}
-                  ></div>
+                  <div className="image-container">
+                    {mainTap && (
+                      <Container>
+                        <img 
+                          onPointerDown={handleClick}
+                          ref={imageRef}
+                          src={level.imgTap}
+                          alt="Wobble"
+                          className="wobble-image !w-[250px] select-none"
+                        />
+                        {clicks.map((click) => (
+                          <SlideUpText key={click.id} x={click.x} y={click.y}>
+                            +{tapValue.value}
+                          </SlideUpText>
+                        ))}
+                      </Container>
+                    )}
+                    {tapGuru && (
+                      <Container>
+                        <img
+                          onPointerDown={handleClickGuru}
+                          ref={imageRef}
+                          src={level.imgBoost}
+                          alt="Wobble"
+                          className="wobble-image !w-[250px] select-none"
+                        />
+                        {clicks.map((click) => (
+                          <SlideUpText key={click.id} x={click.x} y={click.y}>
+                            +{tapValue.value * 5}
+                          </SlideUpText>
+                        ))}
+                      </Container>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-            <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
-          </div>
-          
-          {showWheel && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white p-8 rounded-lg">
-                <WheelOfFortune onClose={() => setShowWheel(false)} />
+              <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
+                <div className="flex flex-col w-full items-center justify-center">
+                  <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
+                    <img alt="flash" src={flash} className="w-[20px]" />
+                    <div>
+                      <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
+                      <span className="text-[14px] font-medium">/ {battery.energy}</span>
+                    </div>
+                  </div>
+                  <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
+                    <div
+                      className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
+                      style={{ width: `${energyPercentage}%` }}
+                    ></div>
+                  </div>
+                </div>
               </div>
+              <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
             </div>
-          )}
-        </Animate>
-      )}
-    </>
-  );
-};
-
-export default Plutos;
+          </Animate>
+        )}
+      </>
+    );
+  };
+  
+  export default Plutos;
