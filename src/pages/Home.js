@@ -31,6 +31,7 @@ const Home = () => {
         tele.expand();
         
         window.Telegram.WebApp.setHeaderColor('#1a1f2e'); // Set header color to red
+        window.Telegram.WebApp.isVerticalSwipesEnabled('false');
 
               // Haptic feedback
       if (tele.HapticFeedback) {

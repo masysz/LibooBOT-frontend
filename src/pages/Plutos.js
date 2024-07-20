@@ -94,7 +94,7 @@ const Plutos = () => {
 
     // Play the sound
     if (tapValue.value > 0) {
-     // play();
+      play();
     }
     triggerHapticFeedback();
 
@@ -354,24 +354,12 @@ const Plutos = () => {
 
 
   const formatNumber = (num) => {
-    if (num < 100000) {
+    if (num < 1000000) {
       return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-    } else if (num < 1000000) {
-      return new Intl.NumberFormat().format(num).replace(/,/g, "M");
-    // } else {
-    //   return (num / 1000000).toFixed(3).replace(".", ".") + " M";
     } else {
-      return new Intl.NumberFormat().format(num).replace(/,/g, " ");
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     }
   };
-
-      // // Remove the click after the animation duration
-      // setTimeout(() => {
-      //   setTapGuru(false);
-      //   setMainTap(true);
-      // }, 22000); // Match this duration with the animation duration
-  
-
       
 
   return (
