@@ -188,7 +188,7 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full h-full flex flex-col" style={{ height: '100vh' }}>
+      <div className="w-full h-full flex flex-col touch-none	" style={{ height: '100vh' }}>
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
