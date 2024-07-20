@@ -4,13 +4,13 @@ body {
   background-size: cover;
   background-position: center;
   color: #fff;
-  -webkit-overflow-scrolling: touch;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
   position: relative;
   overflow: hidden; /* Ensure the overlay covers the entire viewport */
   overflow-y: auto;
 }
+
 
 
 
