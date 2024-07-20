@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
@@ -10,12 +10,21 @@ import congratspic from '../images/congrats.png';
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
-  const [donationAmount, setDonationAmount] = useState(0);
+  const [donationAmount, setDonationAmount] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    // Ajuste para Telegram Mini Apps
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+  }, []);
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -62,11 +71,12 @@ const Donate = () => {
   }, []);
 
   const handleDonationSubmit = useCallback(async () => {
-    if (donationAmount <= 0 || isNaN(donationAmount)) {
+    const amount = Number(donationAmount);
+    if (amount <= 0 || isNaN(amount)) {
       alert("Please enter a valid donation amount.");
       return;
     }
-    if (donationAmount > balance) {
+    if (amount > balance) {
       alert("Insufficient balance!");
       return;
     }
@@ -86,14 +96,14 @@ const Donate = () => {
         const leaderboardDoc = await transaction.get(leaderboardRef);
 
         if (!campaignDoc.exists() || !userDoc.exists()) {
-          throw "Document does not exist!";
+          throw new Error("Document does not exist!");
         }
 
-        const newCampaignPoints = campaignDoc.data().pointsRaised + donationAmount;
-        const newUserBalance = userDoc.data().balance - donationAmount;
+        const newCampaignPoints = campaignDoc.data().pointsRaised + amount;
+        const newUserBalance = userDoc.data().balance - amount;
 
         if (newUserBalance < 0) {
-          throw "Insufficient balance!";
+          throw new Error("Insufficient balance!");
         }
 
         transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
@@ -102,25 +112,25 @@ const Donate = () => {
         if (leaderboardDoc.exists()) {
           const currentAmount = leaderboardDoc.data().amount;
           transaction.update(leaderboardRef, { 
-            amount: currentAmount + donationAmount,
+            amount: currentAmount + amount,
             username: username
           });
         } else {
           transaction.set(leaderboardRef, {
             username: username,
-            amount: donationAmount
+            amount: amount
           });
         }
       });
 
-      setBalance(prevBalance => prevBalance - donationAmount);
+      setBalance(prevBalance => prevBalance - amount);
       setCampaigns(prevCampaigns => 
         prevCampaigns.map(campaign =>
           campaign.id === selectedCampaign.id
             ? { 
                 ...campaign, 
-                pointsRaised: campaign.pointsRaised + donationAmount,
-                leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, donationAmount)
+                pointsRaised: campaign.pointsRaised + amount,
+                leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, amount)
               }
             : campaign
         )
@@ -130,14 +140,14 @@ const Donate = () => {
       setTimeout(() => setCongrats(false), 3000);
 
       setShowPopup(false);
-      setDonationAmount(0);
+      setDonationAmount('');
     } catch (error) {
       console.error("Error processing donation:", error);
-      alert("An error occurred while processing your donation. Please try again.");
+      alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
   }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance]);
 
-  const updateLeaderboardLocally = (leaderboard, userId, username, amount) => {
+  const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
     const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
     let updatedLeaderboard;
 
@@ -154,11 +164,11 @@ const Donate = () => {
     return updatedLeaderboard
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
-  };
+  }, []);
 
-  const formatNumber = (num) => {
+  const formatNumber = useCallback((num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-  };
+  }, []);
 
   if (userLoading || isLoading) {
     return <Spinner />;
@@ -170,14 +180,14 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full h-full flex flex-col overflow-hidden">
+      <div className="w-full h-full flex flex-col" style={{ height: '100vh' }}>
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
 
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-        <div className="flex-1 overflow-y-auto pb-20">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto pb-20" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="w-full flex flex-col space-y-4">
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
@@ -218,7 +228,7 @@ const Donate = () => {
 
         {showPopup && selectedCampaign && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
                 <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
@@ -271,7 +281,7 @@ const Donate = () => {
                 <input
                   type="number"
                   value={donationAmount}
-                  onChange={(e) => setDonationAmount(Number(e.target.value))}
+                  onChange={(e) => setDonationAmount(e.target.value)}
                   className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
                   placeholder="Enter donation amount"
                 />
@@ -280,7 +290,7 @@ const Donate = () => {
               <button
                 onClick={handleDonationSubmit}
                 className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
-                disabled={donationAmount <= 0 || donationAmount > balance}
+                disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
               >
                 Confirm Donation
               </button>
