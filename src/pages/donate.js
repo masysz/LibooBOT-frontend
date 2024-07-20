@@ -1,41 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
-
-function ensureDocumentIsScrollable() {
-  const isScrollable = document.documentElement.scrollHeight > window.innerHeight;
-  if (!isScrollable) {
-    document.documentElement.style.setProperty(
-      "height",
-      "calc(100vh + 1px)",
-      "important"
-    );
-  }
-}
- 
-
-
-const Container = styled.div`
-  position: relative;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  margin-bottom: 100px;
-  overflow-y: auto;
-  max-height: calc(100vh - 100px);
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
 
 const CampaignCard = styled.div`
   background-color: #2a2f4e;
@@ -121,7 +92,7 @@ const LeaderboardUsername = styled.span`
 
 const LeaderboardPoints = styled.span`
   font-weight: 800;
-  color: #fffff;
+  color: #ffffff;
 `;
 
 const Donate = () => {
@@ -133,60 +104,6 @@ const Donate = () => {
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    ensureDocumentIsScrollable();
-    window.addEventListener('resize', ensureDocumentIsScrollable);
-    return () => {
-      window.removeEventListener('resize', ensureDocumentIsScrollable);
-    };
-  }, []);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    let startY;
-
-    const handleTouchStart = (e) => {
-      startY = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e) => {
-      if (!startY) {
-        return;
-      }
-
-      const currentY = e.touches[0].clientY;
-      const scrollTop = container.scrollTop;
-      const scrollHeight = container.scrollHeight;
-      const clientHeight = container.clientHeight;
-
-      // Prevenir el scroll hacia arriba cuando estamos en la parte superior
-      if (scrollTop <= 0 && currentY > startY) {
-        e.preventDefault();
-      }
-
-      // Prevenir el scroll hacia abajo cuando estamos en la parte inferior
-      if (scrollTop + clientHeight >= scrollHeight && currentY < startY) {
-        e.preventDefault();
-      }
-
-      startY = null;
-    };
-
-    if (container) {
-      container.addEventListener('touchstart', handleTouchStart);
-      container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener('touchstart', handleTouchStart);
-        container.removeEventListener('touchmove', handleTouchMove);
-      }
-    };
-  }, []);
-
 
   const fetchCampaigns = useCallback(async () => {
     setIsLoading(true);
@@ -358,39 +275,41 @@ const Donate = () => {
 
   return (
     <Animate>
-      <Container ref={containerRef}>
+      <div className="w-full h-full flex flex-col">
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
 
-        <div className="w-full flex justify-center flex-col items-center">
-          <h1 className="text-[32px] font-semibold mb-4">Donate to Campaigns</h1>
+        <div className="w-full flex-1 flex flex-col overflow-hidden">
+          <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-          <div className="w-full flex flex-col space-y-4 pb-20">
-            {campaigns.map(campaign => (
-              <CampaignCard key={campaign.id}>
-                {renderCampaignImage(campaign)}
-                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-                <Description>{campaign['short-description'] || 'No description available'}</Description>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[18px] font-medium">
-                    {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-                  </span>
-                </div>
-                <ProgressBarContainer>
-                  <ProgressBar progress={campaign.pointsRaised} target={campaign.targetPoints} />
-                </ProgressBarContainer>
-                <button 
-                  onClick={() => handleCampaignClick(campaign)} 
-                  className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
-                >
-                  View Campaign
-                </button>
-              </CampaignCard>
-            ))}
+          <div className="flex-1 overflow-y-auto pb-20">
+            <div className="w-full flex flex-col space-y-4">
+              {campaigns.map(campaign => (
+                <CampaignCard key={campaign.id}>
+                  {renderCampaignImage(campaign)}
+                  <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
+                  <Description>{campaign['short-description'] || 'No description available'}</Description>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[18px] font-medium">
+                      {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                    </span>
+                  </div>
+                  <ProgressBarContainer>
+                    <ProgressBar progress={campaign.pointsRaised} target={campaign.targetPoints} />
+                  </ProgressBarContainer>
+                  <button 
+                    onClick={() => handleCampaignClick(campaign)} 
+                    className="mt-4 w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                  >
+                    View Campaign
+                  </button>
+                </CampaignCard>
+              ))}
+            </div>
           </div>
         </div>
-      </Container>
+      </div>
 
       {showPopup && selectedCampaign && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

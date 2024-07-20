@@ -4,7 +4,7 @@ const ClaimLeveler = ({claimLevel, setClaimLevel}) => {
 
   // eslint-disable-next-line 
   const openLink = () => {
-    window.open("https://t.me/kadafialchatib");
+    window.open("https://t.me/liboo_chat");
 
 
   };
@@ -44,7 +44,7 @@ const ClaimLeveler = ({claimLevel, setClaimLevel}) => {
 
 
         <h3 className='font-normal text-[18px] py-4 text-center px-6'>
-            Sorry, this feature is not available on this free version, You can message me for further development if you need all complete features or you want me to development a different kind of telegram app/bot for you
+            Sorry, this feature is not available yet, You can message me for further development if you need all complete features or you want me to development a different kind of telegram app/bot for you
         </h3>
  
 
