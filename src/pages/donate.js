@@ -66,6 +66,12 @@ const Donate = () => {
   }, [fetchCampaigns]);
 
   useEffect(() => {
+  
+    // Attach a click event listener to handle the back navigation
+    const handleBackButtonClick = () => {
+      setCampaigns(false);
+    };
+
       
     if (fetchCampaigns) {
       window.Telegram.WebApp.BackButton.show();
