@@ -380,9 +380,9 @@ const Plutos = () => {
             <Spinner />
           ) : (
             <Animate>
-              <div className="w-full h-screen flex flex-col justify-between items-center p-4">
+              <div className="w-full h-screen flex flex-col justify-start items-center p-4">
                 {/* Top Section */}
-                <div className="w-full flex flex-col items-center space-y-2">
+                <div className="w-full flex flex-col items-center space-y-2 mb-8">
                   <div className="flex items-center space-x-2">
                     <img src={coinsmall} className="w-10 h-10" alt="coin" />
                     <h1 className="text-white text-4xl font-extrabold">
@@ -399,13 +399,13 @@ const Plutos = () => {
                 </div>
     
                 {/* Middle Section - Logo */}
-                <div className="flex-1 flex items-center justify-center relative">
+                <div className="flex-1 flex flex-col items-center justify-center relative">
                   <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full"></div>
                   <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
                     <div className="before"></div>
                     <div className="after"></div>
                   </div>
-                  <div className="relative">
+                  <div className="relative mb-8">
                     <img
                       src="/lihgt.gif"
                       alt="background"
@@ -426,22 +426,22 @@ const Plutos = () => {
                       ))}
                     </Container>
                   </div>
-                </div>
     
-                {/* Bottom Section - Energy Bar */}
-                <div className="w-full max-w-md flex flex-col items-center space-y-2">
-                  <div className="flex items-center space-x-2 text-white">
-                    <img alt="flash" src={flash} className="w-5 h-5" />
-                    <div>
-                      <span className="text-lg font-bold">{energy.toFixed(0)}</span>
-                      <span className="text-sm font-medium">/ {battery.energy}</span>
+                  {/* Energy Bar - Moved below the image */}
+                  <div className="w-full max-w-md flex flex-col items-center space-y-2">
+                    <div className="flex items-center space-x-2 text-white">
+                      <img alt="flash" src={flash} className="w-5 h-5" />
+                      <div>
+                        <span className="text-lg font-bold">{energy.toFixed(0)}</span>
+                        <span className="text-sm font-medium">/ {battery.energy}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-full h-4 bg-energybar rounded-full border border-borders2 overflow-hidden">
-                    <div
-                      className="h-full bg-[#3f88e8] rounded-full transition-all duration-300 ease-out"
-                      style={{ width: `${energyPercentage}%` }}
-                    ></div>
+                    <div className="w-full h-4 bg-energybar rounded-full border border-borders2 overflow-hidden">
+                      <div
+                        className="h-full bg-[#3f88e8] rounded-full transition-all duration-300 ease-out"
+                        style={{ width: `${energyPercentage}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
     
