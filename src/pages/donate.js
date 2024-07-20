@@ -191,14 +191,14 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full h-full flex flex-col 	overflow-y" style={{ height: '100vh' }}>
+      <div className="w-full h-full flex flex-col	overflow-y" style={{ height: '100vh' }}>
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
 
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-          <div className="w-full h-[50vh] max-h-[50vh] min-h-[50vh]  flex flex-col space-y-4  px-5 mb-[100px]"  style={{overflow:'scroll'}}>
+          <div className="w-full h-[50vh] max-h-[50vh] min-h-[50vh] overflow-y  flex flex-col space-y-4  px-5 mb-[100px]"  style={{overflow:'scroll'}}>
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
                 {campaign.image && (
