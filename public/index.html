@@ -74,7 +74,11 @@
     -->
   </body>
   <script>
-    window.Telegram.WebApp.disableVerticalSwipes()
-
+  <script>
+        Telegram.WebApp.expand()
+        window.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+        window.scrollTo(0, 100);
+        Telegram.WebApp.ready()
+    </script>
   </script>
 </html>
