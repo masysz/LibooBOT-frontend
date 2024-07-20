@@ -23,7 +23,6 @@ const Donate = () => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
-
     }
   }, []);
 
@@ -189,15 +188,15 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full h-full flex flex-col	overflow-y-hidden" style={{ height: '100vh' }}>
+      <div className="w-full h-full flex flex-col 	" style={{ height: '100vh' }}>
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
 
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-        <div  className="flex-1 touch-auto pb-20" >
-          <div ref={scrollRef} className="flex flex-col gap-5 pb-50" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto pb-20" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="w-full flex flex-col space-y-4">
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
                 {campaign.image && (
