@@ -70,7 +70,7 @@ const rewards = [
   { name: '3 Extra Spins', value: 3, type: 'SPINS' },
 ];
 
-const WheelOfFortune = () => {
+const WheelOfFortune = ({ onClose }) => {
   const [spinning, setSpinning] = useState(false);
   const [reward, setReward] = useState('');
   const [spinsLeft, setSpinsLeft] = useState(3);
@@ -159,6 +159,12 @@ const WheelOfFortune = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <button 
+        className="self-end mb-4 text-gray-500 hover:text-gray-700"
+        onClick={onClose}
+      >
+        X
+      </button>
       <WheelContainer>
         <Wheel id="fortune-wheel">
           {rewards.map((reward, index) => (

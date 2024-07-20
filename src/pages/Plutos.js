@@ -14,6 +14,7 @@ import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
 import { FaGift } from 'react-icons/fa'; // Import the gift icon
 import WheelOfFortune from '../Components/WheelOfFortune';
+import spinIcon from '../images/spin-icon.png';
 
 const slideUp = keyframes`
   0% {
@@ -449,22 +450,6 @@ const Plutos = () => {
               </div>
             </div>
             
-             {/* Add WheelOfFortune toggle button */}
-             <button 
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
-              onClick={() => setShowWheel(!showWheel)}
-            >
-              <FaGift className="mr-2" />
-              {showWheel ? 'Hide Wheel of Fortune' : 'Show Wheel of Fortune'}
-            </button>
-
-            {/* Conditionally render WheelOfFortune */}
-            {showWheel && (
-              <div className="mt-8 w-full flex justify-center">
-                <WheelOfFortune />
-              </div>
-            )}
-            
             <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
               <div className="flex flex-col w-full items-center justify-center">
                 <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
@@ -473,6 +458,12 @@ const Plutos = () => {
                     <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
                     <span className="text-[14px] font-medium">/ {battery.energy}</span>
                   </div>
+                  <img 
+                    src={spinIcon} 
+                    alt="Spin" 
+                    className="w-[30px] h-[30px] ml-4 cursor-pointer"
+                    onClick={() => setShowWheel(true)}
+                  />
                 </div>
                 <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
                   <div
@@ -484,9 +475,18 @@ const Plutos = () => {
             </div>
             <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
           </div>
+          
+          {showWheel && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-8 rounded-lg">
+                <WheelOfFortune onClose={() => setShowWheel(false)} />
+              </div>
+            </div>
+          )}
         </Animate>
       )}
     </>
-  )};
-  
-  export default Plutos;
+  );
+};
+
+export default Plutos;
