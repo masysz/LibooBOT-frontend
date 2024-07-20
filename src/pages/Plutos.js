@@ -79,6 +79,7 @@ const Plutos = () => {
   
     if (isIOS && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
       window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      window.Telegram.WebApp.isVerticalSwipesEnabled.false();
     } else if (isAndroid && 'vibrate' in navigator) {
       // Use the vibration API on Android
       navigator.vibrate(50); // Vibrate for 50ms
@@ -380,7 +381,7 @@ const Plutos = () => {
             <Spinner />
           ) : (
             <Animate>
-              <div className="w-full h-screen flex flex-col justify-start items-center p-4">
+              <div className="w-full h-screen flex flex-col justify-start items-center p-4 pb-20">
                 {/* Top Section */}
                 <div className="w-full flex flex-col items-center space-y-2 mb-8">
                   <div className="flex items-center space-x-2">
@@ -399,13 +400,13 @@ const Plutos = () => {
                 </div>
     
                 {/* Middle Section - Logo */}
-                <div className="flex-1 flex flex-col items-center justify-center relative">
+                <div className="flex-1 flex items-center justify-center relative">
                   <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full"></div>
                   <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
                     <div className="before"></div>
                     <div className="after"></div>
                   </div>
-                  <div className="relative mb-8">
+                  <div className="relative">
                     <img
                       src="/lihgt.gif"
                       alt="background"
@@ -426,9 +427,13 @@ const Plutos = () => {
                       ))}
                     </Container>
                   </div>
+                </div>
     
-                  {/* Energy Bar - Moved below the image */}
-                  <div className="w-full max-w-md flex flex-col items-center space-y-2">
+                <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+    
+                {/* Energy Bar - Fixed at the bottom */}
+                <div className="fixed bottom-0 left-0 right-0 bg-[#121620] p-4">
+                  <div className="w-full max-w-md mx-auto flex flex-col items-center space-y-2">
                     <div className="flex items-center space-x-2 text-white">
                       <img alt="flash" src={flash} className="w-5 h-5" />
                       <div>
@@ -444,8 +449,6 @@ const Plutos = () => {
                     </div>
                   </div>
                 </div>
-    
-                <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
               </div>
             </Animate>
           )}

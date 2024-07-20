@@ -128,7 +128,6 @@
     };
 
     useEffect(() => {
-      window.Telegram.WebApp.disableVerticalSwipes
       const telegramName =
         window.Telegram.WebApp.initDataUnsafe?.user?.first_name;
       const telegramLastName =
