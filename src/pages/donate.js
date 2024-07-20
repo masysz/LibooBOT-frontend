@@ -45,7 +45,8 @@ const Donate = () => {
         }
       }
 
-      scrollRef.addEventListener("touchstart", preventCollapse);
+     const scrollableElement = document.getElementById("scrollable-element");
+      scrollableElement.addEventListener("touchstart", preventCollapse);
 
       window.addEventListener("load", ensureDocumentIsScrollable);
   },[])
@@ -219,7 +220,7 @@ const Donate = () => {
 
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto pb-40" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div ref={scrollRef} id="scrollable-element" className="flex-1 overflow-y-auto pb-40" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="w-full flex flex-col space-y-4">
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
