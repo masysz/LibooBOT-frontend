@@ -185,12 +185,12 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full flex flex-col space-y-3 px-5">
+      <div className="w-full flex flex-col space-y-3 px-5 pt-[80px]">
         <div className="fixed top-0 left-0 right-0 pt-8 px-5 bg-[#1a1f2e] z-10">
           <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
         </div>
-
-        <div className="mt-[80px] w-full h-[calc(100vh-180px)] flex flex-col overflow-y-auto">
+  
+        <div className="w-full h-[calc(100vh-180px)] flex flex-col overflow-y-auto">
           <div className="flex flex-col w-full space-y-4 pb-[100px]">
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
@@ -228,7 +228,7 @@ const Donate = () => {
             ))}
           </div>
         </div>
-
+  
         {showPopup && selectedCampaign && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
@@ -300,11 +300,11 @@ const Donate = () => {
             </div>
           </div>
         )}
-
+  
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
-
+  
         <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
           <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
             <IoCheckmarkCircle size={24} />
