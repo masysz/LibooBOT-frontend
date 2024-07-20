@@ -12,6 +12,7 @@ import coinsmall from "../images/coinsmall.webp";
 import useSound from 'use-sound';
 import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
+import { FaGift } from 'react-icons/fa'; // Import the gift icon
 import WheelOfFortune from '../Components/WheelOfFortune';
 
 const slideUp = keyframes`
@@ -368,7 +369,11 @@ const Plutos = () => {
   };
       
 
-  
+  {showWheel && (
+    <div className="mt-8 w-full flex justify-center">
+      <WheelOfFortune />
+    </div>
+  )}
   return (
     <>
       {loading ? (
@@ -444,10 +449,21 @@ const Plutos = () => {
               </div>
             </div>
             
-            {/* Add WheelOfFortune component here */}
-            <div className="mt-8 w-full flex justify-center">
-              <WheelOfFortune />
-            </div>
+             {/* Add WheelOfFortune toggle button */}
+             <button 
+              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
+              onClick={() => setShowWheel(!showWheel)}
+            >
+              <FaGift className="mr-2" />
+              {showWheel ? 'Hide Wheel of Fortune' : 'Show Wheel of Fortune'}
+            </button>
+
+            {/* Conditionally render WheelOfFortune */}
+            {showWheel && (
+              <div className="mt-8 w-full flex justify-center">
+                <WheelOfFortune />
+              </div>
+            )}
             
             <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
               <div className="flex flex-col w-full items-center justify-center">
@@ -472,3 +488,5 @@ const Plutos = () => {
       )}
     </>
   )};
+  
+  export default Plutos;

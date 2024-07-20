@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { doc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
+import tonIcon from '../images/ton-icon.webp';
 
 const WheelContainer = styled.div`
   width: 300px;
@@ -17,12 +18,16 @@ const Wheel = styled.div`
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,
-    #ff6b6b 0deg 60deg,
-    #feca57 60deg 120deg,
-    #48dbfb 120deg 180deg,
-    #ff9ff3 180deg 240deg,
-    #54a0ff 240deg 300deg,
-    #5f27cd 300deg 360deg
+    #ff6b6b 0deg 36deg,
+    #feca57 36deg 72deg,
+    #48dbfb 72deg 108deg,
+    #ff9ff3 108deg 144deg,
+    #54a0ff 144deg 180deg,
+    #5f27cd 180deg 216deg,
+    #ff6b6b 216deg 252deg,
+    #feca57 252deg 288deg,
+    #48dbfb 288deg 324deg,
+    #ff9ff3 324deg 360deg
   );
   display: flex;
   justify-content: center;
@@ -52,6 +57,19 @@ const RewardDisplay = styled.div`
   font-weight: bold;
 `;
 
+const rewards = [
+  { name: '10K Points', value: 10000, type: 'POINTS' },
+  { name: '100K Points', value: 100000, type: 'POINTS' },
+  { name: '5K Points', value: 5000, type: 'POINTS' },
+  { name: '50K Points', value: 50000, type: 'POINTS' },
+  { name: '200K Points', value: 200000, type: 'POINTS' },
+  { name: '1 TON', value: 1, type: 'TON' },
+  { name: '0.1 TON', value: 0.1, type: 'TON' },
+  { name: '0.5 TON', value: 0.5, type: 'TON' },
+  { name: 'Better luck next time', value: 0, type: 'NONE' },
+  { name: '3 Extra Spins', value: 3, type: 'SPINS' },
+];
+
 const WheelOfFortune = () => {
   const [spinning, setSpinning] = useState(false);
   const [reward, setReward] = useState('');
@@ -59,24 +77,7 @@ const WheelOfFortune = () => {
   const [nextSpinTime, setNextSpinTime] = useState(null);
   const { balance, setBalance, tapBalance, setTapBalance } = useUser();
 
-  const rewards = [
-    { name: '10K Points', value: 10000, type: 'POINTS' },
-    { name: '100K Points', value: 100000, type: 'POINTS' },
-    { name: '5K Points', value: 5000, type: 'POINTS' },
-    { name: '50K Points', value: 50000, type: 'POINTS' },
-    { name: '200K Points', value: 200000, type: 'POINTS' },
-    { name: '1 TON', value: 1, type: 'TON' },
-    { name: '0.1 TON', value: 0.1, type: 'TON' },
-    { name: '0.5 TON', value: 0.5, type: 'TON' },
-    { name: 'Better luck next time', value: 0, type: 'NONE' },
-    { name: '3 Extra Spins', value: 3, type: 'SPINS' },
-  ];
-
-  useEffect(() => {
-    loadUserSpinData();
-  }, []);
-
-  const loadUserSpinData = async () => {
+  const loadUserSpinData = useCallback(async () => {
     const telegramUser = window.Telegram.WebApp.initDataUnsafe?.user;
     if (telegramUser) {
       const { id: userId } = telegramUser;
@@ -91,7 +92,11 @@ const WheelOfFortune = () => {
         setNextSpinTime(userData.nextSpinTime.toDate());
       }
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadUserSpinData();
+  }, [loadUserSpinData]);
 
   const updateUserSpinData = async (newSpinsLeft, newNextSpinTime, newReward) => {
     const telegramUser = window.Telegram.WebApp.initDataUnsafe?.user;
@@ -105,7 +110,7 @@ const WheelOfFortune = () => {
           reward: newReward.name,
           value: newReward.value,
           type: newReward.type,
-          timestamp: new Date()
+          timestamp: serverTimestamp()
         })
       });
     }
@@ -114,7 +119,7 @@ const WheelOfFortune = () => {
   const spin = async () => {
     if (spinsLeft > 0 && (!nextSpinTime || new Date() > nextSpinTime)) {
       setSpinning(true);
-      const randomDegrees = Math.floor(Math.random() * 360) + 720; // At least 2 full spins
+      const randomDegrees = Math.floor(Math.random() * 360) + 1080; // At least 3 full spins
       const wheel = document.querySelector('#fortune-wheel');
       wheel.style.transform = `rotate(${randomDegrees}deg)`;
 
@@ -153,9 +158,25 @@ const WheelOfFortune = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <WheelContainer>
-        <Wheel id="fortune-wheel" />
+        <Wheel id="fortune-wheel">
+          {rewards.map((reward, index) => (
+            <div
+              key={index}
+              className="absolute w-full h-full flex items-center justify-center"
+              style={{ transform: `rotate(${index * 36}deg)` }}
+            >
+              <div className="text-white text-xs font-bold" style={{ transform: 'rotate(90deg)' }}>
+                {reward.type === 'TON' ? (
+                  <img src={tonIcon} alt="TON" className="w-6 h-6" />
+                ) : (
+                  reward.name
+                )}
+              </div>
+            </div>
+          ))}
+        </Wheel>
       </WheelContainer>
       <SpinButton onClick={spin} disabled={spinning || spinsLeft === 0 || (nextSpinTime && new Date() < nextSpinTime)}>
         {spinning ? 'Spinning...' : 'Spin'}
