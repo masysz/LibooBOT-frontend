@@ -198,7 +198,7 @@ const Donate = () => {
 
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-          <div className="w-full h-[50vh] max-h-[50vh] min-h-[50vh] flex flex-col space-y-4  px-5 mb-[100px]">
+          <div className="w-full h-[50vh] max-h-[50vh] min-h-[50vh] overflow-y-scroll flex flex-col space-y-4  px-5 mb-[100px]">
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
                 {campaign.image && (
