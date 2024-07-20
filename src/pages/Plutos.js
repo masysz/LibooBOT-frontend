@@ -71,7 +71,7 @@ const Plutos = () => {
   const accumulatedEnergyRef = useRef(energy);
   const accumulatedTapBalanceRef = useRef(tapBalance);
   const refillTimeoutRef = useRef(null); // Add this line
-  window.Telegram.WebApp.disableVerticalSwipes
+  window.Telegram.WebApp.isVerticalSwipesEnabled.false();
 
   function triggerHapticFeedback() {
     const isAndroid = /Android/i.test(navigator.userAgent);
