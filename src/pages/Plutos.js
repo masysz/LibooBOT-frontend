@@ -357,7 +357,12 @@ const Plutos = () => {
     if (num < 1000000) {
       return new Intl.NumberFormat().format(num).replace(/,/g, " ");
     } else {
-      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      const millions = num / 1000000;
+      if (millions % 1 === 0) {
+        return millions + 'M';
+      } else {
+        return millions.toFixed(2).replace(/\.?0+$/, '') + 'M';
+      }
     }
   };
       
@@ -375,7 +380,7 @@ const Plutos = () => {
                   <img src={coinsmall} className="w-full" alt="coin" />
                 </div>
                 <h1 className="text-[#fff] text-[42px] font-extrabold">
-                  {formatNumber(balance)} M
+                  {formatNumber(balance)}
                 </h1>
               </div>
               <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
