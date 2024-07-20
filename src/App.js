@@ -12,7 +12,7 @@
   import Levels from "./Components/Levels";
   import flash from "../src/images/flash.webp";
   import { EnergyContext } from "./context/EnergyContext";
-  window.Telegram.WebApp.disableVerticalSwipes()
+  window.Telegram.WebApp.disableVerticalSwipes
 
   const slideUp = keyframes`
     0% {
@@ -128,7 +128,7 @@
     };
 
     useEffect(() => {
-      window.Telegram.WebApp.disableVerticalSwipes()
+      window.Telegram.WebApp.disableVerticalSwipes
       const telegramName =
         window.Telegram.WebApp.initDataUnsafe?.user?.first_name;
       const telegramLastName =

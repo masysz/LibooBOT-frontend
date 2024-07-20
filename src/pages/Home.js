@@ -5,8 +5,9 @@ import "../fire.scss";
 import { AnimatePresence } from "framer-motion";
 import Footer from "../Components/Footer";
 import { UserProvider } from "../context/userContext";
-
+window.Telegram.WebApp.disableVerticalSwipes
 const tele = window.Telegram.WebApp;
+
 const Home = () => {
 
   useEffect(() => {
