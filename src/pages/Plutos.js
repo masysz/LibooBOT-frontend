@@ -471,3 +471,5 @@ const Plutos = () => {
           )}
         </>
       )};
+
+export default Plutos;
