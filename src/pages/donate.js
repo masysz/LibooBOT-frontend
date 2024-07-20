@@ -160,24 +160,6 @@ const Donate = () => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   };
 
-  const renderCampaignImage = (campaign) => {
-    if (!campaign.image) {
-      console.log(`No image URL for campaign: ${campaign.id}`);
-      return null;
-    }
-    return (
-      <img 
-        src={campaign.image} 
-        alt={campaign.title}
-        className="w-full h-[200px] object-cover rounded-[10px] mb-4"
-        onError={(e) => {
-          console.error(`Error loading image for campaign ${campaign.id}:`, e);
-          e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
-        }}
-      />
-    );
-  };
-
   if (userLoading || isLoading) {
     return <Spinner />;
   }
@@ -188,115 +170,129 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full h-full flex flex-col">
+      <div className="w-full h-full flex flex-col overflow-hidden">
         <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
           {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
         </div>
 
-        <div className="w-full flex-1 flex flex-col overflow-hidden">
-          <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
+        <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
-          <div className="flex-1 overflow-y-auto pb-20">
-            <div className="w-full flex flex-col space-y-4">
-              {campaigns.map(campaign => (
-                <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
-                  {renderCampaignImage(campaign)}
-                  <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-                  <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[18px] font-medium">
-                      {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-                    </span>
-                  </div>
-                  <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px] mb-4'>
-                    <div 
-                      className='h-full bg-[#3d47ff] rounded-[5px]' 
-                      style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }}
-                    ></div>
-                  </div>
-                  <button 
-                    onClick={() => handleCampaignClick(campaign)} 
-                    className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
-                  >
-                    View Campaign
-                  </button>
+        <div className="flex-1 overflow-y-auto pb-20">
+          <div className="w-full flex flex-col space-y-4">
+            {campaigns.map(campaign => (
+              <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
+                {campaign.image && (
+                  <img 
+                    src={campaign.image} 
+                    alt={campaign.title}
+                    className="w-full h-[200px] object-cover rounded-[10px] mb-4"
+                    onError={(e) => {
+                      console.error(`Error loading image for campaign ${campaign.id}:`, e);
+                      e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
+                    }}
+                  />
+                )}
+                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
+                <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[18px] font-medium">
+                    {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                  </span>
                 </div>
-              ))}
-            </div>
+                <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px] mb-4'>
+                  <div 
+                    className='h-full bg-[#3d47ff] rounded-[5px]' 
+                    style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }}
+                  ></div>
+                </div>
+                <button 
+                  onClick={() => handleCampaignClick(campaign)} 
+                  className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                >
+                  View Campaign
+                </button>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {showPopup && selectedCampaign && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
-              <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
-                <IoClose size={24} />
+        {showPopup && selectedCampaign && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
+                <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
+                  <IoClose size={24} />
+                </button>
+              </div>
+              {selectedCampaign.image && (
+                <img 
+                  src={selectedCampaign.image} 
+                  alt={selectedCampaign.title}
+                  className="w-full h-[200px] object-cover rounded-[10px] mb-4"
+                />
+              )}
+              <p className="text-[14px] text-[#b8b8b8] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
+              <div className="mb-4">
+                <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[16px]">
+                    {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
+                  </span>
+                </div>
+                <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px]'>
+                  <div 
+                    className='h-full bg-[#3d47ff] rounded-[5px]' 
+                    style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="bg-[#343b66] rounded-[15px] p-5 mb-4">
+                <h3 className="text-[20px] font-semibold mb-4 flex items-center gap-2">
+                  <IoTrophy size={24} color="#ffd700" />
+                  Top Donors
+                </h3>
+                <ul className="list-none p-0">
+                  {selectedCampaign.leaderboard.map((donor, index) => (
+                    <li key={donor.id} className="flex justify-between items-center py-2 border-b border-[#4a5280] last:border-b-0">
+                      <div>
+                        <span className="font-semibold text-[#ffd700] mr-2">{index + 1}.</span>
+                        <span className="text-white">{donor.username}</span>
+                      </div>
+                      <span className="font-bold text-white">{formatNumber(donor.amount)} points</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
+                <input
+                  type="number"
+                  value={donationAmount}
+                  onChange={(e) => setDonationAmount(Number(e.target.value))}
+                  className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
+                  placeholder="Enter donation amount"
+                />
+                <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
+              </div>
+              <button
+                onClick={handleDonationSubmit}
+                className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
+                disabled={donationAmount <= 0 || donationAmount > balance}
+              >
+                Confirm Donation
               </button>
             </div>
-            {renderCampaignImage(selectedCampaign)}
-            <p className="text-[14px] text-[#b8b8b8] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
-            <div className="mb-4">
-              <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[16px]">
-                  {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
-                </span>
-              </div>
-              <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px]'>
-                <div 
-                  className='h-full bg-[#3d47ff] rounded-[5px]' 
-                  style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }}
-                ></div>
-              </div>
-            </div>
-            
-            <div className="bg-[#343b66] rounded-[15px] p-5 mb-4">
-              <h3 className="text-[20px] font-semibold mb-4 flex items-center gap-2">
-                <IoTrophy size={24} color="#ffd700" />
-                Top Donors
-              </h3>
-              <ul className="list-none p-0">
-                {selectedCampaign.leaderboard.map((donor, index) => (
-                  <li key={donor.id} className="flex justify-between items-center py-2 border-b border-[#4a5280] last:border-b-0">
-                    <div>
-                      <span className="font-semibold text-[#ffd700] mr-2">{index + 1}.</span>
-                      <span className="text-white">{donor.username}</span>
-                    </div>
-                    <span className="font-bold text-white">{formatNumber(donor.amount)} points</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="mb-4">
-              <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
-              <input
-                type="number"
-                value={donationAmount}
-                onChange={(e) => setDonationAmount(Number(e.target.value))}
-                className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
-                placeholder="Enter donation amount"
-              />
-              <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
-            </div>
-            <button
-              onClick={handleDonationSubmit}
-              className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] py-3 rounded-[12px] text-white font-semibold"
-              disabled={donationAmount <= 0 || donationAmount > balance}
-            >
-              Confirm Donation
-            </button>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
-        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
-          <IoCheckmarkCircle size={24} />
-          <span className="text-[16px] font-semibold">Donation Successful!</span>
+        <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
+          <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
+            <IoCheckmarkCircle size={24} />
+            <span className="text-[16px] font-semibold">Donation Successful!</span>
+          </div>
         </div>
       </div>
     </Animate>
