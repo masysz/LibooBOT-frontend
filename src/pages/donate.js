@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
@@ -16,14 +16,19 @@ const Donate = () => {
   const [error, setError] = useState(null);
   const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
-  const scrollRef = useRef(null);
-  const popupScrollRef = useRef(null);
 
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
+      window.Telegram.WebApp.isVerticalSwipesEnabled = false;
     }
+
+    return () => {
+      if (window.Telegram?.WebApp) {
+        window.Telegram.WebApp.isVerticalSwipesEnabled = true;
+      }
+    };
   }, []);
 
   const fetchCampaigns = useCallback(async () => {
@@ -64,12 +69,6 @@ const Donate = () => {
   useEffect(() => {
     fetchCampaigns();
   }, [fetchCampaigns]);
-
-  useEffect(() => {
-    if (window.Telegram?.WebApp?.BackButton) {
-      window.Telegram.WebApp.BackButton.show();
-    }
-  }, []);
 
   const handleCampaignClick = useCallback((campaign) => {
     setSelectedCampaign(campaign);
@@ -186,61 +185,53 @@ const Donate = () => {
 
   return (
     <Animate>
-      <div className="w-full h-full flex flex-col" style={{ height: '100vh' }}>
-        <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
-          {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
+      <div className="w-full flex flex-col space-y-3 px-5">
+        <div className="fixed top-0 left-0 right-0 pt-8 px-5 bg-[#1a1f2e] z-10">
+          <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
         </div>
 
-        <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
-
-        <div 
-          ref={scrollRef}
-          className="w-full flex-grow overflow-y-auto px-5 pb-[100px]"
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {campaigns.map(campaign => (
-            <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col mb-4'>
-              {campaign.image && (
-                <img 
-                  src={campaign.image} 
-                  alt={campaign.title}
-                  className="w-full h-[200px] object-cover rounded-[10px] mb-4"
-                  onError={(e) => {
-                    console.error(`Error loading image for campaign ${campaign.id}:`, e);
-                    e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
-                  }}
-                />
-              )}
-              <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
-              <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[18px] font-medium">
-                  {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-                </span>
+        <div className="mt-[80px] w-full h-[calc(100vh-180px)] flex flex-col overflow-y-auto">
+          <div className="flex flex-col w-full space-y-4 pb-[100px]">
+            {campaigns.map(campaign => (
+              <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
+                {campaign.image && (
+                  <img 
+                    src={campaign.image} 
+                    alt={campaign.title}
+                    className="w-full h-[200px] object-cover rounded-[10px] mb-4"
+                    onError={(e) => {
+                      console.error(`Error loading image for campaign ${campaign.id}:`, e);
+                      e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
+                    }}
+                  />
+                )}
+                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
+                <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[18px] font-medium">
+                    {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                  </span>
+                </div>
+                <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px] mb-4'>
+                  <div 
+                    className='h-full bg-[#3d47ff] rounded-[5px]' 
+                    style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }}
+                  ></div>
+                </div>
+                <button 
+                  onClick={() => handleCampaignClick(campaign)} 
+                  className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
+                >
+                  View Campaign
+                </button>
               </div>
-              <div className='w-full bg-[#1a1f3d] h-[10px] rounded-[5px] mb-4'>
-                <div 
-                  className='h-full bg-[#3d47ff] rounded-[5px]' 
-                  style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }}
-                ></div>
-              </div>
-              <button 
-                onClick={() => handleCampaignClick(campaign)} 
-                className="w-full bg-gradient-to-b from-[#3d47ff] to-[#575fff] px-4 py-2 rounded-[8px] text-white font-semibold"
-              >
-                View Campaign
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {showPopup && selectedCampaign && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div 
-              ref={popupScrollRef}
-              className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto" 
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
+            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
                 <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
@@ -309,6 +300,10 @@ const Donate = () => {
             </div>
           </div>
         )}
+
+        <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
+          {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
+        </div>
 
         <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
           <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
