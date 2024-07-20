@@ -197,7 +197,7 @@ const Donate = () => {
         <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
 
         <div  className="flex-1 touch-auto pb-20" >
-          <div ref={scrollRef} className="flex-1 overflow-auto gap-5 p-20" >
+          <div ref={scrollRef} className="flex flex-col gap-5 pb-50" style={{ WebkitOverflowScrolling: 'touch' }}>
             {campaigns.map(campaign => (
               <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
                 {campaign.image && (
