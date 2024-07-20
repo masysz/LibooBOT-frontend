@@ -430,7 +430,7 @@ const Plutos = () => {
                   </div>
                 </div>
     
-                <div className="w-full px-5 mb-[100px] mt-[-70px]">
+                <div className="w-full px-5 mb-[100px] mt-[-250px]">
                   <div className="flex flex-col w-full items-center justify-center">
                     <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
                       <img alt="flash" src={flash} className="w-[20px]" />
