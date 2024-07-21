@@ -15,6 +15,7 @@ import { useUser } from "../context/userContext";
 import { IoClose } from "react-icons/io5";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import Spinner from '../Components/Spinner';
+import "../App.css";
 
 
 
@@ -506,6 +507,7 @@ const Boost = () => {
 </div>
 
 <div className="w-full flex flex-col h-[50vh] pt-2 pb-[60px] overflow-y-auto hide-scrollbar">
+  
   <div className={`flex alltaskscontainer flex-col w-full space-y-2 pb-20`}>
     <button
       onClick={() => setIsUpgradeModalVisible(true)}  
