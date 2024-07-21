@@ -390,15 +390,6 @@ const Plutos = () => {
                   className="w-[25px] relative"
                   alt="bronze"
                 />
-                <div className="w-full mt-2 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-  <div 
-    className="bg-blue-600 h-2.5 rounded-full" 
-    style={{width: `${(tapBalance / nextLevelRequirement) * 100}%`}}
-  ></div>
-</div>
-<p className="text-sm text-center mt-1">
-  {tapBalance} / {nextLevelRequirement} to next level
-</p>
                 <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
                   {level.name}
                 </h2>
