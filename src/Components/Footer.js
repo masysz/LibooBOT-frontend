@@ -1,20 +1,19 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import ref from "../images/ref4.webp";
 import boost from "../images/booster2.webp";
 import tasks from "../images/tasks2.webp";
 import donate from "../images/stats.webp";
-import tonwallet from "../images/wallet2.webp";
 import coinsmall from "../images/coins-6.webp";
-import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   const NavItem = ({ to, icon, label, isMain = false }) => (
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 ${
+        `flex flex-col items-center justify-center p-1 rounded-lg transition-all duration-300 ${
           isActive
-            ? "bg-white bg-opacity-20 shadow-lg scale-110"
+            ? "bg-white bg-opacity-20 shadow-lg scale-105"
             : "hover:bg-white hover:bg-opacity-10"
         } ${isMain ? "transform -translate-y-4" : ""}`
       }
@@ -25,10 +24,10 @@ const Footer = () => {
   );
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full">
+    <div className="fixed bottom-0 left-0 right-0 w-full z-50">
       <div className="backdrop-filter backdrop-blur-lg bg-black bg-opacity-30 rounded-t-3xl shadow-lg">
-        <div className="max-w-screen-xl mx-auto px-4">
-          <div className="flex justify-around items-end py-2">
+        <div className="max-w-screen-xl mx-auto px-4 py-2">
+          <div className="flex justify-around items-end">
             <NavItem to="/ref" icon={ref} label="Ref" />
             <NavItem to="/tasks" icon={tasks} label="Tasks" />
             <NavItem to="/" icon={coinsmall} label="Tap" isMain />
