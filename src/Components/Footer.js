@@ -18,15 +18,19 @@ const Footer = () => {
         } ${isMain ? "relative" : ""}`
       }
     >
-      <div className={`relative ${isMain ? "mb-2" : ""}`}>
-        <img src={icon} className={`w-8 h-8 ${isMain ? "w-12 h-12" : ""}`} alt={label} />
-        {isMain && (
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-white">+</span>
+      {({ isActive }) => (
+        <>
+          <div className={`relative ${isMain ? "mb-2" : ""}`}>
+            <img src={icon} className={`w-8 h-8 ${isMain ? "w-12 h-12" : ""}`} alt={label} />
+            {isMain && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-white">+</span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <span className={`text-xs font-medium ${isActive ? "text-white" : "text-gray-300"}`}>{label}</span>
+          <span className={`text-xs font-medium ${isActive ? "text-white" : "text-gray-300"}`}>{label}</span>
+        </>
+      )}
     </NavLink>
   );
 
