@@ -175,6 +175,22 @@ const energyUpgradeCosts = [0, 3000, 6000, 12000, 24000, 500000, 1000000, 200000
 const chargingUpgradeCosts = [0, 2000, 30000, 100000, 200000];
 
 
+const styles = `
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+`;
+
+
+
+
+
 const Boost = () => {
 
   const { balance, id, freeGuru, refiller, setRefiller, setFreeGuru, setTapGuru, fullTank, setFullTank, setMainTap, startTimer, timeRefill, setTimeRefill, tapValue, setTapValue, battery, setEnergy, setBattery, setBalance, refBonus, loading } = useUser();
@@ -499,167 +515,128 @@ const Boost = () => {
                   </button>
                 </div>
 
-                <div className="w-full flex flex-col pt-4">
-                  <h3 className="text-[18px] font-semibold">Boosters:</h3>
-                </div>
-              </div>
-            </div>
+                Certainly! Here's the entire modified code section with the scrollbar hidden:
+jsxCopy<div className="w-full flex flex-col pt-4">
+  <h3 className="text-[18px] font-semibold">Boosters:</h3>
+</div>
 
-            <div className="w-full flex flex-col h-[50vh] pt-2 pb-[60px] overflow-y-auto">
-              <div
-                className={`flex alltaskscontainer flex-col w-full space-y-2 pb-20`}
-              >
-                <button
-                               onClick={() => setIsUpgradeModalVisible(true)}  
-                               disabled={tapValue.level >= tapValues.length} 
-                  className={`${tapValue.level >= tapValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
-                >
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img src={multi} alt="multi" className="w-[35px]" />
-                    </div>
-                    <div className="flex flex-col space-y-1 text-left">
-                      <span className="font-semibold text-[17px]">
-                        Multitap
-                      </span>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-[20px] h-[20px]">
-                          <img src={coinsmall} className="w-full" alt="coin" />
-                        </span>
-                        <span className="font-medium flex items-center">
-                          <span className="text-[15px]">
-                            
-                          {tapValue.level >= tapValues.length ? (
-              <>
-              MAX
-              </>
-            ) : (
-              <>
-                {formatNumber(nextUpgradeCost)}
-              </>
-            )} 
-                   
-                       
-                            
-                            
-                            </span>{" "}
-                          <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-                          <span className="text-[#9a96a6] text-[15px]">
-                            Level {tapValue.level}
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+<div className="w-full flex flex-col h-[50vh] pt-2 pb-[60px] overflow-y-auto hide-scrollbar">
+  <div className={`flex alltaskscontainer flex-col w-full space-y-2 pb-20`}>
+    <button
+      onClick={() => setIsUpgradeModalVisible(true)}  
+      disabled={tapValue.level >= tapValues.length} 
+      className={`${tapValue.level >= tapValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
+    >
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={multi} alt="multi" className="w-[35px]" />
+        </div>
+        <div className="flex flex-col space-y-1 text-left">
+          <span className="font-semibold text-[17px]">
+            Multitap
+          </span>
+          <div className="flex items-center space-x-1">
+            <span className="w-[20px] h-[20px]">
+              <img src={coinsmall} className="w-full" alt="coin" />
+            </span>
+            <span className="font-medium flex items-center">
+              <span className="text-[15px]">
+                {tapValue.level >= tapValues.length ? (
+                  <>MAX</>
+                ) : (
+                  <>{formatNumber(nextUpgradeCost)}</>
+                )} 
+              </span>{" "}
+              <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
+              <span className="text-[#9a96a6] text-[15px]">
+                Level {tapValue.level}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="">
+        <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
+      </div>
+    </button>
 
-                  {/*  */}
+    <button
+      onClick={() => setIsUpgradeModalVisibleEn(true)} 
+      disabled={battery.level >= energyValues.length} 
+      className={`${battery.level >= energyValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
+    >
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={battery3} alt="battery" className="w-[35px]" />
+        </div>
+        <div className="flex flex-col space-y-1 text-left">
+          <span className="font-semibold text-[17px]">
+            Energy Limit
+          </span>
+          <div className="flex items-center space-x-1">
+            <span className="w-[20px] h-[20px]">
+              <img src={coinsmall} className="w-full" alt="coin" />
+            </span>
+            <span className="font-medium flex items-center">
+              <span className="text-[15px]">
+                {battery.level >= energyValues.length ? (
+                  <>MAX</>
+                ) : (
+                  <>{formatNumber(nextEnergyUpgradeCost)}</>
+                )} 
+              </span>{" "}
+              <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
+              <span className="text-[#9a96a6] text-[15px]">
+                Level {battery.level}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="">
+        <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
+      </div>
+    </button>
 
-                  <div className="">
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-                  </div>
-                </button>
-
-                {/*  */}
-
-                <button
-                             onClick={() => setIsUpgradeModalVisibleEn(true)} 
-                             disabled={battery.level >= energyValues.length} 
-                  className={`${battery.level >= energyValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
-                >
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img src={battery3} alt="battery" className="w-[35px]" />
-                    </div>
-                    <div className="flex flex-col space-y-1 text-left">
-                      <span className="font-semibold text-[17px]">
-                        Energy Limit
-                      </span>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-[20px] h-[20px]">
-                          <img src={coinsmall} className="w-full" alt="coin" />
-                        </span>
-                        <span className="font-medium flex items-center">
-                          <span className="text-[15px]">
-                            
-                          {battery.level >= energyValues.length ? (
-              <>
-              MAX
-              </>
-            ) : (
-              <>
-               {formatNumber(nextEnergyUpgradeCost)}
-              </>
-            )} 
-                   
-
-                        
-                            
-                            
-                            </span>{" "}
-                          <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-                          <span className="text-[#9a96a6] text-[15px]">
-                            Level {battery.level}
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/*  */}
-
-                  <div className="">
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-                  </div>
-                </button>
-
-                {/*  */}
-                <button
-                                onClick={() => setIsUpgradeModalVisibleEnc(true)} 
-                                disabled={timeRefill.level >= chargingValues.length} 
-                  className={`${timeRefill.level >= chargingValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
-                >
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img src={flash} alt="flash" className="w-[35px]" />
-                    </div>
-                    <div className="flex flex-col space-y-1 text-left">
-                      <span className="font-semibold text-[17px]">
-                        Recharging Speed
-                      </span>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-[20px] h-[20px]">
-                          <img src={coinsmall} className="w-full" alt="coin" />
-                        </span>
-                        <span className="font-medium flex items-center">
-                          <span className="text-[15px]">
-                          {timeRefill.level >= chargingValues.length ? (
-              <>
-              MAX
-              </>
-            ) : (
-              <>
-               {formatNumber(nextChargingUpgradeCost)}
-              </>
-            )} 
-                        
-                            
-                            
-                            </span>{" "}
-                          <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-                          <span className="text-[#9a96a6] text-[15px]">
-                            Level {timeRefill.level}
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/*  */}
-
-                  <div className="">
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-                  </div>
-                </button>
+    <button
+      onClick={() => setIsUpgradeModalVisibleEnc(true)} 
+      disabled={timeRefill.level >= chargingValues.length} 
+      className={`${timeRefill.level >= chargingValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
+    >
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={flash} alt="flash" className="w-[35px]" />
+        </div>
+        <div className="flex flex-col space-y-1 text-left">
+          <span className="font-semibold text-[17px]">
+            Recharging Speed
+          </span>
+          <div className="flex items-center space-x-1">
+            <span className="w-[20px] h-[20px]">
+              <img src={coinsmall} className="w-full" alt="coin" />
+            </span>
+            <span className="font-medium flex items-center">
+              <span className="text-[15px]">
+                {timeRefill.level >= chargingValues.length ? (
+                  <>MAX</>
+                ) : (
+                  <>{formatNumber(nextChargingUpgradeCost)}</>
+                )} 
+              </span>{" "}
+              <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
+              <span className="text-[#9a96a6] text-[15px]">
+                Level {timeRefill.level}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="">
+        <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
+      </div>
+    </button>
+    </div>
+    </div>
 
                 {/*  */}
                 {/* <button
