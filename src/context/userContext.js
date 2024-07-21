@@ -13,6 +13,7 @@ const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
+  const [globalRanking, setGlobalRanking] = useState([]);
   const [balance, setBalance] = useState(0);
   // const [totalBalance, setTotalBalance] = useState(0);
   const [tapBalance, setTapBalance] = useState(0);
@@ -61,6 +62,31 @@ export const UserProvider = ({ children }) => {
   const refillSteps = timeRefill.step; // Number of increments
   const incrementValue = refiller / refillSteps; // Amount to increment each step
   const defaultEnergy = refiller; // Default energy value
+
+  useEffect(() => {
+    // ... código existente ...
+    fetchGlobalRanking().then(ranking => setGlobalRanking(ranking));
+  }, []);
+  const fetchGlobalRanking = async () => {
+    try {
+      const usersRef = collection(db, "telegramUsers");
+      const querySnapshot = await getDocs(usersRef);
+      const users = [];
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        users.push({
+          username: userData.username,
+          balance: userData.balance,
+          level: userData.level
+        });
+      });
+      users.sort((a, b) => b.balance - a.balance);
+      return users.slice(0, 10); // Top 10 users
+    } catch (error) {
+      console.error("Error fetching global ranking:", error);
+      return [];
+    }
+  };
   
   const refillEnergy = () => {
     if (isRefilling) return;

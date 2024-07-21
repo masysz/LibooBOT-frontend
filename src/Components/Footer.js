@@ -8,110 +8,35 @@ import coinsmall from "../images/coins-6.webp";
 import { NavLink } from "react-router-dom";
 
 const Footer = () => {
+  const NavItem = ({ to, icon, label, isMain = false }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 ${
+          isActive
+            ? "bg-white bg-opacity-20 shadow-lg scale-110"
+            : "hover:bg-white hover:bg-opacity-10"
+        } ${isMain ? "transform -translate-y-4" : ""}`
+      }
+    >
+      <img src={icon} className={`w-6 h-6 mb-1 ${isMain ? "w-10 h-10" : ""}`} alt={label} />
+      <span className="text-xs font-medium text-white">{label}</span>
+    </NavLink>
+  );
+
   return (
-    <div className="w-full flex items-center justify-center space-x-2">
-      <NavLink
-        to="/ref"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={ref} className="w-[32px] -mb-1" alt="ref" />
-        <span className="font-medium">Ref</span>
-      </NavLink>
-      <NavLink
-        to="/tasks"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={tasks} className="w-[30px]" alt="tasks" />
-        <span className="font-medium">Tasks</span>
-      </NavLink>
-
-      {/*  */}
-
-      <NavLink
-        to="/"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={coinsmall} className="w-[30px] -mb-[1px]" alt="tap" />
-        <span className="font-medium">Tap</span>
-      </NavLink>
-      <NavLink
-        to="/boost"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-[8px] bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-[8px] bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={boost} className="w-[28px] -mb-[2px]" alt="boost" />
-        <span className="font-medium">Boost</span>
-      </NavLink>
-
-      {/*  */}
-
-      <NavLink
-        to="/Donate"
-        className={({ isActive }) => {
-          return `
-
-${
-            isActive
-              ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-              : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-              `;
-                  }}
-                >
-                  <img src={donate} className="w-[32px] -mb-1" alt="ref" />
-                  <span className="font-medium">Donate</span>
-                </NavLink>
-                <NavLink
-                  to="/connect"
-                  className={({ isActive }) => {
-                    return `         
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-[8px] bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-[8px] bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={tonwallet} className="w-[24px]" alt="connect" />
-        <span className="font-medium">Wallet</span>
-      </NavLink>
+    <div className="fixed bottom-0 left-0 right-0 w-full">
+      <div className="backdrop-filter backdrop-blur-lg bg-black bg-opacity-30 rounded-t-3xl shadow-lg">
+        <div className="max-w-screen-xl mx-auto px-4">
+          <div className="flex justify-around items-end py-2">
+            <NavItem to="/ref" icon={ref} label="Ref" />
+            <NavItem to="/tasks" icon={tasks} label="Tasks" />
+            <NavItem to="/" icon={coinsmall} label="Tap" isMain />
+            <NavItem to="/boost" icon={boost} label="Boost" />
+            <NavItem to="/Donate" icon={donate} label="Donate" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
