@@ -362,7 +362,7 @@ const TaskFive = ({ showModal, setShowModal }) => {
                 <div className="w-full flex justify-center pb-12">
                   <button
                     onClick={finishMission}
-                    className="bg-gradient-to-b gradient from-[#ffba4c] to-[#aa6900] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
+                    className="bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
                   >
                     Claim
                   </button>
