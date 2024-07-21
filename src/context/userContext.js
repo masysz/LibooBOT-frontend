@@ -13,7 +13,6 @@ const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-  const [globalRanking, setGlobalRanking] = useState([]);
   const [balance, setBalance] = useState(0);
   // const [totalBalance, setTotalBalance] = useState(0);
   const [tapBalance, setTapBalance] = useState(0);
@@ -62,31 +61,6 @@ export const UserProvider = ({ children }) => {
   const refillSteps = timeRefill.step; // Number of increments
   const incrementValue = refiller / refillSteps; // Amount to increment each step
   const defaultEnergy = refiller; // Default energy value
-
-  useEffect(() => {
-    // ... código existente ...
-    fetchGlobalRanking().then(ranking => setGlobalRanking(ranking));
-  }, []);
-  const fetchGlobalRanking = async () => {
-    try {
-      const usersRef = collection(db, "telegramUsers");
-      const querySnapshot = await getDocs(usersRef);
-      const users = [];
-      querySnapshot.forEach((doc) => {
-        const userData = doc.data();
-        users.push({
-          username: userData.username,
-          balance: userData.balance,
-          level: userData.level
-        });
-      });
-      users.sort((a, b) => b.balance - a.balance);
-      return users.slice(0, 10); // Top 10 users
-    } catch (error) {
-      console.error("Error fetching global ranking:", error);
-      return [];
-    }
-  };
   
   const refillEnergy = () => {
     if (isRefilling) return;
@@ -345,17 +319,17 @@ export const UserProvider = ({ children }) => {
     } else if (newTapBalance >= 4000000 && newTapBalance < 8000000) {
       newLevel = { id: 5, name: "Liboo Veteran", imgUrl: "/hot.webp", imgTap: "/coin-5.webp", imgBoost: "/coins-5.webp" };
     } else if (newTapBalance >= 8000000 && newTapBalance < 25000000) {
-      newLevel = { id: 6, name: "Liboo Expert", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 6, name: "Liboo Expert", imgUrl: "/expert.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
     } else if (newTapBalance >= 25000000 && newTapBalance < 50000000) {
-      newLevel = { id: 7, name: "Liboo Virtuoso", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 7, name: "Liboo Virtuoso", imgUrl: "/burning.webp", imgTap: "/coin-7.webp", imgBoost: "/coins-7.webp" };
     } else if (newTapBalance >= 50000000 && newTapBalance < 100000000) {
-      newLevel = { id: 8, name: "Liboo Champion", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 8, name: "Liboo Champion", imgUrl: "/burning.webp", imgTap: "/coin-7.webp", imgBoost: "/coins-7.webp" };
     } else if (newTapBalance >= 100000000 && newTapBalance < 1000000000) {
-      newLevel = { id: 9, name: "Liboo Legend", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 9, name: "Liboo Legend", imgUrl: "/burning.webp", imgTap: "/coin-7.webp", imgBoost: "/coins-7.webp" };
     } else if (newTapBalance >= 1000000000 && newTapBalance < 10000000000) {
-      newLevel = { id: 10, name: "Liboo Maestro", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 10, name: "Liboo Maestro", imgUrl: "/burning.webp", imgTap: "/coin-7.webp", imgBoost: "/coins-7.webp" };
     } else if (newTapBalance >= 10000000000) {
-      newLevel = { id: 11, name: "Liboo Destroyer", imgUrl: "/burning.webp", imgTap: "/coin-6.webp", imgBoost: "/coins-6.webp" };
+      newLevel = { id: 11, name: "Liboo Destroyer", imgUrl: "/burning.webp", imgTap: "/coin-7.webp", imgBoost: "/coins-7.webp" };
     }
     
 

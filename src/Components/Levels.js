@@ -9,7 +9,7 @@ const userLevels = [
     { name: 'Liboo Adept', icon: '/blaze.webp', tapBalanceRequired: 2000000 },
     { name: 'Liboo Journeyman', icon: '/flame.webp', tapBalanceRequired: 4000000 },
     { name: 'Liboo Veteran', icon: '/hot.webp', tapBalanceRequired: 8000000 },
-    { name: 'Liboo Expert', icon: '/burning.webp', tapBalanceRequired: 25000000 },
+    { name: 'Liboo Expert', icon: '/expert.webp', tapBalanceRequired: 25000000 },
     { name: 'Liboo Virtuoso', icon: '/burning.webp', tapBalanceRequired: 50000000 },
     { name: 'Liboo Champion', icon: '/burning.webp', tapBalanceRequired: 100000000 },
     { name: 'Liboo Legend', icon: '/burning.webp', tapBalanceRequired: 1000000000 },
