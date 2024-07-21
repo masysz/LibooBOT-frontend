@@ -11,26 +11,23 @@ const Footer = () => {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `group flex flex-col items-center justify-center px-3 py-2 rounded-2xl transition-all duration-300 ${
+        `group flex flex-col items-center justify-center px-4 py-3 rounded-full transition-all duration-300 ${
           isActive
-            ? "bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg"
-            : "hover:bg-white/10"
+            ? "bg-blue-600 shadow-lg"
+            : "hover:bg-gray-800"
         }`
       }
     >
       {({ isActive }) => (
         <>
-          <div className={`relative ${isMain ? "mb-1" : ""}`}>
+          <div className="relative mb-1">
             <img 
               src={icon} 
-              className={`w-8 h-8 ${isMain ? "w-12 h-12" : ""} transition-transform duration-300 group-hover:scale-110`} 
+              className={`w-6 h-6 ${isMain ? "w-8 h-8" : ""} transition-transform duration-300 group-hover:scale-110 ${isActive ? "filter brightness-0 invert" : "opacity-70 group-hover:opacity-100"}`} 
               alt={label} 
             />
-            {isActive && (
-              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full" />
-            )}
           </div>
-          <span className={`text-xs font-medium mt-1 transition-colors duration-300 ${isActive ? "text-white" : "text-gray-300 group-hover:text-white"}`}>
+          <span className={`text-xs font-medium transition-colors duration-300 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}>
             {label}
           </span>
         </>
@@ -40,13 +37,13 @@ const Footer = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 w-full z-50">
-      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-900 backdrop-blur-lg bg-opacity-90 shadow-lg">
-        <div className="max-w-screen-xl mx-auto px-4 py-3">
+      <div className="bg-gray-900 shadow-lg border-t border-gray-800">
+        <div className="max-w-screen-xl mx-auto px-4 py-2">
           <div className="flex justify-around items-center">
             <NavItem to="/ref" icon={ref} label="Ref" />
             <NavItem to="/tasks" icon={tasks} label="Tasks" />
             <div className="relative -mt-8">
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-300 rounded-full flex items-center justify-center shadow-lg">
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
                 <NavItem to="/" icon={coinsmall} label="Tap" isMain />
               </div>
             </div>
