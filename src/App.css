@@ -155,7 +155,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 }
@@ -166,7 +166,7 @@ body {
   height: 0px;
   position: relative;
   border-radius: 50%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   animation: spin 1.8s linear infinite;
@@ -176,6 +176,7 @@ body {
   border: 10px solid transparent;
   position: absolute;
   width: 0px;
+  display: none;
   height: 0px;
   border-radius: 50%;
   border-left-color: #336bb6a6; /* Bright orange color */
@@ -185,6 +186,7 @@ body {
   border: 10px solid transparent;
   position: absolute;
   width: 0px;
+  display: none;
   height: 0px;
   border-radius: 50%;
   border-right-color: #4781ff; /* Tomato color */
@@ -196,6 +198,7 @@ body {
   border: 10px solid transparent;
   position: absolute;
   width: 0px;
+  display: none;
   height: 0px;
   border-radius: 50%;
   border-right-color: #001aff; /* Dark orange color */
@@ -208,6 +211,7 @@ body {
   position: absolute;
   width: 0px;
   height: 0px;
+  display: none;
   border-radius: 50%;
   border-top-color: #5f9fff; /* Orange color */
   transform: rotate(210deg);
@@ -219,6 +223,7 @@ body {
   position: absolute;
   width: 0px;
   height: 0px;
+  display: none;
   border-radius: 50%;
   border-top-color: #4a78f8; /* Tomato color */
   transform: rotate(280deg);
@@ -229,6 +234,7 @@ body {
   border: 10px solid transparent;
   position: absolute;
   width: 0px;
+  display: none;
   height: 0px;
   border-radius: 50%;
   border-top-color: #3168ff; /* Bright orange color */
@@ -240,6 +246,7 @@ body {
   border: 10px solid transparent;
   position: absolute;
   width: 0px;
+  display: none;
   height: 0px;
   border-radius: 50%;
   border-top-color: #5e75fa; /* Tomato color */
@@ -251,6 +258,7 @@ body {
   border: 10px solid transparent;
   position: absolute;
   width: 0px;
+  display: none;
   height: 0px;
   border-radius: 50%;
   border-top-color: #378af8; /* Dark orange color */
@@ -266,6 +274,7 @@ body {
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
+  margin-top: 0px !important; 
 }
 
 
