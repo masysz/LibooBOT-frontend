@@ -9,13 +9,10 @@ body {
   position: relative;
   overflow: hidden; /* Ensure the overlay covers the entire viewport */
   overflow-y: auto;
-}
-
-.hide-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.hide-scrollbar::-webkit-scrollbar {
+.body::-webkit-scrollbar {
   display: none;
 }
 
