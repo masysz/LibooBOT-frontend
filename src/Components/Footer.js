@@ -15,15 +15,19 @@ const Footer = () => {
           isActive
             ? "bg-gradient-to-r from-blue-400 to-cyan-300 shadow-lg scale-105"
             : "hover:bg-white hover:bg-opacity-10"
-        } ${isMain ? "transform -translate-y-4" : ""}`
+        }`
       }
     >
       {({ isActive }) => (
         <>
-          <div className={`${isMain ? "mb-1" : ""}`}>
-            <img src={icon} className={`w-8 h-8 ${isMain ? "w-12 h-12" : ""}`} alt={label} />
-          </div>
-          <span className={`text-xs font-medium text-white ${isActive ? "font-bold" : ""}`}>{label}</span>
+          <img 
+            src={icon} 
+            className={`w-8 h-8 ${isMain ? "w-10 h-10" : ""}`} 
+            alt={label} 
+          />
+          <span className={`text-xs font-medium text-white ${isActive ? "font-bold" : ""}`}>
+            {label}
+          </span>
         </>
       )}
     </NavLink>
@@ -31,9 +35,9 @@ const Footer = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 w-full z-50">
-      <div className="backdrop-filter backdrop-blur-lg bg-gradient-to-r from-blue-900 to-cyan-800 bg-opacity-80 rounded-t-3xl shadow-lg border-t border-blue-700">
-        <div className="max-w-screen-xl mx-auto px-4 py-3">
-          <div className="flex justify-around items-end">
+      <div className="bg-gradient-to-r from-blue-900 to-cyan-800 bg-opacity-80 shadow-lg border-t border-blue-700">
+        <div className="max-w-screen-xl mx-auto px-4 py-2">
+          <div className="flex justify-around items-center">
             <NavItem to="/ref" icon={ref} label="Ref" />
             <NavItem to="/tasks" icon={tasks} label="Tasks" />
             <NavItem to="/" icon={coinsmall} label="Tap" isMain />
