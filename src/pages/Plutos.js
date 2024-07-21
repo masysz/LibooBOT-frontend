@@ -80,9 +80,6 @@ const Plutos = () => {
   
     if (isIOS && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
       window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-    } else if (isAndroid && 'vibrate' in navigator) {
-      // Use the vibration API on Android
-      navigator.vibrate(50); // Vibrate for 50ms
     } else {
       console.warn('Haptic feedback not supported on this device.');
     }
