@@ -15,6 +15,9 @@ import { useUser } from "../context/userContext";
 import { IoClose } from "react-icons/io5";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import Spinner from '../Components/Spinner';
+import "./App.css";
+
+
 
 
 
