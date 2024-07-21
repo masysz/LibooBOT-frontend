@@ -515,8 +515,7 @@ const Boost = () => {
                   </button>
                 </div>
 
-                Certainly! Here's the entire modified code section with the scrollbar hidden:
-jsxCopy<div className="w-full flex flex-col pt-4">
+<div className="w-full flex flex-col pt-4">
   <h3 className="text-[18px] font-semibold">Boosters:</h3>
 </div>
 
