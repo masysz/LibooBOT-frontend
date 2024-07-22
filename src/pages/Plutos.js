@@ -4,7 +4,6 @@ import styled, { keyframes } from "styled-components";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
-import { useUser } from '../context/userContext';
 import Levels from '../Components/Levels';
 import flash from "../images/flash.webp";
 import coinsmall from "../images/coinsmall.webp";
@@ -13,9 +12,7 @@ import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
 
 import { doc, updateDoc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
-import styled, { keyframes } from "styled-components";
 import { useUser } from '../context/userContext';
-import useSound from 'use-sound';
 import boopSfx from '../sounds/boop.mp3';
 import chirpSfx from '../sounds/chirp.wav';
 
