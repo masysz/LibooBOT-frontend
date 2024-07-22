@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import React, { useState, useEffect, useRef,  useCallback } from 'react';
 import { db } from '../firebase'; // Adjust the path as needed
 import styled, { keyframes } from "styled-components";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
@@ -12,9 +11,8 @@ import coinsmall from "../images/coinsmall.webp";
 import useSound from 'use-sound';
 import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+
 import { doc, updateDoc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
 import styled, { keyframes } from "styled-components";
 import { useUser } from '../context/userContext';
 import useSound from 'use-sound';
