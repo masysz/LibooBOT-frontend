@@ -8,12 +8,11 @@ import Levels from '../Components/Levels';
 import flash from "../images/flash.webp";
 import coinsmall from "../images/coinsmall.webp";
 import useSound from 'use-sound';
-import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
 
 import { doc, updateDoc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { useUser } from '../context/userContext';
-import boopSfx from '../sounds/boop.mp3';
+import boopSfx from '../sounds/get.mp3';
 import chirpSfx from '../sounds/chirp.wav';
 
 const breathe = keyframes`
