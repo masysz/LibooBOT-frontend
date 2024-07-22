@@ -135,18 +135,6 @@ const Plutos = () => {
     specialItems: {}
   });
 
-  // Otros estados
-  const [dayTime, setDayTime] = useState('day');
-  const [weather, setWeather] = useState('sunny');
-  const [isSleeping, setIsSleeping] = useState(false);
-  const [currentActivity, setCurrentActivity] = useState(null);
-  const [achievements, setAchievements] = useState([]);
-  const [missions, setMissions] = useState([]);
-  const [skills, setSkills] = useState({});
-  const [friends, setFriends] = useState([]);
-  const [storkAppearance, setStorkAppearance] = useState('baby');
-  const [lastFeedTime, setLastFeedTime] = useState(null);
-  const [gameTime, setGameTime] = useState(0);
 
   // Sonidos
   const [playBoop] = useSound(boopSfx);
@@ -175,33 +163,7 @@ const Plutos = () => {
     }
   }, [stats.level, storkAppearance]);
 
- const Plutos = () => {
-  // Estados del personaje
-  const [stats, setStats] = useState({
-    mood: 100,
-    hunger: 100,
-    thirst: 100,
-    energy: 100,
-    health: 100,
-    hygiene: 100,
-    level: 1,
-    exp: 0,
-    strength: 1,
-    intelligence: 1,
-    agility: 1,
-    charisma: 1
-  });
-
-  // Inventario
-  const [inventory, setInventory] = useState({
-    food: {},
-    drinks: {},
-    toys: {},
-    cleaningItems: {},
-    medicines: {},
-    specialItems: {}
-  });
-
+ 
   // Otros estados
   const [dayTime, setDayTime] = useState('day');
   const [weather, setWeather] = useState('sunny');
@@ -215,32 +177,9 @@ const Plutos = () => {
   const [lastFeedTime, setLastFeedTime] = useState(null);
   const [gameTime, setGameTime] = useState(0);
 
-  // Sonidos
-  const [playBoop] = useSound(boopSfx);
-  const [playChirp] = useSound(chirpSfx);
-
-  // Referencias
-  const storkRef = useRef(null);
-  const gameLoopRef = useRef(null);
-
-  // Context
-  const { balance, setBalance, id } = useUser();
-
-  // Efectos
-  useEffect(() => {
-    loadGameState();
-    return () => {
-      if (gameLoopRef.current) clearInterval(gameLoopRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (stats.level > 5 && storkAppearance === 'baby') {
-      setStorkAppearance('juvenile');
-    } else if (stats.level > 10 && storkAppearance === 'juvenile') {
-      setStorkAppearance('adult');
-    }
-  }, [stats.level, storkAppearance]);
+const [showModal, setShowModal] = useState(false);
+const [modalTitle, setModalTitle] = useState('');
+const [modalMessage, setModalMessage] = useState('');
 
 
 
@@ -736,5 +675,5 @@ return (
   </div>
 );
 };
-}
+
 export default Plutos;
