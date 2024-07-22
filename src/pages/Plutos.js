@@ -1,468 +1,117 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Adjust the path as needed
-import styled, { keyframes } from "styled-components";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
-import Animate from '../Components/Animate';
-import Spinner from '../Components/Spinner';
+import React, { useState, useEffect, useCallback } from 'react';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import styled from "styled-components";
 import { useUser } from '../context/userContext';
-import Levels from '../Components/Levels';
-import flash from "../images/flash.webp";
-import coinsmall from "../images/coinsmall.webp";
-import useSound from 'use-sound';
-import boopSfx from '../get.mp3';
-import burnSfx from '../burn.wav';
-
-
-const slideUp = keyframes`
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-350px);
-  }
-`;
-
-const SlideUpText = styled.div`
-  position: absolute;
-  animation: ${slideUp} 3s ease-out;
-  font-size: 2.1em;
-  color: #ffffffa6;
-  font-weight: 600;
-  left: ${({ x }) => x}px;
-  top: ${({ y }) => y}px;
-  pointer-events: none; /* To prevent any interaction */
-`;
+import PetDisplay from '../Components/PetDisplay';
+import PetStats from '../Components/PetStats';
+import PetActions from '../Components/PetActions';
+import Shop from '../Components/Shop';
+import { calculatePetLevel } from '../utils/petUtils';
 
 const Container = styled.div`
-  position: relative;
-  display: inline-block;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  margin-bottom:100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
 `;
 
 const Plutos = () => {
+  const { id, balance, setBalance } = useUser();
+  const [pet, setPet] = useState({
+    name: '',
+    type: 'egg',
+    hunger: 100,
+    happiness: 100,
+    energy: 100,
+    health: 100,
+    cleanliness: 100,
+    experience: 0,
+  });
+  const [inventory, setInventory] = useState({});
 
-  const imageRef = useRef(null);
-  const [play] = useSound(boopSfx);
-  const [play2] = useSound(burnSfx);
-  const [clicks, setClicks] = useState([]);
-  const { name, balance, tapBalance, energy, battery, tapGuru, mainTap, setIsRefilling, refillIntervalRef, refillEnergy, setEnergy, tapValue, setTapBalance, setBalance, refBonus, level, loading } = useUser();
+  useEffect(() => {
+    loadPetData();
+  }, [id]);
 
-  // eslint-disable-next-line
-  const [points, setPoints] = useState(0);
-    // eslint-disable-next-line
-  const [isDisabled, setIsDisabled] = useState(false);
-    // eslint-disable-next-line
-  const [openClaim, setOpenClaim] = useState(false);
-  // eslint-disable-next-line
-  const [congrats, setCongrats] = useState(false);
-    // eslint-disable-next-line
-  const [glowBooster, setGlowBooster] = useState(false);
-  const [showLevels, setShowLevels] = useState(false);
-  const debounceTimerRef = useRef(null);
-    // eslint-disable-next-line
-  const refillTimerRef = useRef(null);
-  const isUpdatingRef = useRef(false);
-  const accumulatedBalanceRef = useRef(balance);
-  const accumulatedEnergyRef = useRef(energy);
-  const accumulatedTapBalanceRef = useRef(tapBalance);
-  const refillTimeoutRef = useRef(null); // Add this line
-
-
-  function triggerHapticFeedback() {
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  
-    if (isIOS && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-      window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-    } else {
-      console.warn('Haptic feedback not supported on this device.');
+  const loadPetData = useCallback(async () => {
+    if (!id) return;
+    const userRef = doc(db, 'telegramUsers', id);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      setPet(userData.pet || pet);
+      setInventory(userData.inventory || {});
     }
-  }
+  }, [id]);
 
+  const updatePetStats = useCallback(async (newStats) => {
+    const updatedPet = { ...pet, ...newStats };
+    setPet(updatedPet);
+    const userRef = doc(db, 'telegramUsers', id);
+    await updateDoc(userRef, { pet: updatedPet });
+  }, [id, pet]);
 
+  const performAction = useCallback(async (action) => {
+    let newStats = { ...pet };
+    let pointsEarned = 0;
 
-
-  const handleClick = (e) => {
-
-    // Play the sound
-    if (tapValue.value > 0) {
-     // play();
-    }
-    triggerHapticFeedback();
-
-    if (energy <= 0 || isDisabled || isUpdatingRef.current) {
-      setGlowBooster(true); // Trigger glow effect if energy and points are 0
-      setTimeout(() => {
-        setGlowBooster(false); // Remove glow effect after 1 second
-      }, 300);
-      return; // Exit if no energy left or if clicks are disabled or if an update is in progress
-    }
-
-    const { offsetX, offsetY, target } = e.nativeEvent;
-    const { clientWidth, clientHeight } = target;
-
-    const horizontalMidpoint = clientWidth / 2;
-    const verticalMidpoint = clientHeight / 2;
-
-    const animationClass =
-      offsetX < horizontalMidpoint
-        ? 'wobble-left'
-        : offsetX > horizontalMidpoint
-        ? 'wobble-right'
-        : offsetY < verticalMidpoint
-        ? 'wobble-top'
-        : 'wobble-bottom';
-
-    // Remove previous animations
-    imageRef.current.classList.remove(
-      'wobble-top',
-      'wobble-bottom',
-      'wobble-left',
-      'wobble-right'
-    );
-
-    // Add the new animation class
-    imageRef.current.classList.add(animationClass);
-
-    // Remove the animation class after animation ends to allow re-animation on the same side
-    setTimeout(() => {
-      imageRef.current.classList.remove(animationClass);
-    }, 500); // duration should match the animation duration in CSS
-
-    // Increment the count
-    const rect = e.target.getBoundingClientRect();
-    const newClick = {
-      id: Date.now(), // Unique identifier
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-
-    setClicks((prevClicks) => [...prevClicks, newClick]);
-
-    // Update state immediately for UI
-    setEnergy((prevEnergy) => {
-      const newEnergy = Math.max(prevEnergy - tapValue.value, 0); // Ensure energy does not drop below zero
-      accumulatedEnergyRef.current = newEnergy;
-      return newEnergy;
-    });
-
-    setPoints((prevPoints) => prevPoints + tapValue.value);
-
-    setBalance((prevBalance) => {
-      const newBalance = prevBalance + tapValue.value;
-      accumulatedBalanceRef.current = newBalance;
-      return newBalance;
-    });
-
-    setTapBalance((prevTapBalance) => {
-      const newTapBalance = prevTapBalance + tapValue.value;
-      accumulatedTapBalanceRef.current = newTapBalance;
-      return newTapBalance;
-    });
-
-    // Remove the click after the animation duration
-    setTimeout(() => {
-      setClicks((prevClicks) =>
-        prevClicks.filter((click) => click.id !== newClick.id)
-      );
-    }, 1000); // Match this duration with the animation duration
-
-    // Reset the debounce timer
-    clearTimeout(debounceTimerRef.current);
-    debounceTimerRef.current = setTimeout(updateFirestore, 1000); // Adjust the delay as needed
-
-  // Reset the refill timer
-  clearInterval(refillIntervalRef.current); // Stop refilling while the user is active
-  setIsRefilling(false); // Set refilling state to false
-  clearTimeout(refillTimeoutRef.current);
-  refillTimeoutRef.current = setTimeout(() => {
-    if (energy < battery.energy) {
-      refillEnergy();
-    }
-  }, 1000); // Set the inactivity period to 3 seconds (adjust as needed)
-};
-  const handleClickGuru = (e) => {
-    if (tapValue.value > 0) {
-      play2();
-    }
-    triggerHapticFeedback();
-
-    if (energy <= 0 || isDisabled || isUpdatingRef.current) {
-      setGlowBooster(true); // Trigger glow effect if energy and points are 0
-      setTimeout(() => {
-        setGlowBooster(false); // Remove glow effect after 1 second
-      }, 300);
-      return; // Exit if no energy left or if clicks are disabled or if an update is in progress
+    switch (action) {
+      case 'feed':
+        if (inventory.food > 0) {
+          newStats.hunger = Math.min(newStats.hunger + 20, 100);
+          newStats.energy = Math.min(newStats.energy + 5, 100);
+          setInventory({ ...inventory, food: inventory.food - 1 });
+          pointsEarned = 5;
+        }
+        break;
+      case 'play':
+        newStats.happiness = Math.min(newStats.happiness + 15, 100);
+        newStats.energy = Math.max(newStats.energy - 10, 0);
+        pointsEarned = 10;
+        break;
+      case 'rest':
+        newStats.energy = Math.min(newStats.energy + 30, 100);
+        newStats.health = Math.min(newStats.health + 5, 100);
+        pointsEarned = 3;
+        break;
+      case 'clean':
+        newStats.cleanliness = 100;
+        newStats.health = Math.min(newStats.health + 10, 100);
+        pointsEarned = 7;
+        break;
     }
 
-    const { offsetX, offsetY, target } = e.nativeEvent;
-    const { clientWidth, clientHeight } = target;
-
-    const horizontalMidpoint = clientWidth / 2;
-    const verticalMidpoint = clientHeight / 2;
-
-    const animationClass =
-      offsetX < horizontalMidpoint
-        ? 'wobble-left'
-        : offsetX > horizontalMidpoint
-        ? 'wobble-right'
-        : offsetY < verticalMidpoint
-        ? 'wobble-top'
-        : 'wobble-bottom';
-
-    // Remove previous animations
-    imageRef.current.classList.remove(
-      'wobble-top',
-      'wobble-bottom',
-      'wobble-left',
-      'wobble-right'
-    );
-
-    // Add the new animation class
-    imageRef.current.classList.add(animationClass);
-
-    // Remove the animation class after animation ends to allow re-animation on the same side
-    setTimeout(() => {
-      imageRef.current.classList.remove(animationClass);
-    }, 500); // duration should match the animation duration in CSS
-
-    // Increment the count
-    const rect = e.target.getBoundingClientRect();
-    const newClick = {
-      id: Date.now(), // Unique identifier
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-
-    setClicks((prevClicks) => [...prevClicks, newClick]);
-
-    // Update state immediately for UI
-    setEnergy((prevEnergy) => {
-      const newEnergy = Math.max(prevEnergy - 0, 0); // Ensure energy does not drop below zero
-      accumulatedEnergyRef.current = newEnergy;
-      return newEnergy;
-    });
-
-    setPoints((prevPoints) => prevPoints + tapValue.value * 5);
-
-    setBalance((prevBalance) => {
-      const newBalance = prevBalance + tapValue.value * 5;
-      accumulatedBalanceRef.current = newBalance;
-      return newBalance;
-    });
-
-    setTapBalance((prevTapBalance) => {
-      const newTapBalance = prevTapBalance + tapValue.value * 5;
-      accumulatedTapBalanceRef.current = newTapBalance;
-      return newTapBalance;
-    });
-
-    // Remove the click after the animation duration
-    setTimeout(() => {
-      setClicks((prevClicks) =>
-        prevClicks.filter((click) => click.id !== newClick.id)
-      );
-    }, 1000); // Match this duration with the animation duration
-
-
-    // Reset the debounce timer
-    clearTimeout(debounceTimerRef.current);
-    debounceTimerRef.current = setTimeout(updateFirestore, 1000); // Adjust the delay as needed
-
-  // Reset the refill timer
-  clearInterval(refillIntervalRef.current); // Stop refilling while the user is active
-  setIsRefilling(false); // Set refilling state to false
-  clearTimeout(refillTimeoutRef.current);
-  refillTimeoutRef.current = setTimeout(() => {
-    if (energy < battery.energy) {
-      refillEnergy();
+    newStats.experience += pointsEarned;
+    const level = calculatePetLevel(newStats.experience);
+    if (level > calculatePetLevel(pet.experience)) {
+      // Pet has leveled up, maybe evolve or unlock new features
     }
-  }, 1000); // Set the inactivity period to 3 seconds (adjust as needed)
+
+    await updatePetStats(newStats);
+    setBalance(balance + pointsEarned);
+  }, [pet, inventory, balance, setBalance, updatePetStats]);
+
+  const buyItem = useCallback(async (item, cost) => {
+    if (balance >= cost) {
+      setBalance(balance - cost);
+      setInventory({ ...inventory, [item]: (inventory[item] || 0) + 1 });
+      const userRef = doc(db, 'telegramUsers', id);
+      await updateDoc(userRef, {
+        balance: balance - cost,
+        inventory: { ...inventory, [item]: (inventory[item] || 0) + 1 }
+      });
+    }
+  }, [balance, inventory, id, setBalance]);
+
+  return (
+    <Container>
+      <PetDisplay pet={pet} />
+      <PetStats pet={pet} />
+      <PetActions onAction={performAction} inventory={inventory} />
+      <Shop buyItem={buyItem} balance={balance} />
+    </Container>
+  );
 };
 
-  const updateFirestore = async () => {
-    const telegramUser = window.Telegram.WebApp.initDataUnsafe?.user;
-    if (telegramUser) {
-      const { id: userId } = telegramUser;
-      const userRef = doc(db, 'telegramUsers', userId.toString());
-
-      // Set updating flag
-      isUpdatingRef.current = true;
-
-      try {
-        await updateDoc(userRef, {
-          balance: accumulatedBalanceRef.current,
-          energy: accumulatedEnergyRef.current,
-          tapBalance: accumulatedTapBalanceRef.current,
-        });
-
-        // No need to update state here as it is already updated immediately in handleClick
-
-        // Reset accumulated values to current state values
-        accumulatedBalanceRef.current = balance;
-        accumulatedEnergyRef.current = energy;
-        accumulatedTapBalanceRef.current = tapBalance;
-      } catch (error) {
-        console.error('Error updating balance and energy:', error);
-      } finally {
-        // Clear updating flag
-        isUpdatingRef.current = false;
-      }
-    }
-  };
-
-
-  
-  const energyPercentage = (energy / battery.energy) * 100;
-
-
-  // const handleClaim = async () => {
-  //   const telegramUser = window.Telegram.WebApp.initDataUnsafe?.user;
-  //   if (telegramUser) {
-  //     const { id: userId } = telegramUser;
-  //     const userRef = doc(db, 'telegramUsers', userId.toString());
-  //     try {
-  //       await updateDoc(userRef, {
-  //         balance: balance + points,
-  //         energy: energy,
-  //         tapBalance: tapBalance + points
-     
-  //       });
-  //       setBalance((prevBalance) => prevBalance + points);
-  //       setTapBalance((prevTapBalance) => prevTapBalance + points);
-  //       localStorage.setItem('energy', energy);
-
-  //       if (energy <= 0) {
-  //         setIsTimerVisible(true);
-  //       }
-  //       console.log('Points claimed successfully');
-  //     } catch (error) {
-  //       console.error('Error updating balance and energy:', error);
-  //     }
-  //   }
-  //   openClaimer();
-  // };
-
-
-
-  const formatNumber = (num) => {
-    if (num < 1000000) {
-      return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-    } else {
-      const millions = num / 1000000;
-      if (millions % 1 === 0) {
-        return millions + 'M';
-      } else {
-        return millions.toFixed(2).replace(/\.?0+$/, '') + 'M';
-      }
-    }
-  };
-      
-
-  
-    return (
-      <>
-        {loading ? (
-          <Spinner />
-        ) : (
-          <Animate>
-            <div className="w-full flex justify-center flex-col items-center overflow-hidden">
-              <div className="flex space-x-[2px] justify-center items-center mt-8">
-                <div className="w-[50px] h-[50px]">
-                  <img src={coinsmall} className="w-full" alt="coin" />
-                </div>
-                <h1 className="text-[#fff] text-[42px] font-extrabold">
-                  {formatNumber(balance)}
-                </h1>
-              </div>
-              <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
-                <img
-                  src={level.imgUrl}
-                  className="w-[25px] relative"
-                  alt="bronze"
-                />
-                <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
-                  {level.name}
-                </h2>
-                <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
-              </div>
-              <div className="w-full flex justify-center items-center relative mt-8">
-                <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
-                <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
-                  <div className="before"></div>
-                  <div className="after"></div>
-                </div>
-                <div className="w-[350px] h-[350px] relative flex items-center justify-center">
-                  <img
-                    src="/lihgt.gif"
-                    alt="err"
-                    className={`absolute w-[350px] rotate-45 mb-[100px] ${tapGuru ? 'block' : 'hidden'}`}
-                  />
-                  <div className="image-container">
-                    {mainTap && (
-                      <Container>
-                        <img 
-                          onPointerDown={handleClick}
-                          ref={imageRef}
-                          src={level.imgTap}
-                          alt="Wobble"
-                          className="wobble-image !w-[250px] select-none"
-                        />
-                        {clicks.map((click) => (
-                          <SlideUpText key={click.id} x={click.x} y={click.y}>
-                            +{tapValue.value}
-                          </SlideUpText>
-                        ))}
-                      </Container>
-                    )}
-                    {tapGuru && (
-                      <Container>
-                        <img
-                          onPointerDown={handleClickGuru}
-                          ref={imageRef}
-                          src={level.imgBoost}
-                          alt="Wobble"
-                          className="wobble-image !w-[250px] select-none"
-                        />
-                        {clicks.map((click) => (
-                          <SlideUpText key={click.id} x={click.x} y={click.y}>
-                            +{tapValue.value * 5}
-                          </SlideUpText>
-                        ))}
-                      </Container>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-                <div className="flex flex-col w-full items-center justify-center">
-                  <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
-                    <img alt="flash" src={flash} className="w-[20px]" />
-                    <div>
-                      <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
-                      <span className="text-[14px] font-medium">/ {battery.energy}</span>
-                    </div>
-                  </div>
-                  <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
-                    <div
-                      className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
-                      style={{ width: `${energyPercentage}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
-            </div>
-          </Animate>
-        )}
-      </>
-    );
-  };
-  
-  export default Plutos;
+export default Plutos;
