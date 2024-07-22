@@ -15,6 +15,11 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const [balance, setBalance] = useState(0);
   // const [totalBalance, setTotalBalance] = useState(0);
+  const [storkMood, setStorkMood] = useState(100); // 0-100, 100 being happiest
+  const [storkHunger, setStorkHunger] = useState(100); // 0-100, 100 being full
+  const [storkThirst, setStorkThirst] = useState(100); // 0-100, 100 being not thirsty
+  const [food, setFood] = useState(0); // Amount of food items owned
+  const [water, setWater] = useState(0); // Amount of water items owned
   const [tapBalance, setTapBalance] = useState(0);
   const [level, setLevel] = useState({ id: 1, name: "Liboo Novice", imgUrl: '/warm.webp', imgTap: '/coin-1.webp', imgBoost: '/coins-1.webp' }); // Initial level as an object with id and name
   const [tapValue, setTapValue] = useState({level: 1, value: 1});
@@ -169,6 +174,11 @@ export const UserProvider = ({ children }) => {
         }
 
         const userData = {
+          storkMood: 100,
+          storkHunger: 100,
+          storkThirst: 100,
+          food: 0,
+          water: 0,
           userId: userId.toString(),
           username: finalUsername,
           firstName,

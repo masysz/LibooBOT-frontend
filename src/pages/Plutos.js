@@ -12,457 +12,735 @@ import coinsmall from "../images/coinsmall.webp";
 import useSound from 'use-sound';
 import boopSfx from '../get.mp3';
 import burnSfx from '../burn.wav';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { doc, updateDoc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
+import styled, { keyframes } from "styled-components";
+import { useUser } from '../context/userContext';
+import useSound from 'use-sound';
+import boopSfx from '../sounds/boop.mp3';
+import chirpSfx from '../sounds/chirp.wav';
 
+const breathe = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
 
-const slideUp = keyframes`
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-350px);
+const StorkContainer = styled.div`
+  width: 300px;
+  height: 300px;
+  background-image: url(${props => props.appearance === 'baby' ? '/baby-stork.png' : 
+                           props.appearance === 'juvenile' ? '/juvenile-stork.png' : '/adult-stork.png'});
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: ${breathe} 3s infinite ease-in-out;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
   }
 `;
 
-const SlideUpText = styled.div`
+const StatusBar = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+`;
+
+const InventoryContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+`;
+
+const ActivityButton = styled.button`
+  padding: 10px 20px;
+  background: ${props => props.disabled ? '#ccc' : 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'};
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: ${props => props.disabled ? 'none' : 'translateY(-3px)'};
+    box-shadow: ${props => props.disabled ? 'none' : '0 4px 20px rgba(0, 0, 0, 0.25)'};
+  }
+`;
+
+const WeatherEffect = styled.div`
   position: absolute;
-  animation: ${slideUp} 3s ease-out;
-  font-size: 2.1em;
-  color: #ffffffa6;
-  font-weight: 600;
-  left: ${({ x }) => x}px;
-  top: ${({ y }) => y}px;
-  pointer-events: none; /* To prevent any interaction */
-`;
-
-const Container = styled.div`
-  position: relative;
-  display: inline-block;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  margin-bottom:100px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  ${props => {
+    switch(props.weather) {
+      case 'rainy':
+        return `
+          background-image: url('/rain.gif');
+          opacity: 0.5;
+        `;
+      case 'cloudy':
+        return `
+          background-color: rgba(200, 200, 200, 0.3);
+        `;
+      case 'windy':
+        return `
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/wind.gif');
+            opacity: 0.3;
+          }
+        `;
+      default:
+        return '';
+    }
+  }}
 `;
 
 const Plutos = () => {
+  // Estados del personaje
+  const [stats, setStats] = useState({
+    mood: 100,
+    hunger: 100,
+    thirst: 100,
+    energy: 100,
+    health: 100,
+    hygiene: 100,
+    level: 1,
+    exp: 0,
+    strength: 1,
+    intelligence: 1,
+    agility: 1,
+    charisma: 1
+  });
 
-  const imageRef = useRef(null);
-  const [play] = useSound(boopSfx);
-  const [play2] = useSound(burnSfx);
-  const [clicks, setClicks] = useState([]);
-  const { name, balance, tapBalance, energy, battery, tapGuru, mainTap, setIsRefilling, refillIntervalRef, refillEnergy, setEnergy, tapValue, setTapBalance, setBalance, refBonus, level, loading } = useUser();
+  // Inventario
+  const [inventory, setInventory] = useState({
+    food: {},
+    drinks: {},
+    toys: {},
+    cleaningItems: {},
+    medicines: {},
+    specialItems: {}
+  });
 
-  // eslint-disable-next-line
-  const [points, setPoints] = useState(0);
-    // eslint-disable-next-line
-  const [isDisabled, setIsDisabled] = useState(false);
-    // eslint-disable-next-line
-  const [openClaim, setOpenClaim] = useState(false);
-  // eslint-disable-next-line
-  const [congrats, setCongrats] = useState(false);
-    // eslint-disable-next-line
-  const [glowBooster, setGlowBooster] = useState(false);
-  const [showLevels, setShowLevels] = useState(false);
-  const debounceTimerRef = useRef(null);
-    // eslint-disable-next-line
-  const refillTimerRef = useRef(null);
-  const isUpdatingRef = useRef(false);
-  const accumulatedBalanceRef = useRef(balance);
-  const accumulatedEnergyRef = useRef(energy);
-  const accumulatedTapBalanceRef = useRef(tapBalance);
-  const refillTimeoutRef = useRef(null); // Add this line
+  // Otros estados
+  const [dayTime, setDayTime] = useState('day');
+  const [weather, setWeather] = useState('sunny');
+  const [isSleeping, setIsSleeping] = useState(false);
+  const [currentActivity, setCurrentActivity] = useState(null);
+  const [achievements, setAchievements] = useState([]);
+  const [missions, setMissions] = useState([]);
+  const [skills, setSkills] = useState({});
+  const [friends, setFriends] = useState([]);
+  const [storkAppearance, setStorkAppearance] = useState('baby');
+  const [lastFeedTime, setLastFeedTime] = useState(null);
+  const [gameTime, setGameTime] = useState(0);
 
+  // Sonidos
+  const [playBoop] = useSound(boopSfx);
+  const [playChirp] = useSound(chirpSfx);
 
-  function triggerHapticFeedback() {
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  
-    if (isIOS && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-      window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-    } else {
-      console.warn('Haptic feedback not supported on this device.');
+  // Referencias
+  const storkRef = useRef(null);
+  const gameLoopRef = useRef(null);
+
+  // Context
+  const { balance, setBalance, id } = useUser();
+
+  // Efectos
+  useEffect(() => {
+    loadGameState();
+    return () => {
+      if (gameLoopRef.current) clearInterval(gameLoopRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (stats.level > 5 && storkAppearance === 'baby') {
+      setStorkAppearance('juvenile');
+    } else if (stats.level > 10 && storkAppearance === 'juvenile') {
+      setStorkAppearance('adult');
     }
+  }, [stats.level, storkAppearance]);
+
+ const Plutos = () => {
+  // Estados del personaje
+  const [stats, setStats] = useState({
+    mood: 100,
+    hunger: 100,
+    thirst: 100,
+    energy: 100,
+    health: 100,
+    hygiene: 100,
+    level: 1,
+    exp: 0,
+    strength: 1,
+    intelligence: 1,
+    agility: 1,
+    charisma: 1
+  });
+
+  // Inventario
+  const [inventory, setInventory] = useState({
+    food: {},
+    drinks: {},
+    toys: {},
+    cleaningItems: {},
+    medicines: {},
+    specialItems: {}
+  });
+
+  // Otros estados
+  const [dayTime, setDayTime] = useState('day');
+  const [weather, setWeather] = useState('sunny');
+  const [isSleeping, setIsSleeping] = useState(false);
+  const [currentActivity, setCurrentActivity] = useState(null);
+  const [achievements, setAchievements] = useState([]);
+  const [missions, setMissions] = useState([]);
+  const [skills, setSkills] = useState({});
+  const [friends, setFriends] = useState([]);
+  const [storkAppearance, setStorkAppearance] = useState('baby');
+  const [lastFeedTime, setLastFeedTime] = useState(null);
+  const [gameTime, setGameTime] = useState(0);
+
+  // Sonidos
+  const [playBoop] = useSound(boopSfx);
+  const [playChirp] = useSound(chirpSfx);
+
+  // Referencias
+  const storkRef = useRef(null);
+  const gameLoopRef = useRef(null);
+
+  // Context
+  const { balance, setBalance, id } = useUser();
+
+  // Efectos
+  useEffect(() => {
+    loadGameState();
+    return () => {
+      if (gameLoopRef.current) clearInterval(gameLoopRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (stats.level > 5 && storkAppearance === 'baby') {
+      setStorkAppearance('juvenile');
+    } else if (stats.level > 10 && storkAppearance === 'juvenile') {
+      setStorkAppearance('adult');
+    }
+  }, [stats.level, storkAppearance]);
+
+
+
+// Funciones principales
+const loadGameState = async () => {
+  if (!id) return;
+  const userRef = doc(db, 'telegramUsers', id);
+  const userDoc = await getDoc(userRef);
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    setStats(userData.stats || stats);
+    setInventory(userData.inventory || inventory);
+    setAchievements(userData.achievements || []);
+    setMissions(userData.missions || []);
+    setSkills(userData.skills || {});
+    setFriends(userData.friends || []);
+    setStorkAppearance(userData.storkAppearance || 'baby');
+    setLastFeedTime(userData.lastFeedTime || null);
+    setGameTime(userData.gameTime || 0);
+  }
+  startGameLoop();
+};
+
+const startGameLoop = useCallback(() => {
+  gameLoopRef.current = setInterval(() => {
+    updateGameState();
+    checkEvents();
+    saveGameState();
+  }, 1000); // Actualizar cada segundo para mayor precisión
+}, []);
+
+const updateGameState = useCallback(() => {
+  setGameTime(prevTime => prevTime + 1);
+  setStats(prevStats => {
+    const newStats = { ...prevStats };
+    newStats.mood = Math.max(newStats.mood - 0.01, 0);
+    newStats.hunger = Math.max(newStats.hunger - 0.02, 0);
+    newStats.thirst = Math.max(newStats.thirst - 0.03, 0);
+    newStats.energy = isSleeping 
+      ? Math.min(newStats.energy + 0.1, 100) 
+      : Math.max(newStats.energy - 0.01, 0);
+    newStats.hygiene = Math.max(newStats.hygiene - 0.01, 0);
+
+    const overallWellbeing = (newStats.mood + newStats.hunger + newStats.thirst + newStats.energy + newStats.hygiene) / 5;
+    newStats.health = Math.max(0, Math.min(newStats.health + (overallWellbeing < 50 ? -0.02 : 0.01), 100));
+
+    return newStats;
+  });
+
+  checkMissions();
+  checkAchievements();
+}, [isSleeping]);
+
+const checkEvents = useCallback(() => {
+  const hour = (Math.floor(gameTime / 3600) % 24);
+  setDayTime(hour >= 6 && hour < 20 ? 'day' : 'night');
+
+  if (gameTime % 3600 === 0) { // Cambiar clima cada hora de juego
+    setWeather(['sunny', 'rainy', 'cloudy', 'windy'][Math.floor(Math.random() * 4)]);
+  }
+}, [gameTime]);
+
+const saveGameState = async () => {
+  if (!id) return;
+  const userRef = doc(db, 'telegramUsers', id);
+  try {
+    await updateDoc(userRef, {
+      stats,
+      inventory,
+      achievements,
+      missions,
+      skills,
+      friends,
+      storkAppearance,
+      lastFeedTime,
+      gameTime,
+      balance
+    });
+  } catch (error) {
+    console.error('Error saving game state:', error);
+  }
+};
+
+
+   // Funciones de actividad
+const performActivity = async (activityType, item) => {
+  if (currentActivity) return; // Prevenir múltiples actividades simultáneas
+  setCurrentActivity(activityType);
+  
+  let activityDuration = 5000; // 5 segundos por defecto
+  let expGain = 5;
+
+  switch (activityType) {
+    case 'feed':
+      await feedStork(item);
+      break;
+    case 'drink':
+      await giveWater(item);
+      break;
+    case 'play':
+      activityDuration = 10000; // Jugar toma más tiempo
+      expGain = 10;
+      await playWithStork(item);
+      break;
+    case 'clean':
+      await cleanStork(item);
+      break;
+    case 'medicate':
+      await medicateStork(item);
+      break;
+    case 'pet':
+      activityDuration = 2000; // Acariciar es rápido
+      expGain = 1;
+      await petStork();
+      break;
+    default:
+      break;
   }
 
-
-
-
-  const handleClick = (e) => {
-
-    // Play the sound
-    if (tapValue.value > 0) {
-     // play();
-    }
-    triggerHapticFeedback();
-
-    if (energy <= 0 || isDisabled || isUpdatingRef.current) {
-      setGlowBooster(true); // Trigger glow effect if energy and points are 0
-      setTimeout(() => {
-        setGlowBooster(false); // Remove glow effect after 1 second
-      }, 300);
-      return; // Exit if no energy left or if clicks are disabled or if an update is in progress
-    }
-
-    const { offsetX, offsetY, target } = e.nativeEvent;
-    const { clientWidth, clientHeight } = target;
-
-    const horizontalMidpoint = clientWidth / 2;
-    const verticalMidpoint = clientHeight / 2;
-
-    const animationClass =
-      offsetX < horizontalMidpoint
-        ? 'wobble-left'
-        : offsetX > horizontalMidpoint
-        ? 'wobble-right'
-        : offsetY < verticalMidpoint
-        ? 'wobble-top'
-        : 'wobble-bottom';
-
-    // Remove previous animations
-    imageRef.current.classList.remove(
-      'wobble-top',
-      'wobble-bottom',
-      'wobble-left',
-      'wobble-right'
-    );
-
-    // Add the new animation class
-    imageRef.current.classList.add(animationClass);
-
-    // Remove the animation class after animation ends to allow re-animation on the same side
-    setTimeout(() => {
-      imageRef.current.classList.remove(animationClass);
-    }, 500); // duration should match the animation duration in CSS
-
-    // Increment the count
-    const rect = e.target.getBoundingClientRect();
-    const newClick = {
-      id: Date.now(), // Unique identifier
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-
-    setClicks((prevClicks) => [...prevClicks, newClick]);
-
-    // Update state immediately for UI
-    setEnergy((prevEnergy) => {
-      const newEnergy = Math.max(prevEnergy - tapValue.value, 0); // Ensure energy does not drop below zero
-      accumulatedEnergyRef.current = newEnergy;
-      return newEnergy;
-    });
-
-    setPoints((prevPoints) => prevPoints + tapValue.value);
-
-    setBalance((prevBalance) => {
-      const newBalance = prevBalance + tapValue.value;
-      accumulatedBalanceRef.current = newBalance;
-      return newBalance;
-    });
-
-    setTapBalance((prevTapBalance) => {
-      const newTapBalance = prevTapBalance + tapValue.value;
-      accumulatedTapBalanceRef.current = newTapBalance;
-      return newTapBalance;
-    });
-
-    // Remove the click after the animation duration
-    setTimeout(() => {
-      setClicks((prevClicks) =>
-        prevClicks.filter((click) => click.id !== newClick.id)
-      );
-    }, 1000); // Match this duration with the animation duration
-
-    // Reset the debounce timer
-    clearTimeout(debounceTimerRef.current);
-    debounceTimerRef.current = setTimeout(updateFirestore, 1000); // Adjust the delay as needed
-
-  // Reset the refill timer
-  clearInterval(refillIntervalRef.current); // Stop refilling while the user is active
-  setIsRefilling(false); // Set refilling state to false
-  clearTimeout(refillTimeoutRef.current);
-  refillTimeoutRef.current = setTimeout(() => {
-    if (energy < battery.energy) {
-      refillEnergy();
-    }
-  }, 1000); // Set the inactivity period to 3 seconds (adjust as needed)
-};
-  const handleClickGuru = (e) => {
-    if (tapValue.value > 0) {
-      play2();
-    }
-    triggerHapticFeedback();
-
-    if (energy <= 0 || isDisabled || isUpdatingRef.current) {
-      setGlowBooster(true); // Trigger glow effect if energy and points are 0
-      setTimeout(() => {
-        setGlowBooster(false); // Remove glow effect after 1 second
-      }, 300);
-      return; // Exit if no energy left or if clicks are disabled or if an update is in progress
-    }
-
-    const { offsetX, offsetY, target } = e.nativeEvent;
-    const { clientWidth, clientHeight } = target;
-
-    const horizontalMidpoint = clientWidth / 2;
-    const verticalMidpoint = clientHeight / 2;
-
-    const animationClass =
-      offsetX < horizontalMidpoint
-        ? 'wobble-left'
-        : offsetX > horizontalMidpoint
-        ? 'wobble-right'
-        : offsetY < verticalMidpoint
-        ? 'wobble-top'
-        : 'wobble-bottom';
-
-    // Remove previous animations
-    imageRef.current.classList.remove(
-      'wobble-top',
-      'wobble-bottom',
-      'wobble-left',
-      'wobble-right'
-    );
-
-    // Add the new animation class
-    imageRef.current.classList.add(animationClass);
-
-    // Remove the animation class after animation ends to allow re-animation on the same side
-    setTimeout(() => {
-      imageRef.current.classList.remove(animationClass);
-    }, 500); // duration should match the animation duration in CSS
-
-    // Increment the count
-    const rect = e.target.getBoundingClientRect();
-    const newClick = {
-      id: Date.now(), // Unique identifier
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-
-    setClicks((prevClicks) => [...prevClicks, newClick]);
-
-    // Update state immediately for UI
-    setEnergy((prevEnergy) => {
-      const newEnergy = Math.max(prevEnergy - 0, 0); // Ensure energy does not drop below zero
-      accumulatedEnergyRef.current = newEnergy;
-      return newEnergy;
-    });
-
-    setPoints((prevPoints) => prevPoints + tapValue.value * 5);
-
-    setBalance((prevBalance) => {
-      const newBalance = prevBalance + tapValue.value * 5;
-      accumulatedBalanceRef.current = newBalance;
-      return newBalance;
-    });
-
-    setTapBalance((prevTapBalance) => {
-      const newTapBalance = prevTapBalance + tapValue.value * 5;
-      accumulatedTapBalanceRef.current = newTapBalance;
-      return newTapBalance;
-    });
-
-    // Remove the click after the animation duration
-    setTimeout(() => {
-      setClicks((prevClicks) =>
-        prevClicks.filter((click) => click.id !== newClick.id)
-      );
-    }, 1000); // Match this duration with the animation duration
-
-
-    // Reset the debounce timer
-    clearTimeout(debounceTimerRef.current);
-    debounceTimerRef.current = setTimeout(updateFirestore, 1000); // Adjust the delay as needed
-
-  // Reset the refill timer
-  clearInterval(refillIntervalRef.current); // Stop refilling while the user is active
-  setIsRefilling(false); // Set refilling state to false
-  clearTimeout(refillTimeoutRef.current);
-  refillTimeoutRef.current = setTimeout(() => {
-    if (energy < battery.energy) {
-      refillEnergy();
-    }
-  }, 1000); // Set the inactivity period to 3 seconds (adjust as needed)
+  setTimeout(() => {
+    setCurrentActivity(null);
+    addExp(expGain);
+  }, activityDuration);
 };
 
-  const updateFirestore = async () => {
-    const telegramUser = window.Telegram.WebApp.initDataUnsafe?.user;
-    if (telegramUser) {
-      const { id: userId } = telegramUser;
-      const userRef = doc(db, 'telegramUsers', userId.toString());
-
-      // Set updating flag
-      isUpdatingRef.current = true;
-
-      try {
-        await updateDoc(userRef, {
-          balance: accumulatedBalanceRef.current,
-          energy: accumulatedEnergyRef.current,
-          tapBalance: accumulatedTapBalanceRef.current,
-        });
-
-        // No need to update state here as it is already updated immediately in handleClick
-
-        // Reset accumulated values to current state values
-        accumulatedBalanceRef.current = balance;
-        accumulatedEnergyRef.current = energy;
-        accumulatedTapBalanceRef.current = tapBalance;
-      } catch (error) {
-        console.error('Error updating balance and energy:', error);
-      } finally {
-        // Clear updating flag
-        isUpdatingRef.current = false;
-      }
+const feedStork = async (foodItem) => {
+  if (inventory.food[foodItem] > 0) {
+    setInventory(prev => ({
+      ...prev,
+      food: { ...prev.food, [foodItem]: prev.food[foodItem] - 1 }
+    }));
+    setStats(prev => ({
+      ...prev,
+      hunger: Math.min(prev.hunger + 20, 100),
+      mood: Math.min(prev.mood + 5, 100)
+    }));
+    playChirp();
+    setLastFeedTime(Date.now());
+    
+    // Verificar sobrealimentación
+    if (Date.now() - lastFeedTime < 3600000) { // Si se alimentó en la última hora
+      setStats(prev => ({
+        ...prev,
+        health: Math.max(prev.health - 5, 0) // Disminuir salud si está sobrealimentado
+      }));
     }
-  };
+  }
+};
 
+const giveWater = async (drinkItem) => {
+  if (inventory.drinks[drinkItem] > 0) {
+    setInventory(prev => ({
+      ...prev,
+      drinks: { ...prev.drinks, [drinkItem]: prev.drinks[drinkItem] - 1 }
+    }));
+    setStats(prev => ({
+      ...prev,
+      thirst: Math.min(prev.thirst + 20, 100),
+      mood: Math.min(prev.mood + 5, 100)
+    }));
+    playChirp();
+  }
+};
 
-  
-  const energyPercentage = (energy / battery.energy) * 100;
+const playWithStork = async (toyItem) => {
+  if (inventory.toys[toyItem] > 0) {
+    setInventory(prev => ({
+      ...prev,
+      toys: { ...prev.toys, [toyItem]: prev.toys[toyItem] - 1 }
+    }));
+    setStats(prev => ({
+      ...prev,
+      mood: Math.min(prev.mood + 15, 100),
+      energy: Math.max(prev.energy - 10, 0),
+      agility: prev.agility + 0.1
+    }));
+    playBoop();
+  }
+};
 
+const cleanStork = async (cleaningItem) => {
+  if (inventory.cleaningItems[cleaningItem] > 0) {
+    setInventory(prev => ({
+      ...prev,
+      cleaningItems: { ...prev.cleaningItems, [cleaningItem]: prev.cleaningItems[cleaningItem] - 1 }
+    }));
+    setStats(prev => ({
+      ...prev,
+      hygiene: Math.min(prev.hygiene + 20, 100),
+      mood: Math.min(prev.mood + 5, 100)
+    }));
+    playBoop();
+  }
+};
 
-  // const handleClaim = async () => {
-  //   const telegramUser = window.Telegram.WebApp.initDataUnsafe?.user;
-  //   if (telegramUser) {
-  //     const { id: userId } = telegramUser;
-  //     const userRef = doc(db, 'telegramUsers', userId.toString());
-  //     try {
-  //       await updateDoc(userRef, {
-  //         balance: balance + points,
-  //         energy: energy,
-  //         tapBalance: tapBalance + points
-     
-  //       });
-  //       setBalance((prevBalance) => prevBalance + points);
-  //       setTapBalance((prevTapBalance) => prevTapBalance + points);
-  //       localStorage.setItem('energy', energy);
+const medicateStork = async (medicineItem) => {
+  if (inventory.medicines[medicineItem] > 0 && stats.health < 100) {
+    setInventory(prev => ({
+      ...prev,
+      medicines: { ...prev.medicines, [medicineItem]: prev.medicines[medicineItem] - 1 }
+    }));
+    setStats(prev => ({
+      ...prev,
+      health: Math.min(prev.health + 15, 100)
+    }));
+  }
+};
 
-  //       if (energy <= 0) {
-  //         setIsTimerVisible(true);
-  //       }
-  //       console.log('Points claimed successfully');
-  //     } catch (error) {
-  //       console.error('Error updating balance and energy:', error);
-  //     }
-  //   }
-  //   openClaimer();
-  // };
+const petStork = async () => {
+  setStats(prev => ({
+    ...prev,
+    mood: Math.min(prev.mood + 5, 100),
+    charisma: prev.charisma + 0.05
+  }));
+  playChirp();
+};
 
+const toggleSleep = () => {
+  setIsSleeping(prev => !prev);
+  if (!isSleeping) {
+    addExp(5);
+  }
+};
 
-
-  const formatNumber = (num) => {
-    if (num < 1000000) {
-      return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-    } else {
-      const millions = num / 1000000;
-      if (millions % 1 === 0) {
-        return millions + 'M';
-      } else {
-        return millions.toFixed(2).replace(/\.?0+$/, '') + 'M';
-      }
+const addExp = (amount) => {
+  setStats(prev => {
+    const newExp = prev.exp + amount;
+    if (newExp >= 100) {
+      return {
+        ...prev,
+        level: prev.level + 1,
+        exp: newExp - 100,
+        strength: prev.strength + 0.5,
+        intelligence: prev.intelligence + 0.5,
+        agility: prev.agility + 0.5,
+        charisma: prev.charisma + 0.5
+      };
     }
-  };
-      
+    return { ...prev, exp: newExp };
+  });
+};
 
+// ... (el resto del componente continuará en la siguiente parte)
+
+// Sistemas adicionales
+const checkMissions = () => {
+  setMissions(prevMissions => 
+    prevMissions.map(mission => {
+      switch(mission.type) {
+        case 'feed':
+          if (stats.hunger > 90 && !mission.completed) {
+            return { ...mission, completed: true, reward: 50 };
+          }
+          break;
+        case 'play':
+          if (stats.mood > 90 && !mission.completed) {
+            return { ...mission, completed: true, reward: 75 };
+          }
+          break;
+        case 'clean':
+          if (stats.hygiene > 95 && !mission.completed) {
+            return { ...mission, completed: true, reward: 60 };
+          }
+          break;
+        // Añadir más tipos de misiones aquí
+      }
+      return mission;
+    })
+  );
+};
+
+const checkAchievements = () => {
+  const newAchievements = [];
   
-    return (
+  if (stats.level === 10 && !achievements.includes('Grown Up')) {
+    newAchievements.push('Grown Up');
+  }
+  if (stats.charisma >= 10 && !achievements.includes('Charming Stork')) {
+    newAchievements.push('Charming Stork');
+  }
+  if (gameTime >= 604800 && !achievements.includes('Dedicated Owner')) { // 7 días de juego
+    newAchievements.push('Dedicated Owner');
+  }
+  // Añadir más logros aquí
+
+  if (newAchievements.length > 0) {
+    setAchievements(prev => [...prev, ...newAchievements]);
+    newAchievements.forEach(achievement => {
+      // Recompensar al jugador por cada logro
+      setBalance(prev => prev + 100);
+    });
+  }
+};
+
+const buyItem = async (itemType, itemName, cost) => {
+  if (balance >= cost) {
+    setBalance(prev => prev - cost);
+    setInventory(prev => ({
+      ...prev,
+      [itemType]: { ...prev[itemType], [itemName]: (prev[itemType][itemName] || 0) + 1 }
+    }));
+    // Añadir a Firebase
+    const userRef = doc(db, 'telegramUsers', id);
+    await updateDoc(userRef, {
+      balance: balance - cost,
+      [`inventory.${itemType}.${itemName}`]: (inventory[itemType][itemName] || 0) + 1
+    });
+    // Notificar al usuario
+    alert(`¡Has comprado ${itemName} por ${cost} monedas!`);
+  } else {
+    alert('No tienes suficientes monedas para comprar este artículo.');
+  }
+};
+
+const learnSkill = async (skillName, cost) => {
+  if (stats.intelligence >= 5 && !skills[skillName] && balance >= cost) {
+    setSkills(prev => ({ ...prev, [skillName]: 1 }));
+    setStats(prev => ({ ...prev, intelligence: prev.intelligence + 1 }));
+    setBalance(prev => prev - cost);
+    // Añadir a Firebase
+    const userRef = doc(db, 'telegramUsers', id);
+    await updateDoc(userRef, {
+      [`skills.${skillName}`]: 1,
+      'stats.intelligence': stats.intelligence + 1,
+      balance: balance - cost
+    });
+    alert(`¡Has aprendido la habilidad ${skillName}!`);
+  } else if (stats.intelligence < 5) {
+    alert('Tu cigüeña necesita más inteligencia para aprender esta habilidad.');
+  } else if (balance < cost) {
+    alert('No tienes suficientes monedas para aprender esta habilidad.');
+  } else {
+    alert('Ya has aprendido esta habilidad.');
+  }
+};
+
+const addFriend = async (friendId) => {
+  if (!friends.includes(friendId)) {
+    setFriends(prev => [...prev, friendId]);
+    // Añadir a Firebase
+    const userRef = doc(db, 'telegramUsers', id);
+    await updateDoc(userRef, {
+      friends: [...friends, friendId]
+    });
+    // Notificar al usuario
+    alert(`¡Has añadido un nuevo amigo con ID ${friendId}!`);
+  } else {
+    alert('Esta cigüeña ya es tu amiga.');
+  }
+};
+
+// ... (el resto del componente continuará en la siguiente parte)
+
+// Componentes adicionales
+const StatBar = styled.div`
+  width: 100%;
+  height: 20px;
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+const StatFill = styled.div`
+  width: ${props => props.value}%;
+  height: 100%;
+  background-color: ${props => props.color};
+  transition: width 0.3s ease-in-out;
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+`;
+
+// Componente principal
+return (
+  <div>
+    <WeatherEffect weather={weather}>
+      <StorkContainer ref={storkRef} appearance={storkAppearance}>
+        {/* La imagen de la cigüeña se maneja en el styled component */}
+      </StorkContainer>
+    </WeatherEffect>
+    
+    <StatusBar>
+      {Object.entries(stats).map(([stat, value]) => (
+        <div key={stat}>
+          <p>{stat}: {typeof value === 'number' ? value.toFixed(2) : value}</p>
+          {['mood', 'hunger', 'thirst', 'energy', 'health', 'hygiene'].includes(stat) && (
+            <StatBar>
+              <StatFill 
+                value={value} 
+                color={
+                  stat === 'mood' ? '#FFD700' :
+                  stat === 'hunger' ? '#FF6347' :
+                  stat === 'thirst' ? '#4169E1' :
+                  stat === 'energy' ? '#32CD32' :
+                  stat === 'health' ? '#FF69B4' :
+                  '#8A2BE2'
+                }
+              />
+            </StatBar>
+          )}
+        </div>
+      ))}
+    </StatusBar>
+
+    <InventoryContainer>
+      {Object.entries(inventory).map(([category, items]) => (
+        <div key={category}>
+          <h3>{category}</h3>
+          {Object.entries(items).map(([item, quantity]) => (
+            <div key={item}>{item}: {quantity}</div>
+          ))}
+        </div>
+      ))}
+    </InventoryContainer>
+
+    <div>
+      <ActivityButton onClick={() => performActivity('feed', 'worm')} disabled={currentActivity}>Feed Worm</ActivityButton>
+      <ActivityButton onClick={() => performActivity('drink', 'water')} disabled={currentActivity}>Give Water</ActivityButton>
+      <ActivityButton onClick={() => performActivity('play', 'ball')} disabled={currentActivity}>Play with Ball</ActivityButton>
+      <ActivityButton onClick={() => performActivity('clean', 'soap')} disabled={currentActivity}>Clean</ActivityButton>
+      <ActivityButton onClick={() => performActivity('medicate', 'vitamin')} disabled={currentActivity}>Give Vitamin</ActivityButton>
+      <ActivityButton onClick={() => performActivity('pet')} disabled={currentActivity}>Pet Stork</ActivityButton>
+      <ActivityButton onClick={toggleSleep}>{isSleeping ? 'Wake Up' : 'Sleep'}</ActivityButton>
+    </div>
+
+    <div>
+      <h3>Missions</h3>
+      {missions.map((mission, index) => (
+        <div key={index}>
+          <p>{mission.description} - {mission.completed ? 'Completed' : 'In Progress'}</p>
+          {mission.completed && !mission.rewarded && (
+            <button onClick={() => {
+              setBalance(prev => prev + mission.reward);
+              setMissions(prev => prev.map((m, i) => i === index ? {...m, rewarded: true} : m));
+            }}>
+              Claim Reward
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <div>
+      <h3>Achievements</h3>
+      {achievements.map((achievement, index) => (
+        <div key={index}>{achievement}</div>
+      ))}
+    </div>
+
+    <div>
+      <h3>Shop</h3>
+      <button onClick={() => buyItem('food', 'premium_worm', 50)}>Buy Premium Worm (50 coins)</button>
+      <button onClick={() => buyItem('toys', 'deluxe_ball', 100)}>Buy Deluxe Ball (100 coins)</button>
+      {/* Añadir más artículos a la tienda */}
+    </div>
+
+    <div>
+      <h3>Skills</h3>
+      <button onClick={() => learnSkill('flying', 200)}>Learn Flying (200 coins)</button>
+      <button onClick={() => learnSkill('fishing', 150)}>Learn Fishing (150 coins)</button>
+      {/* Añadir más habilidades */}
+    </div>
+
+    {/* Modal para mostrar mensajes importantes */}
+    {showModal && (
       <>
-        {loading ? (
-          <Spinner />
-        ) : (
-          <Animate>
-            <div className="w-full flex justify-center flex-col items-center overflow-hidden">
-              <div className="flex space-x-[2px] justify-center items-center mt-8">
-                <div className="w-[50px] h-[50px]">
-                  <img src={coinsmall} className="w-full" alt="coin" />
-                </div>
-                <h1 className="text-[#fff] text-[42px] font-extrabold">
-                  {formatNumber(balance)}
-                </h1>
-              </div>
-              <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
-                <img
-                  src={level.imgUrl}
-                  className="w-[25px] relative"
-                  alt="bronze"
-                />
-                <h2 onClick={() => setShowLevels(true)} className="text-[#9d99a9] text-[20px] font-medium">
-                  {level.name}
-                </h2>
-                <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
-              </div>
-              <div className="w-full flex justify-center items-center relative mt-8">
-                <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
-                <div className={`${tapGuru ? 'block' : 'hidden'} pyro`}>
-                  <div className="before"></div>
-                  <div className="after"></div>
-                </div>
-                <div className="w-[350px] h-[350px] relative flex items-center justify-center">
-                  <img
-                    src="/lihgt.gif"
-                    alt="err"
-                    className={`absolute w-[350px] rotate-45 mb-[100px] ${tapGuru ? 'block' : 'hidden'}`}
-                  />
-                  <div className="image-container">
-                    {mainTap && (
-                      <Container>
-                        <img 
-                          onPointerDown={handleClick}
-                          ref={imageRef}
-                          src={level.imgTap}
-                          alt="Wobble"
-                          className="wobble-image !w-[250px] select-none"
-                        />
-                        {clicks.map((click) => (
-                          <SlideUpText key={click.id} x={click.x} y={click.y}>
-                            +{tapValue.value}
-                          </SlideUpText>
-                        ))}
-                      </Container>
-                    )}
-                    {tapGuru && (
-                      <Container>
-                        <img
-                          onPointerDown={handleClickGuru}
-                          ref={imageRef}
-                          src={level.imgBoost}
-                          alt="Wobble"
-                          className="wobble-image !w-[250px] select-none"
-                        />
-                        {clicks.map((click) => (
-                          <SlideUpText key={click.id} x={click.x} y={click.y}>
-                            +{tapValue.value * 5}
-                          </SlideUpText>
-                        ))}
-                      </Container>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-                <div className="flex flex-col w-full items-center justify-center">
-                  <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
-                    <img alt="flash" src={flash} className="w-[20px]" />
-                    <div>
-                      <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
-                      <span className="text-[14px] font-medium">/ {battery.energy}</span>
-                    </div>
-                  </div>
-                  <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
-                    <div
-                      className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
-                      style={{ width: `${energyPercentage}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
-            </div>
-          </Animate>
-        )}
+        <Overlay onClick={() => setShowModal(false)} />
+        <Modal>
+          <h2>{modalTitle}</h2>
+          <p>{modalMessage}</p>
+          <button onClick={() => setShowModal(false)}>Close</button>
+        </Modal>
       </>
-    );
-  };
-  
-  export default Plutos;
+    )}
+  </div>
+);
+};
+}
+export default Plutos;
