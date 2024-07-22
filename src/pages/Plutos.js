@@ -13,7 +13,7 @@ import burnSfx from '../burn.wav';
 import { doc, updateDoc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { useUser } from '../context/userContext';
 import boopSfx from '../sounds/get.mp3';
-import chirpSfx from '../sounds/chirp.wav';
+import chirpSfx from '../sounds/chirp.mp3';
 
 const breathe = keyframes`
   0% { transform: scale(1); }
