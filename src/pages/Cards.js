@@ -1,15 +1,26 @@
-// src/pages/Cards.js
-
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion, runTransaction } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
-import { FaCoins, FaBolt, FaClock, FaRocket } from 'react-icons/fa';
+import { FaCoins, FaBolt, FaClock, FaRocket, FaStar } from 'react-icons/fa';
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
+import debounce from 'lodash/debounce';
+
+const RARITY_COLORS = {
+  common: 'text-gray-400',
+  rare: 'text-blue-400',
+  epic: 'text-purple-400',
+  legendary: 'text-yellow-400'
+};
 
 const Cards = () => {
-  const { balance, id, setBalance, tapValue, setTapValue, battery, setBattery, energy, setEnergy, timeRefill, setTimeRefill } = useUser();
+  const { 
+    balance, id, setBalance, tapValue, setTapValue, 
+    battery, setBattery, energy, setEnergy, 
+    timeRefill, setTimeRefill, refBonus, SetRefBonus 
+  } = useUser();
+  
   const [cards, setCards] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [ownedCards, setOwnedCards] = useState([]);
@@ -17,77 +28,102 @@ const Cards = () => {
   const [loading, setLoading] = useState(true);
   const [pointsPerHour, setPointsPerHour] = useState(0);
   const [lastCollected, setLastCollected] = useState(null);
+  const [error, setError] = useState(null);
+  const [userStats, setUserStats] = useState({});
+
+  const containerRef = useRef(null);
+
+  const fetchCardsAndUserData = useCallback(async () => {
+    try {
+      const cardsCollection = collection(db, 'cards');
+      const cardSnapshot = await getDocs(cardsCollection);
+      const cardList = cardSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setCards(cardList);
+
+      const userRef = doc(db, 'telegramUsers', id.toString());
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+
+      setOwnedCards(userData.ownedCards || []);
+      setCardLevels(userData.cardLevels || {});
+      setPointsPerHour(userData.pointsPerHour || 0);
+      setLastCollected(userData.lastCollected?.toDate() || new Date());
+      setUserStats(userData.stats || {});
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load data. Please try again later.");
+      setLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    const fetchCardsAndUserData = async () => {
-      try {
-        const cardsCollection = collection(db, 'cards');
-        const cardSnapshot = await getDocs(cardsCollection);
-        const cardList = cardSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setCards(cardList);
-
-        const userRef = doc(db, 'telegramUsers', id.toString());
-        const userDoc = await getDoc(userRef);
-        const userData = userDoc.data();
-
-        setOwnedCards(userData.ownedCards || []);
-        setCardLevels(userData.cardLevels || {});
-        setPointsPerHour(userData.pointsPerHour || 0);
-        setLastCollected(userData.lastCollected?.toDate() || new Date());
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
-
     fetchCardsAndUserData();
-  }, [id]);
+  }, [fetchCardsAndUserData]);
 
   useEffect(() => {
     const collectOfflinePoints = async () => {
       const now = new Date();
-      const timeDiff = (now - lastCollected) / (1000 * 60 * 60); // difference in hours
-      const hoursToCollect = Math.min(timeDiff, 8); // max 8 hours
+      const timeDiff = (now - lastCollected) / (1000 * 60 * 60);
+      const hoursToCollect = Math.min(timeDiff, 8);
       const pointsToAdd = Math.floor(pointsPerHour * hoursToCollect);
 
       if (pointsToAdd > 0) {
-        const newBalance = balance + pointsToAdd;
-        const userRef = doc(db, 'telegramUsers', id.toString());
-        await updateDoc(userRef, {
-          balance: newBalance,
-          lastCollected: now
-        });
-        setBalance(newBalance);
-        setLastCollected(now);
+        try {
+          await runTransaction(db, async (transaction) => {
+            const userRef = doc(db, 'telegramUsers', id.toString());
+            const userDoc = await transaction.get(userRef);
+            const userData = userDoc.data();
+            
+            const newBalance = userData.balance + pointsToAdd;
+            transaction.update(userRef, { 
+              balance: newBalance,
+              lastCollected: now
+            });
+            
+            setBalance(newBalance);
+            setLastCollected(now);
+          });
+        } catch (error) {
+          console.error("Error collecting offline points:", error);
+          setError("Failed to collect offline points. Please try again.");
+        }
       }
     };
 
     if (lastCollected) {
       collectOfflinePoints();
     }
-  }, [lastCollected, pointsPerHour, balance, id, setBalance]);
+  }, [lastCollected, pointsPerHour, id, setBalance]);
 
   const handlePurchase = async (card) => {
     if (balance >= card.baseCost) {
       try {
-        const newBalance = balance - card.baseCost;
-        const userRef = doc(db, 'telegramUsers', id.toString());
-        
-        await updateDoc(userRef, {
-          balance: newBalance,
-          ownedCards: arrayUnion(card.id),
-          [`cardLevels.${card.id}`]: 1
+        await runTransaction(db, async (transaction) => {
+          const userRef = doc(db, 'telegramUsers', id.toString());
+          const userDoc = await transaction.get(userRef);
+          const userData = userDoc.data();
+          
+          const newBalance = userData.balance - card.baseCost;
+          const newOwnedCards = [...userData.ownedCards, card.id];
+          const newCardLevels = { ...userData.cardLevels, [card.id]: 1 };
+          
+          transaction.update(userRef, {
+            balance: newBalance,
+            ownedCards: newOwnedCards,
+            cardLevels: newCardLevels
+          });
+          
+          setBalance(newBalance);
+          setOwnedCards(newOwnedCards);
+          setCardLevels(newCardLevels);
         });
 
-        setBalance(newBalance);
-        setOwnedCards([...ownedCards, card.id]);
-        setCardLevels({...cardLevels, [card.id]: 1});
-
-        applyCardEffect(card, 1);
+        await applyCardEffect(card, 1);
       } catch (error) {
         console.error("Error purchasing card:", error);
+        setError("Failed to purchase card. Please try again.");
       }
     }
   };
@@ -99,21 +135,28 @@ const Cards = () => {
       
       if (balance >= upgradeCost) {
         try {
-          const newBalance = balance - upgradeCost;
-          const newLevel = currentLevel + 1;
-          const userRef = doc(db, 'telegramUsers', id.toString());
-          
-          await updateDoc(userRef, {
-            balance: newBalance,
-            [`cardLevels.${card.id}`]: newLevel
+          await runTransaction(db, async (transaction) => {
+            const userRef = doc(db, 'telegramUsers', id.toString());
+            const userDoc = await transaction.get(userRef);
+            const userData = userDoc.data();
+            
+            const newBalance = userData.balance - upgradeCost;
+            const newLevel = currentLevel + 1;
+            const newCardLevels = { ...userData.cardLevels, [card.id]: newLevel };
+            
+            transaction.update(userRef, {
+              balance: newBalance,
+              cardLevels: newCardLevels
+            });
+            
+            setBalance(newBalance);
+            setCardLevels(newCardLevels);
           });
 
-          setBalance(newBalance);
-          setCardLevels({...cardLevels, [card.id]: newLevel});
-
-          applyCardEffect(card, newLevel);
+          await applyCardEffect(card, currentLevel + 1);
         } catch (error) {
           console.error("Error upgrading card:", error);
+          setError("Failed to upgrade card. Please try again.");
         }
       }
     }
@@ -123,30 +166,57 @@ const Cards = () => {
     const effect = card.baseEffect * level;
     const userRef = doc(db, 'telegramUsers', id.toString());
 
-    switch (card.category) {
-      case 'tap_boost':
-        const newTapValue = { ...tapValue, value: tapValue.value + effect };
-        setTapValue(newTapValue);
-        await updateDoc(userRef, { tapValue: newTapValue });
-        break;
-      case 'energy_boost':
-        const newBattery = { ...battery, energy: battery.energy + effect };
-        setBattery(newBattery);
-        setEnergy(Math.min(energy + effect, newBattery.energy));
-        await updateDoc(userRef, { battery: newBattery, energy: Math.min(energy + effect, newBattery.energy) });
-        break;
-      case 'recharge_boost':
-        const newTimeRefill = { ...timeRefill, duration: Math.max(timeRefill.duration - effect, 1) };
-        setTimeRefill(newTimeRefill);
-        await updateDoc(userRef, { timeRefill: newTimeRefill });
-        break;
-      case 'offline_earnings':
-        const newPointsPerHour = pointsPerHour + effect;
-        setPointsPerHour(newPointsPerHour);
-        await updateDoc(userRef, { pointsPerHour: newPointsPerHour });
-        break;
-      default:
-        console.warn("Unknown card category:", card.category);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        const userData = userDoc.data();
+
+        const updates = {};
+
+        switch (card.category) {
+          case 'tap_boost':
+            const newTapValue = { ...userData.tapValue, value: userData.tapValue.value + effect };
+            updates.tapValue = newTapValue;
+            setTapValue(newTapValue);
+            break;
+          case 'energy_boost':
+            const newBattery = { ...userData.battery, energy: userData.battery.energy + effect };
+            const newEnergy = Math.min(userData.energy + effect, newBattery.energy);
+            updates.battery = newBattery;
+            updates.energy = newEnergy;
+            setBattery(newBattery);
+            setEnergy(newEnergy);
+            break;
+          case 'recharge_boost':
+            const newTimeRefill = { ...userData.timeRefill, duration: Math.max(userData.timeRefill.duration - effect, 1) };
+            updates.timeRefill = newTimeRefill;
+            setTimeRefill(newTimeRefill);
+            break;
+          case 'offline_earnings':
+            const newPointsPerHour = userData.pointsPerHour + effect;
+            updates.pointsPerHour = newPointsPerHour;
+            setPointsPerHour(newPointsPerHour);
+            break;
+          case 'ref_bonus':
+            const newRefBonus = userData.refBonus + effect;
+            updates.refBonus = newRefBonus;
+            SetRefBonus(newRefBonus);
+            break;
+          default:
+            console.warn("Unknown card category:", card.category);
+        }
+
+        transaction.update(userRef, updates);
+
+        // Update user stats
+        const newStats = { ...userData.stats };
+        newStats[card.category] = (newStats[card.category] || 0) + effect;
+        transaction.update(userRef, { stats: newStats });
+        setUserStats(newStats);
+      });
+    } catch (error) {
+      console.error("Error applying card effect:", error);
+      setError("Failed to apply card effect. Please try again.");
     }
   };
 
@@ -165,21 +235,42 @@ const Cards = () => {
       case 'energy_boost': return <FaBolt className="text-blue-400" />;
       case 'recharge_boost': return <FaClock className="text-green-400" />;
       case 'offline_earnings': return <FaRocket className="text-purple-400" />;
+      case 'ref_bonus': return <FaStar className="text-orange-400" />;
       default: return null;
     }
   };
+
+  const handleScroll = debounce(() => {
+    // Implement infinite scrolling or lazy loading here
+  }, 200);
+
+  useEffect(() => {
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      currentContainer.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (currentContainer) {
+        currentContainer.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [handleScroll]);
 
   if (loading) {
     return <Spinner />;
   }
 
+  if (error) {
+    return <div className="text-red-500 text-center">{error}</div>;
+  }
+
   return (
     <Animate>
-      <div className="cards-page p-4 max-w-4xl mx-auto">
+      <div ref={containerRef} className="cards-page p-4 max-w-4xl mx-auto overflow-auto h-screen">
         <h1 className="text-3xl font-bold mb-6 text-center text-white">Card Shop</h1>
         
         <div className="mb-6 flex justify-center space-x-4 overflow-x-auto">
-          {['all', 'tap_boost', 'energy_boost', 'recharge_boost', 'offline_earnings'].map(category => (
+          {['all', 'tap_boost', 'energy_boost', 'recharge_boost', 'offline_earnings', 'ref_bonus'].map(category => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
@@ -200,7 +291,7 @@ const Cards = () => {
             .map(card => (
               <div
                 key={card.id}
-                className="bg-gray-800 rounded-lg p-4 flex flex-col justify-between hover:shadow-lg transition duration-300"
+                className={`bg-gray-800 rounded-lg p-4 flex flex-col justify-between hover:shadow-lg transition duration-300 border-2 ${RARITY_COLORS[card.rarity]}`}
               >
                 <div>
                   <div className="flex items-center mb-2">
@@ -211,6 +302,7 @@ const Cards = () => {
                     <img src={card.imageUrl} alt={card.name} className="w-full h-full object-cover" />
                   </div>
                   <p className="text-gray-400 mb-4">{card.description}</p>
+                  <p className={`mb-2 ${RARITY_COLORS[card.rarity]}`}>Rarity: {card.rarity}</p>
                   <p className="text-yellow-400 mb-2">
                     Cost: {formatNumber(ownedCards.includes(card.id) ? card.upgradeFormula(cardLevels[card.id] || 1) : card.baseCost)}
                   </p>
@@ -243,18 +335,3 @@ const Cards = () => {
               </div>
             ))}
         </div>
-
-        <div className="mt-8 bg-gray-800 rounded-lg p-4">
-          <h2 className="text-2xl font-bold mb-4 text-white">Your Stats</h2>
-          <p className="text-gray-300 mb-2">Balance: {formatNumber(balance)}</p>
-          <p className="text-gray-300 mb-2">Tap Value: {tapValue.value}</p>
-          <p className="text-gray-300 mb-2">Energy Capacity: {battery.energy}</p>
-          <p className="text-gray-300 mb-2">Energy Recharge Time: {timeRefill.duration} minutes</p>
-          <p className="text-gray-300">Points Per Hour (Offline): {formatNumber(pointsPerHour)}</p>
-        </div>
-      </div>
-    </Animate>
-  );
-};
-
-export default Cards;
