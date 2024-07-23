@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { collection, getDocs, doc, getDoc, updateDoc, arrayUnion, runTransaction } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback } from 'react';
+import { collection, getDocs, doc, getDoc, runTransaction } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
 import { FaCoins, FaBolt, FaClock, FaRocket, FaStar } from 'react-icons/fa';
 import Animate from '../Components/Animate';
 import Spinner from '../Components/Spinner';
-import debounce from 'lodash/debounce';
 
 const RARITY_COLORS = {
   common: 'text-gray-400',
@@ -30,8 +29,6 @@ const Cards = () => {
   const [lastCollected, setLastCollected] = useState(null);
   const [error, setError] = useState(null);
   const [userStats, setUserStats] = useState({});
-
-  const containerRef = useRef(null);
 
   const fetchCardsAndUserData = useCallback(async () => {
     try {
@@ -61,41 +58,6 @@ const Cards = () => {
   useEffect(() => {
     fetchCardsAndUserData();
   }, [fetchCardsAndUserData]);
-
-  useEffect(() => {
-    const collectOfflinePoints = async () => {
-      const now = new Date();
-      const timeDiff = (now - lastCollected) / (1000 * 60 * 60);
-      const hoursToCollect = Math.min(timeDiff, 8);
-      const pointsToAdd = Math.floor(pointsPerHour * hoursToCollect);
-
-      if (pointsToAdd > 0) {
-        try {
-          await runTransaction(db, async (transaction) => {
-            const userRef = doc(db, 'telegramUsers', id.toString());
-            const userDoc = await transaction.get(userRef);
-            const userData = userDoc.data();
-            
-            const newBalance = userData.balance + pointsToAdd;
-            transaction.update(userRef, { 
-              balance: newBalance,
-              lastCollected: now
-            });
-            
-            setBalance(newBalance);
-            setLastCollected(now);
-          });
-        } catch (error) {
-          console.error("Error collecting offline points:", error);
-          setError("Failed to collect offline points. Please try again.");
-        }
-      }
-    };
-
-    if (lastCollected) {
-      collectOfflinePoints();
-    }
-  }, [lastCollected, pointsPerHour, id, setBalance]);
 
   const handlePurchase = async (card) => {
     if (balance >= card.baseCost) {
@@ -206,20 +168,19 @@ const Cards = () => {
             console.warn("Unknown card category:", card.category);
         }
 
-        transaction.update(userRef, updates);
-
         // Update user stats
         const newStats = { ...userData.stats };
         newStats[card.category] = (newStats[card.category] || 0) + effect;
-        transaction.update(userRef, { stats: newStats });
+        updates.stats = newStats;
+
+        transaction.update(userRef, updates);
         setUserStats(newStats);
       });
     } catch (error) {
       console.error("Error applying card effect:", error);
       setError("Failed to apply card effect. Please try again.");
     }
-  };
-
+  }
   const formatNumber = (num) => {
     if (num < 1000000) {
       return new Intl.NumberFormat().format(num).replace(/,/g, " ");
