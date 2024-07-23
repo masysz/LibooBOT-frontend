@@ -138,41 +138,43 @@ const DailyRewards = ({ showModal, setShowModal }) => {
   if (!showModal) return null;
 
   return (
-    <div className="fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50">
-      <div className="bg-[#1e2340] rounded-lg p-6 w-11/12 max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Daily Rewards</h2>
+    <div className="fixed inset-0 z-50 bg-[#1e2340] flex flex-col items-center justify-start overflow-y-auto">
+      <div className="w-full max-w-md px-4 py-8">
+        <h2 className="text-3xl font-bold mb-8 text-center text-white">Daily Rewards</h2>
         {loading ? (
-          <p className="text-center">Loading...</p>
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
         ) : error ? (
           <p className="text-red-500 text-center">{error}</p>
         ) : (
           <>
-            <div className="grid grid-cols-5 gap-2 mb-4">
+            <div className="grid grid-cols-5 gap-4 mb-8">
               {rewards.map((reward, index) => (
                 <div 
                   key={index} 
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg ${
+                  className={`relative flex flex-col items-center justify-center p-3 rounded-lg ${
                     index < currentStreak ? 'bg-green-500' : 
                     index === currentStreak && canClaim ? 'bg-yellow-500 animate-pulse' : 
                     'bg-gray-700'
                   }`}
                 >
-                  <img src={coinsmall} alt="coin" className="w-6 h-6 mb-1" />
-                  <span className="text-xs">{reward.toLocaleString()}</span>
-                  <span className="text-xs">Day {index + 1}</span>
+                  <img src={coinsmall} alt="coin" className="w-8 h-8 mb-2" />
+                  <span className="text-xs font-semibold text-white">{reward.toLocaleString()}</span>
+                  <span className="text-xs text-white">Day {index + 1}</span>
+                  {index < currentStreak && (
+                    <IoCheckmarkCircle className="absolute top-1 right-1 text-white text-lg" />
+                  )}
                 </div>
               ))}
             </div>
-            <div className="text-center mb-4">
-              <p>Current Streak: {currentStreak} day{currentStreak !== 1 ? 's' : ''}</p>
-              {lastClaimDate && (
-                <p>Last Claim: {lastClaimDate.toLocaleDateString()}</p>
-              )}
+            <div className="text-center mb-8">
+              <p className="text-xl font-semibold text-white">Current Streak: {currentStreak} day{currentStreak !== 1 ? 's' : ''}</p>
             </div>
             <button
               onClick={claimReward}
               disabled={!canClaim || loading}
-              className={`w-full py-2 px-4 rounded-lg text-white font-semibold ${
+              className={`w-full py-4 px-6 rounded-lg text-white text-xl font-semibold ${
                 canClaim && !loading ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 cursor-not-allowed'
               } transition duration-300 ease-in-out transform hover:scale-105`}
             >
@@ -181,8 +183,8 @@ const DailyRewards = ({ showModal, setShowModal }) => {
           </>
         )}
         {claimAnimation && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-green-500 text-white px-6 py-3 rounded-lg animate-bounce">
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div className="bg-green-500 text-white px-8 py-4 rounded-lg text-2xl font-bold animate-bounce">
               Reward Claimed!
             </div>
           </div>
