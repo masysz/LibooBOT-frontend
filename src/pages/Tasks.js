@@ -28,6 +28,7 @@ import congrats from "../images/celebrate.gif";
 import { useUser } from '../context/userContext';
 import MilestoneRewards from '../Components/MilestoneRewards';
 import ReferralRewards from '../Components/Rewards';
+import DailyRewards from '../Components/DailyRewards';
 
 
 const Tasks = () => {
@@ -257,6 +258,33 @@ const levelsAction = () => {
             </div>
 
             </div>
+
+
+            <div onClick={handleDailyRewards} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+  <div className='flex flex-1 items-center space-x-2'>
+    <div className=''>
+      <img src={coinsmall} alt="daily rewards" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+      <span className='font-semibold'>
+        Daily Rewards
+      </span>
+      <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+          <img src={coinsmall} className="w-full" alt="coin"/>
+        </span>
+        <span className='font-medium'>
+          Claim daily
+        </span>
+      </div>
+    </div>
+  </div>
+  <div className=''>
+    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+  </div>
+</div>
+
+
 
 
             <div className='!mt-[80px] w-full h-[60vh] flex flex-col overflow-y-auto'>
@@ -621,6 +649,7 @@ const levelsAction = () => {
 <TaskSeven showModal={showModal7} setShowModal={setShowModal7} />
 <ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
 <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+<DailyRewards showModal={showDailyRewards} setShowModal={setShowDailyRewards} />
 
 
 
