@@ -30,7 +30,7 @@ const DailyRewards = ({ showModal, setShowModal }) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         setCurrentStreak(data.currentStreak || 0);
-        setLastClaimDate(data.lastClaimDate);
+        setLastClaimDate(data.lastClaimDate ? data.lastClaimDate.toDate() : null);
       } else {
         // Initialize user data if it doesn't exist
         await setDoc(userDocRef, {
@@ -53,7 +53,7 @@ const DailyRewards = ({ showModal, setShowModal }) => {
   useEffect(() => {
     if (lastClaimDate) {
       const today = new Date().setHours(0, 0, 0, 0);
-      const lastClaim = new Date(lastClaimDate.toDate()).setHours(0, 0, 0, 0);
+      const lastClaim = new Date(lastClaimDate).setHours(0, 0, 0, 0);
       const diffDays = Math.floor((today - lastClaim) / (1000 * 60 * 60 * 24));
 
       if (diffDays === 1) {
@@ -166,7 +166,7 @@ const DailyRewards = ({ showModal, setShowModal }) => {
             <div className="text-center mb-4">
               <p>Current Streak: {currentStreak} day{currentStreak !== 1 ? 's' : ''}</p>
               {lastClaimDate && (
-                <p>Last Claim: {lastClaimDate.toDate().toLocaleDateString()}</p>
+                <p>Last Claim: {lastClaimDate.toLocaleDateString()}</p>
               )}
             </div>
             <button
