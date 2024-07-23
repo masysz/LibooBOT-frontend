@@ -240,15 +240,13 @@ const Cards = () => {
     }
   };
 
-  const handleScroll = debounce(() => {
-    // Implement infinite scrolling or lazy loading here
-  }, 200);
-
-  useEffect(() => {
+   useLayoutEffect(() => {
     const handleScroll = debounce(() => {
-      // Implement infinite scrolling or lazy loading here
+      if (containerRef.current) {
+        // Implement infinite scrolling or lazy loading here
+      }
     }, 200);
-  
+
     const currentContainer = containerRef.current;
     if (currentContainer) {
       currentContainer.addEventListener('scroll', handleScroll);
