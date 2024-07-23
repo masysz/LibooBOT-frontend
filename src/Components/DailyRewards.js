@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { db } from '../firebase';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useUser } from '../context/userContext';
 import coinsmall from "../images/coinsmall.webp";
 
@@ -9,16 +9,46 @@ const DailyRewards = ({ showModal, setShowModal }) => {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [lastClaimDate, setLastClaimDate] = useState(null);
   const [canClaim, setCanClaim] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [claimAnimation, setClaimAnimation] = useState(false);
 
   const rewards = [
     2500, 7000, 18000, 52000, 80000, 100000, 250000, 320000, 500000, 1000000
   ];
 
-  useEffect(() => {
-    if (id) {
-      fetchUserData();
+  const fetchUserData = useCallback(async () => {
+    if (!id) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const userDocRef = doc(db, 'userDailyRewards', id);
+      const docSnap = await getDoc(userDocRef);
+      
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setCurrentStreak(data.currentStreak || 0);
+        setLastClaimDate(data.lastClaimDate);
+      } else {
+        // Initialize user data if it doesn't exist
+        await setDoc(userDocRef, {
+          currentStreak: 0,
+          lastClaimDate: null
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setError('Failed to load user data. Please try again.');
+    } finally {
+      setLoading(false);
     }
   }, [id]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
   useEffect(() => {
     if (lastClaimDate) {
@@ -31,39 +61,30 @@ const DailyRewards = ({ showModal, setShowModal }) => {
       } else if (diffDays > 1) {
         setCurrentStreak(0);
         setCanClaim(true);
+      } else {
+        setCanClaim(false);
       }
     } else {
       setCanClaim(true);
     }
   }, [lastClaimDate]);
 
-  const fetchUserData = async () => {
-    try {
-      const userDocRef = doc(db, 'userDailyRewards', id);
-      const docSnap = await getDoc(userDocRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setCurrentStreak(data.currentStreak);
-        setLastClaimDate(data.lastClaimDate);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
-
   const claimReward = async () => {
-    if (!canClaim) return;
+    if (!canClaim || loading) return;
 
-    const newStreak = currentStreak + 1;
-    const reward = rewards[Math.min(newStreak - 1, rewards.length - 1)];
-    const newBalance = balance + reward;
-    const newTapBalance = tapBalance + reward;
+    setLoading(true);
+    setError(null);
 
     try {
+      const newStreak = currentStreak + 1;
+      const reward = rewards[Math.min(newStreak - 1, rewards.length - 1)];
+      const newBalance = balance + reward;
+      const newTapBalance = tapBalance + reward;
+
       const userDocRef = doc(db, 'userDailyRewards', id);
       await setDoc(userDocRef, {
         currentStreak: newStreak,
-        lastClaimDate: new Date(),
+        lastClaimDate: serverTimestamp(),
       }, { merge: true });
 
       const userRef = doc(db, 'telegramUsers', id);
@@ -77,21 +98,56 @@ const DailyRewards = ({ showModal, setShowModal }) => {
       setCurrentStreak(newStreak);
       setLastClaimDate(new Date());
       setCanClaim(false);
+      setClaimAnimation(true);
 
-      // Show success message or animation here
+      setTimeout(() => {
+        setClaimAnimation(false);
+      }, 2000);
+
     } catch (error) {
       console.error('Error claiming reward:', error);
-      // Show error message here
+      setError('Failed to claim reward. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const closeModal = () => {
+    setShowModal(false);
+    document.getElementById("footermain").style.zIndex = "";
+  };
+
+  useEffect(() => {
+    const handleBackButtonClick = () => {
+      closeModal();
+    };
+  
+    if (showModal) {
+      window.Telegram.WebApp.BackButton.show();
+      window.Telegram.WebApp.BackButton.onClick(handleBackButtonClick);
+    } else {
+      window.Telegram.WebApp.BackButton.hide();
+      window.Telegram.WebApp.BackButton.offClick(handleBackButtonClick);
+    }
+  
+    return () => {
+      window.Telegram.WebApp.BackButton.offClick(handleBackButtonClick);
+    };
+  }, [showModal]);
+
+  if (!showModal) return null;
+
   return (
-    <>
-      {showModal && (
-        <div className="fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-center taskbg px-[16px] h-full">
-          <div className="w-full flex flex-col items-center justify-start">
-            <h1 className="text-[24px] font-semibold mb-4">Daily Rewards</h1>
-            <div className="grid grid-cols-5 gap-4 w-full">
+    <div className="fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50">
+      <div className="bg-[#1e2340] rounded-lg p-6 w-11/12 max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-center">Daily Rewards</h2>
+        {loading ? (
+          <p className="text-center">Loading...</p>
+        ) : error ? (
+          <p className="text-red-500 text-center">{error}</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-5 gap-2 mb-4">
               {rewards.map((reward, index) => (
                 <div 
                   key={index} 
@@ -101,25 +157,38 @@ const DailyRewards = ({ showModal, setShowModal }) => {
                     'bg-gray-700'
                   }`}
                 >
-                  <img src={coinsmall} alt="coin" className="w-8 h-8 mb-1" />
+                  <img src={coinsmall} alt="coin" className="w-6 h-6 mb-1" />
                   <span className="text-xs">{reward.toLocaleString()}</span>
                   <span className="text-xs">Day {index + 1}</span>
                 </div>
               ))}
             </div>
+            <div className="text-center mb-4">
+              <p>Current Streak: {currentStreak} day{currentStreak !== 1 ? 's' : ''}</p>
+              {lastClaimDate && (
+                <p>Last Claim: {lastClaimDate.toDate().toLocaleDateString()}</p>
+              )}
+            </div>
             <button
               onClick={claimReward}
-              disabled={!canClaim}
-              className={`mt-6 py-3 px-6 rounded-lg text-lg font-semibold ${
-                canClaim ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 cursor-not-allowed'
-              }`}
+              disabled={!canClaim || loading}
+              className={`w-full py-2 px-4 rounded-lg text-white font-semibold ${
+                canClaim && !loading ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 cursor-not-allowed'
+              } transition duration-300 ease-in-out transform hover:scale-105`}
             >
               {canClaim ? 'Claim Reward' : 'Come back tomorrow!'}
             </button>
+          </>
+        )}
+        {claimAnimation && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-green-500 text-white px-6 py-3 rounded-lg animate-bounce">
+              Reward Claimed!
+            </div>
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 };
 
