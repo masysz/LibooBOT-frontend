@@ -335,3 +335,94 @@ const Cards = () => {
               </div>
             ))}
         </div>
+
+        <div className="mt-8 bg-gray-800 rounded-lg p-4">
+  <h2 className="text-2xl font-bold mb-4 text-white">Your Stats</h2>
+  <p className="text-gray-300 mb-2">Balance: {formatNumber(balance)}</p>
+  <p className="text-gray-300 mb-2">Tap Value: {tapValue.value}</p>
+  <p className="text-gray-300 mb-2">Energy Capacity: {battery.energy}</p>
+  <p className="text-gray-300 mb-2">Energy Recharge Time: {timeRefill.duration} minutes</p>
+  <p className="text-gray-300 mb-2">Points Per Hour (Offline): {formatNumber(pointsPerHour)}</p>
+  <p className="text-gray-300 mb-2">Referral Bonus: {formatNumber(refBonus)}</p>
+  <h3 className="text-xl font-bold mt-4 mb-2 text-white">Card Effects</h3>
+  <div className="grid grid-cols-2 gap-4">
+    {Object.entries(userStats).map(([category, value]) => (
+      <div key={category} className="bg-gray-700 rounded-lg p-3">
+        <p className="text-gray-300 font-semibold">{category.replace('_', ' ')}:</p>
+        <p className="text-white">{formatNumber(value)}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
+{/* Card Collection Section */}
+<div className="mt-8 bg-gray-800 rounded-lg p-4">
+  <h2 className="text-2xl font-bold mb-4 text-white">Your Card Collection</h2>
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    {ownedCards.map(cardId => {
+      const card = cards.find(c => c.id === cardId);
+      return (
+        <div key={cardId} className={`bg-gray-700 rounded-lg p-2 border-2 ${RARITY_COLORS[card.rarity]}`}>
+          <img src={card.imageUrl} alt={card.name} className="w-full h-24 object-cover rounded-lg mb-2" />
+          <p className="text-white text-sm font-semibold">{card.name}</p>
+          <p className="text-gray-300 text-xs">Level: {cardLevels[cardId] || 1}</p>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+{/* Achievements Section */}
+<div className="mt-8 bg-gray-800 rounded-lg p-4">
+  <h2 className="text-2xl font-bold mb-4 text-white">Achievements</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {achievements.map(achievement => (
+      <div key={achievement.id} className="bg-gray-700 rounded-lg p-3">
+        <h4 className="text-white font-semibold">{achievement.name}</h4>
+        <p className="text-gray-300 text-sm">{achievement.description}</p>
+        <div className="mt-2 bg-gray-600 rounded-full h-2">
+          <div
+            className="bg-blue-500 rounded-full h-2"
+            style={{ width: `${(achievement.progress / achievement.goal) * 100}%` }}
+          ></div>
+        </div>
+        <p className="text-right text-gray-300 text-xs mt-1">
+          {achievement.progress} / {achievement.goal}
+        </p>
+      </div>
+    ))}
+  </div>
+</div>
+
+{/* Leaderboard Preview */}
+<div className="mt-8 bg-gray-800 rounded-lg p-4">
+  <h2 className="text-2xl font-bold mb-4 text-white">Leaderboard Preview</h2>
+  <table className="w-full">
+    <thead>
+      <tr>
+        <th className="text-left text-gray-300">Rank</th>
+        <th className="text-left text-gray-300">Player</th>
+        <th className="text-right text-gray-300">Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {leaderboard.slice(0, 5).map((player, index) => (
+        <tr key={player.id} className={player.id === id ? "bg-blue-900" : ""}>
+          <td className="text-white">{index + 1}</td>
+          <td className="text-white">{player.name}</td>
+          <td className="text-right text-white">{formatNumber(player.score)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <button className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+    View Full Leaderboard
+  </button>
+</div>
+
+      </div>
+    </Animate>
+  );
+};
+
+export default Cards;
