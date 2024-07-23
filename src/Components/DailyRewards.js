@@ -140,7 +140,7 @@ const DailyRewards = ({ showModal, setShowModal }) => {
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#1e2340] flex flex-col items-center justify-start overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-start overflow-y-auto taskbg">
       <div className="w-full max-w-md px-4 py-8">
         <h2 className="text-3xl font-bold mb-8 text-center text-white">Daily Rewards</h2>
         {loading ? (
