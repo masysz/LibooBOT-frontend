@@ -240,23 +240,7 @@ const Cards = () => {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = debounce(() => {
-      if (containerRef.current) {
-        // Implement infinite scrolling or lazy loading here
-      }
-    }, 200);
-  
-    const currentContainer = containerRef.current;
-    if (currentContainer) {
-      currentContainer.addEventListener('scroll', handleScroll);
-      
-      return () => {
-        currentContainer.removeEventListener('scroll', handleScroll);
-      };
-    }
-  }, []);
-
+ 
   if (loading) {
     return <Spinner />;
   }
