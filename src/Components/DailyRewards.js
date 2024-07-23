@@ -3,6 +3,7 @@ import { db } from '../firebase';
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useUser } from '../context/userContext';
 import coinsmall from "../images/coinsmall.webp";
+import congratsIcon from '../images/congrats.png';
 
 const DailyRewards = ({ showModal, setShowModal }) => {
   const { id, balance, setBalance, tapBalance, setTapBalance } = useUser();
@@ -16,6 +17,7 @@ const DailyRewards = ({ showModal, setShowModal }) => {
   const rewards = [
     2500, 7000, 18000, 52000, 80000, 100000, 250000, 320000, 500000, 1000000
   ];
+
 
   const fetchUserData = useCallback(async () => {
     if (!id) return;
@@ -163,7 +165,11 @@ const DailyRewards = ({ showModal, setShowModal }) => {
                   <span className="text-xs font-semibold text-white">{reward.toLocaleString()}</span>
                   <span className="text-xs text-white">Day {index + 1}</span>
                   {index < currentStreak && (
-                    <IoCheckmarkCircle className="absolute top-1 right-1 text-white text-lg" />
+                    <img 
+                      src={congratsIcon} 
+                      alt="claimed" 
+                      className="absolute top-1 right-1 w-6 h-6"
+                    />
                   )}
                 </div>
               ))}
