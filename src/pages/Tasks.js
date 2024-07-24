@@ -288,7 +288,11 @@ const Tasks = () => {
 
                 </div>
 
-                {/*  */}
+              
+
+
+
+{/* TELERGAM GROUP CHAT TASK
 
                    <div onClick={taskTwo} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
@@ -313,7 +317,6 @@ const Tasks = () => {
 
 </div>
 
-{/*  */}
 
 <div className=''>
 {taskCompleted2 ? (
@@ -332,7 +335,8 @@ const Tasks = () => {
 
 </div>
 
-{/*  */}
+
+*/}
 
 <div onClick={taskThree} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
