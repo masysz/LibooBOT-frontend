@@ -84,7 +84,7 @@ const userLevels = [
                             <h1 className={`text-[20px] font-semibold`}>
                             {currentLevel.name}
                             </h1>
-                            <p className='text-[#9a96a6] text-[14px] font-medium pt-1 pb-10 px-4'>
+                            <p className='text-[#171717] text-[14px] font-medium pt-1 pb-10 px-4'>
                                 Your number of shares determines the league you enter:
                             </p>
 
