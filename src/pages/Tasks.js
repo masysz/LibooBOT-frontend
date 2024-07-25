@@ -225,21 +225,21 @@ const Tasks = () => {
                       <img src={coinsmall} alt="daily rewards" className='w-[50px]'/>
                     </div>
                     <div className='flex flex-col space-y-1'>
-                      <span className='font-semibold'>
+                      <span className='font-semibold text-[#171717]'>
                         Daily Rewards
                       </span>
                       <div className='flex items-center space-x-1'>
                         <span className="w-[20px] h-[20px]">
                           <img src={coinsmall} className="w-full" alt="coin"/>
                         </span>
-                        <span className='font-medium'>
+                        <span className='font-medium text-[#171717]'>
                           Claim daily
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className=''>
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
                   </div>
                 </div>
 
@@ -252,14 +252,14 @@ const Tasks = () => {
                             <img src={telegramicon} alt="tasks" className='w-[50px]'/>
                         </div>
                         <div className='flex flex-col space-y-1'>
-                            <span className='font-semibold'>
+                            <span className='font-semibold text-[#171717]'>
                                 Join Our Telegram Channel
                             </span>
                             <div className='flex items-center space-x-1'>
                             <span className="w-[20px] h-[20px]">
                 <img src={coinsmall} className="w-full" alt="coin"/>
               </span>
-              <span className='font-medium'>
+              <span className='font-medium text-[#171717]'>
                 50 000
               </span>
                             </div>
@@ -279,7 +279,7 @@ const Tasks = () => {
                                     
                                     <>
                       
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
                                     </>
                                     )}
 
@@ -346,14 +346,14 @@ const Tasks = () => {
         <img src={twittericon} alt="taskbook" className='w-[50px]'/>
     </div>
     <div className='flex flex-col space-y-1'>
-        <span className='font-semibold'>
+        <span className='font-semibold text-[#171717]'>
             Follow us on X
         </span>
         <div className='flex items-center space-x-1'>
         <span className="w-[20px] h-[20px]">
 <img src={coinsmall} className="w-full" alt="coin"/>
 </span>
-<span className='font-medium'>
+<span className='font-medium text-[#171717]'>
 50 000
 </span>
         </div>
@@ -373,7 +373,7 @@ const Tasks = () => {
                                     
                                     <>
                       
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
                                     </>
                                     )}
 </div>
@@ -478,14 +478,14 @@ const Tasks = () => {
         <img src={instagramicon} alt="taskbook" className='w-[50px]'/>
     </div>
     <div className='flex flex-col space-y-1'>
-        <span className='font-semibold'>
+        <span className='font-semibold text-[#171717]'>
             Follow us on Instagram
         </span>
         <div className='flex items-center space-x-1'>
         <span className="w-[20px] h-[20px]">
 <img src={coinsmall} className="w-full" alt="coin"/>
 </span>
-<span className='font-medium'>
+<span className='font-medium text-[#171717]'>
 80 000
 </span>
         </div>
@@ -505,7 +505,7 @@ const Tasks = () => {
                                     
                                     <>
                       
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
                                     </>
                                     )}
 </div>
