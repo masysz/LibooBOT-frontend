@@ -449,10 +449,10 @@ const Boost = () => {
               {/* <div className="bg-borders w-full px-5 h-[1px] !mt-3 !mb-5"></div> */}
 
               <div className="w-full flex flex-col">
-                <h3 className="text-[18px] text-[#507cff] font-semibold pb-4">
+                <h3 className="text-[18px] text-[#171717] font-semibold pb-4">
                   Your daily boosters:
                 </h3>
-
+               
                 <div className="w-full flex justify-between items-center">
                   {/*  */}
                   <button
@@ -465,7 +465,7 @@ const Boost = () => {
                     </div>
 
                     <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru text-[#507cff]">
+                      <span className="font-semibold tapguru text-[#171717]">
                         Booster
                       </span>
                       {freeGuru > 0 ? (
@@ -489,9 +489,9 @@ const Boost = () => {
                     </div>
 
                     <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru">Full Energy</span>
+                      <span className="font-semibold tapguru text-[#171717]">Full Energy</span>
                       {fullTank> 0 ? (
-   <span className="font-medium tapguru2">{fullTank}/3</span>
+   <span className="font-medium tapguru2 text-[#171717]">{fullTank}/3</span>
                       ) : (
                         <span className="font-normal tapguru2">      
                       {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
@@ -519,15 +519,15 @@ const Boost = () => {
           <img src={multi} alt="multi" className="w-[35px]" />
         </div>
         <div className="flex flex-col space-y-1 text-left">
-          <span className="font-semibold text-[17px]">
+          <span className="font-semibold text-[17px] text-[#171717]">
             Multitap
           </span>
           <div className="flex items-center space-x-1">
             <span className="w-[20px] h-[20px]">
               <img src={coinsmall} className="w-full" alt="coin" />
             </span>
-            <span className="font-medium flex items-center">
-              <span className="text-[15px]">
+            <span className="font-medium flex items-center text-[#171717]">
+              <span className="text-[15px] text-[#171717]">
                 {tapValue.level >= tapValues.length ? (
                   <>MAX</>
                 ) : (
