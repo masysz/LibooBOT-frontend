@@ -68,7 +68,7 @@ const TaskSix = ({ showModal, setShowModal }) => {
 
 
   const handleTaskLinkClick = () => {
-    window.open("https://www.instagram.com/getospirit");
+    window.open("https://www.instagram.com/libooproject");
 
     setTimeout(() => {
       setShowTaskButton(false);
@@ -185,8 +185,8 @@ const TaskSix = ({ showModal, setShowModal }) => {
     }, 2000);
 
     if (isVerified) {
-      const newCount = balance + 50000;
-      const newCount2 = tapBalance + 50000;
+      const newCount = balance + 80000;
+      const newCount2 = tapBalance + 80000;
       setBalance(newCount);
       setTapBalance(newCount2);
       setMessage("");
@@ -223,8 +223,8 @@ const TaskSix = ({ showModal, setShowModal }) => {
             <div className="flex w-full flex-col">
               <h1 className="text-[20px] font-semibold">Follow us on Instagram</h1>
               <p className="text-[#9a96a6] text-[16px] font-medium pt-1 pb-10">
-                Follow us on Instagram to get regular updates about this airdrop
-                bot and its great potentials
+                Follow us on Instagram to get regular updates about this project
+                the mini app and its great potentials.
               </p>
 
               <p className="w-full text-center text-[14px] font-semibold text-[#49ee49] pb-4">
@@ -238,7 +238,7 @@ const TaskSix = ({ showModal, setShowModal }) => {
                   <div className="flex flex-col space-y-1">
                     <span className="font-semibold">Reward</span>
                     <div className="flex items-center">
-                      <span className="font-medium">50 000</span>
+                      <span className="font-medium">80 000</span>
                     </div>
                   </div>
                 </div>

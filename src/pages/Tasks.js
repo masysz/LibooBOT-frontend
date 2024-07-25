@@ -486,7 +486,7 @@ const Tasks = () => {
 <img src={coinsmall} className="w-full" alt="coin"/>
 </span>
 <span className='font-medium'>
-50 000
+80 000
 </span>
         </div>
     </div>

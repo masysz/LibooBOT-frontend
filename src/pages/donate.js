@@ -2,10 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
-import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
-import congratspic from '../images/congrats.png';
 import React, { useEffect, useState, useRef } from "react";
 import Animate from "../Components/Animate";
 
@@ -191,10 +189,6 @@ const Donate = () => {
   const formatNumber = useCallback((num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   }, []);
-
-  if (userLoading || isLoading) {
-    return <Spinner />;
-  }
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
