@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import frams from "../images/frams.webp";
+import frams from "../images/ref4.webp";
 import tasks from "../images/tasks2.webp";
 import tap from "../images/coins-6.webp";
 import boost from "../images/booster2.webp";
@@ -8,7 +8,7 @@ import donate from "../images/stats.webp";
 
 const Footer = () => {
   const navItems = [
-    { name: "Frams", icon: frams, path: "/frams" },
+    { name: "Frens", icon: frams, path: "/ref" },
     { name: "Tasks", icon: tasks, path: "/tasks" },
     { name: "Tap", icon: tap, path: "/" },
     { name: "Boost", icon: boost, path: "/boost" },
