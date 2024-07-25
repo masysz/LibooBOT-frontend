@@ -55,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@wixc3/react-board": "^3.0.0",
     "cross-env": "^7.0.3"
   }
 }
