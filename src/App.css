@@ -32,8 +32,7 @@ body {
 }
 
 .taskhead{
-  background: linear-gradient(to bottom, #507cff, #a4c7ff
-  );
+  background: linear-gradient(to bottom, #d9dce4, #5496ff);
 }
 .heading{
   text-align: center;
@@ -274,8 +273,7 @@ body {
 
 
 .taskbg{
-  background: linear-gradient(to bottom, #507cff, #a4c7ff);
-  background-color: #507cff;
+  background: linear-gradient(to bottom, #d9dce4, #5496ff);
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
