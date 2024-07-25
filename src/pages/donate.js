@@ -4,7 +4,6 @@ import Animate from '../Components/Animate';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import Animate from "../Components/Animate";
 
 
 // Add this style block at the top of your file or in a separate CSS file
