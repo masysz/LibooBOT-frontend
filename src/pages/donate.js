@@ -6,6 +6,9 @@ import Spinner from '../Components/Spinner';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from "react-icons/io5";
 import congratspic from '../images/congrats.png';
+import React, { useEffect, useState, useRef } from "react";
+import Animate from "../Components/Animate";
+
 
 // Add this style block at the top of your file or in a separate CSS file
 const styles = `
@@ -22,6 +25,7 @@ const styles = `
 
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
+  const [showDoneButton, setShowDoneButton] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [donationAmount, setDonationAmount] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -314,11 +318,9 @@ const Donate = () => {
             </div>
           </div>
         )}
+
   
-        <div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
-          {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
-        </div>
-  
+
         <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
           <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] rounded-lg py-2">
             <IoCheckmarkCircle size={24} />
