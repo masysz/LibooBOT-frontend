@@ -80,14 +80,14 @@ const MilestoneRewards = () => {
         <img src={milestone.icon} alt="bronze" className='w-[55px]'/>
     </div>
     <div className='flex flex-col space-y-1'>
-        <span className='font-semibold'>
+        <span className='font-semibold text-[#171717]'>
         {milestone.name}
         </span>
         <div className='flex items-center space-x-1'>
         <span className="w-[20px] h-[20px]">
 <img src={coinsmall} className="w-full" alt="coin"/>
 </span>
-<span className='font-medium'>
+<span className='font-medium text-[#171717]'>
 {formatNumberCliam(milestone.reward)}
 </span>
         </div>
@@ -101,7 +101,7 @@ const MilestoneRewards = () => {
 <button
  disabled={!isClaimable}
  onClick={() => handleClaim(milestone)}
-  className={` ${isClaimable ? 'bg-btn text-white' : "bg-btn2 text-[#fff6]"} relative rounded-[8px] font-semibold py-2 px-3`}>
+  className={` ${isClaimable ? 'bg-btn text-black' : "bg-btn2 text-[#fff6]"} relative rounded-[8px] font-semibold py-2 px-3`}>
  {isClaimable ? 'Claim' : 'Claim'}
 </button>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Animate from '../Components/Animate';
 import { Outlet } from 'react-router-dom';
-import coinsmall from "../images/coinsmall.webp";
+import coinsmall from "../images/main-logo.png";
 import taskbook from "../images/taskbook.webp";
 import youtubeicon from "../images/youtube.gif";
 import telegramicon from "../images/telegram.gif";
@@ -203,14 +203,14 @@ const Tasks = () => {
                 </div>
               </div>
 
-              <div className='w-full border-[1px] border-borders rounded-[10px] p-1 flex items-center'>
-                <div onClick={() => handleMenu(1)} className={`${activeIndex === 1 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center`}>
+              <div className='w-full border-[1px] bg-[#abc8ff"] border-borders rounded-[10px] p-1 flex items-center'>
+                <div onClick={() => handleMenu(1)} className={`${activeIndex === 1 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center text-[#ffff]`}>
                   Special
                 </div>
-                <div onClick={() => handleMenu(2)} className={`${activeIndex === 2 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center`}>
+                <div onClick={() => handleMenu(2)} className={`${activeIndex === 2 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center text-[#ffff]`}>
                   Leagues
                 </div>
-                <div onClick={() => handleMenu(3)} className={`${activeIndex === 3 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center`}>
+                <div onClick={() => handleMenu(3)} className={`${activeIndex === 3 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center text-[#ffff`}>
                   Ref Bonus
                 </div>
               </div>

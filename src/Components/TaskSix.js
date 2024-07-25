@@ -1,4 +1,4 @@
-import coinsmall from "../images/coinsmall.webp";
+import coinsmall from "../images/main-logo.png";
 import claim from "../images/claim.webp";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
@@ -222,7 +222,7 @@ const TaskSix = ({ showModal, setShowModal }) => {
             </div>
             <div className="flex w-full flex-col">
               <h1 className="text-[20px] font-semibold">Follow us on Instagram</h1>
-              <p className="text-[#9a96a6] text-[16px] font-medium pt-1 pb-10">
+              <p className="text-[#fcfcfc] text-[16px] font-medium pt-1 pb-10">
                 Follow us on Instagram to get regular updates about this project
                 the mini app and its great potentials.
               </p>

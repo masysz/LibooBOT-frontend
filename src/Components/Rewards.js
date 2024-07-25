@@ -92,7 +92,7 @@ const ReferralRewards = () => {
           const progress = (referrals.length / reward.referralsRequired) * 100;
           const isClaimable = referrals.length >= reward.referralsRequired && !claimedReferralRewards.includes(reward.title);
           return (
-            <div key={reward.title} className='bg-cards rounded-[10px] p-[14px] flex flex-wrap justify-between items-center'>
+            <div key={reward.title} className='bg-cards rounded-[10px] p-[14px] flex flex-wrap justify-between items-center text-[#171717]'>
 
 <div className='flex flex-1 items-center space-x-2'>
 
@@ -100,14 +100,14 @@ const ReferralRewards = () => {
         <img src={reward.imgRef}alt="bronze" className='w-[55px]'/>
     </div>
     <div className='flex flex-col space-y-1'>
-        <span className='font-semibold'>
+        <span className='font-semibold text-[#171717]'>
         {reward.title}
         </span>
         <div className='flex items-center space-x-1'>
         <span className="w-[20px] h-[20px]">
 <img src={coinsmall} className="w-full" alt="coin"/>
 </span>
-<span className='font-medium'>
+<span className='font-medium text-[#171717]'>
 {formatNumberCliam(reward.bonusAward)}
 </span>
         </div>
