@@ -12,8 +12,6 @@ import coinsmall from "../images/coinsmall.webp";
 import useSound from "use-sound";
 import boopSfx from "../get.mp3";
 import burnSfx from "../burn.wav";
-import { PlasmicRootProvider, PlasmicComponent } from '@plasmicapp/loader-react';
-import { PLASMIC } from '../plasmic-init';
 
 const slideUp = keyframes`
   0% {
@@ -377,13 +375,13 @@ const Plutos = () => {
   };
 
   return (
-    <PlasmicRootProvider loader={PLASMIC}>
+
     <>
       {loading ? (
         <Spinner />
       ) : (
         <Animate>
-          <PlasmicComponent component="Plutos" />
+     
           <div className="w-full flex justify-center flex-col items-center overflow-hidden">
             <div className="flex space-x-[2px] justify-center items-center mt-8">
               <div className="w-[50px] h-[50px]">
@@ -475,7 +473,7 @@ const Plutos = () => {
         </Animate>
       )}
     </>
-    </PlasmicRootProvider>
+
   );
 };
 
