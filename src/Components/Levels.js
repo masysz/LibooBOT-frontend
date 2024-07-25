@@ -128,7 +128,7 @@ const userLevels = [
    
                         {displayedLevelIndex === currentLevelIndex && displayedLevelIndex < userLevels.length - 1 ? (
             <>
-               <p className="text-[18px] w-full text-center font-semibold text-[#c6c6c6] px-[20px] pt-[35px] pb-[10px]">{tapBalance} / {formatNumberCliam(currentLevel.tapBalanceRequired)}</p>
+               <p className="text-[18px] w-full text-[#171717] text-center font-semibold text-[#c6c6c6] px-[20px] pt-[35px] pb-[10px]">{tapBalance} / {formatNumberCliam(currentLevel.tapBalanceRequired)}</p>
             
             
                <div className='w-full px-[44px]'>
