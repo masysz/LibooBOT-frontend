@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Animate from "../Components/Animate";
 import { Outlet, useNavigate } from "react-router-dom";
-import coinsmall from "../images/coinsmall.webp";
+import coinsmall from "../images/main-logo.png";
 import gastank from "../images/baterai1.webp";
 import battery3 from "../images/energylimit.webp";
 import multi from "../images/multitap1.webp";
@@ -465,13 +465,13 @@ const Boost = () => {
                     </div>
 
                     <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru text-[#171717]">
+                      <span className="font-semibold tapguru">
                         Booster
                       </span>
                       {freeGuru > 0 ? (
-   <span className="font-medium tapguru2">{freeGuru}/3</span>
+   <span className="font-medium tapguru2 text-[#507cff]">{freeGuru}/3</span>
                       ) : (
-                        <span className="font-normal tapguru2">      
+                        <span className="font-normal tapguru2 text-[#507cff]">      
                       {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
                       </span>
                       )}
@@ -489,11 +489,11 @@ const Boost = () => {
                     </div>
 
                     <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru text-[#171717]">Full Energy</span>
+                      <span className="font-semibold tapguru">Full Energy</span>
                       {fullTank> 0 ? (
-   <span className="font-medium tapguru2 text-[#171717]">{fullTank}/3</span>
+   <span className="font-medium tapguru2 text-[#507cff]">{fullTank}/3</span>
                       ) : (
-                        <span className="font-normal tapguru2">      
+                        <span className="font-normal tapguru2 text-[#507cff]">      
                       {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
                       </span>
                       )}
@@ -503,7 +503,7 @@ const Boost = () => {
                 </div>
 
                 <div className="w-full flex flex-col pt-4">
-  <h3 className="text-[18px] font-semibold">Boosters:</h3>
+  <h3 className="text-[18px] font-semibold text-[#171717]">Boosters:</h3>
 </div>
 
 <div className="w-full flex flex-col h-[50vh] pt-2 pb-[60px] overflow-y-auto hide-scrollbar">
@@ -535,7 +535,7 @@ const Boost = () => {
                 )} 
               </span>{" "}
               <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-              <span className="text-[#9a96a6] text-[15px]">
+              <span className="text-[#507cff] text-[15px]">
                 Level {tapValue.level}
               </span>
             </span>
@@ -557,7 +557,7 @@ const Boost = () => {
           <img src={battery3} alt="battery" className="w-[35px]" />
         </div>
         <div className="flex flex-col space-y-1 text-left">
-          <span className="font-semibold text-[17px]">
+          <span className="font-semibold text-[17px] text-[#171717]">
             Energy Limit
           </span>
           <div className="flex items-center space-x-1">
@@ -565,7 +565,7 @@ const Boost = () => {
               <img src={coinsmall} className="w-full" alt="coin" />
             </span>
             <span className="font-medium flex items-center">
-              <span className="text-[15px]">
+              <span className="text-[15px] text-[#171717]">
                 {battery.level >= energyValues.length ? (
                   <>MAX</>
                 ) : (
@@ -573,7 +573,7 @@ const Boost = () => {
                 )} 
               </span>{" "}
               <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-              <span className="text-[#9a96a6] text-[15px]">
+              <span className="text-[#507cff] text-[15px]">
                 Level {battery.level}
               </span>
             </span>
@@ -595,7 +595,7 @@ const Boost = () => {
           <img src={flash} alt="flash" className="w-[35px]" />
         </div>
         <div className="flex flex-col space-y-1 text-left">
-          <span className="font-semibold text-[17px]">
+          <span className="font-semibold text-[17px] text-[#171717]">
             Recharging Speed
           </span>
           <div className="flex items-center space-x-1">
@@ -603,7 +603,7 @@ const Boost = () => {
               <img src={coinsmall} className="w-full" alt="coin" />
             </span>
             <span className="font-medium flex items-center">
-              <span className="text-[15px]">
+              <span className="text-[15px] text-[#171717]">
                 {timeRefill.level >= chargingValues.length ? (
                   <>MAX</>
                 ) : (
@@ -611,7 +611,7 @@ const Boost = () => {
                 )} 
               </span>{" "}
               <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-              <span className="text-[#9a96a6] text-[15px]">
+              <span className="text-[#507cff] text-[15px]">
                 Level {timeRefill.level}
               </span>
             </span>
