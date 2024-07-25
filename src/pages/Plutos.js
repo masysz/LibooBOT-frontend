@@ -36,11 +36,11 @@ const SlideUpText = styled.div`
 
 const Container = styled.div`
   position: relative;
-  display: flex;
+  display: inline-block;
+  text-align: center;
   justify-content: center;
-  align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 100%;
 `;
 
 const Plutos = () => {
