@@ -32,7 +32,6 @@ const SlideUpText = styled.div`
   font-weight: 600;
   left: ${({ x }) => x}px;
   top: ${({ y }) => y}px;
-  pointer-events: none; /* To prevent any interaction */
 `;
 
 const Container = styled.div`
@@ -398,11 +397,11 @@ const Plutos = () => {
               />
               <h2
                 onClick={() => setShowLevels(true)}
-                className="text-[#171717] text-[22px] font-medium font-family-[poppins]"
+                className="text-[#171717] text-[22px] font-medium"
               >
                 {level.name}
               </h2>
-              <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
+              <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]" />
             </div>
             <div className="w-full flex justify-center items-center relative mt-8">
   <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
