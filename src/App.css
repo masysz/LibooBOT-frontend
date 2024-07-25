@@ -1,9 +1,10 @@
 body {
-  background: linear-gradient(to bottom, #1a1f2e, #1f4074); /* Fallback gradient */
-  background-image: url('./images/background-image.png');
+  background: linear-gradient(to bottom, #d9dce4, #5496ff); /* Fallback gradient */
+  background-image: url('./images/background-forest.jpg');
   background-size: cover;
+  
   background-position: center;
-  color: #fff;
+  color: #b9b9b9;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
   position: relative;
@@ -31,7 +32,7 @@ body {
 }
 
 .taskhead{
-  background: linear-gradient(to bottom, #1a1f2e, #1f4074
+  background: linear-gradient(to bottom, #507cff, #a4c7ff
   );
 }
 .heading{
