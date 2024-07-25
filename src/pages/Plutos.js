@@ -398,7 +398,7 @@ const Plutos = () => {
               />
               <h2
                 onClick={() => setShowLevels(true)}
-                className="text-[#171717] text-[22px] font-medium"
+                className="text-[#507cff] text-[22px] font-medium font-family-[poppins]"
               >
                 {level.name}
               </h2>
