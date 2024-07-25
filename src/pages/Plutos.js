@@ -8,7 +8,7 @@ import Spinner from "../Components/Spinner";
 import { useUser } from "../context/userContext";
 import Levels from "../Components/Levels";
 import flash from "../images/flash.webp";
-import coinsmall from "../images/coinsmall.webp";
+import coinsmall from "../images/main-logo.png";
 import useSound from "use-sound";
 import boopSfx from "../get.mp3";
 import burnSfx from "../burn.wav";
