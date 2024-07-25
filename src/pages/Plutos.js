@@ -386,7 +386,7 @@ const Plutos = () => {
               <div className="w-[50px] h-[50px]">
                 <img src={coinsmall} className="w-full" alt="coin" />
               </div>
-              <h1 className="text-[#fff] text-[42px] font-extrabold">
+              <h1 className="text-[#171717] text-[45px] font-extrabold">
                 {formatNumber(balance)}
               </h1>
             </div>
@@ -398,7 +398,7 @@ const Plutos = () => {
               />
               <h2
                 onClick={() => setShowLevels(true)}
-                className="text-[#9d99a9] text-[20px] font-medium"
+                className="text-[#171717] text-[22px] font-medium"
               >
                 {level.name}
               </h2>
@@ -410,11 +410,11 @@ const Plutos = () => {
                 <div className="before"></div>
                 <div className="after"></div>
               </div>
-              <div className="w-[350px] h-[350px] relative flex items-center justify-center">
+              <div className="w-[280px] h-[280px] relative flex items-center justify-center">
                 <img
                   src="/lihgt.gif"
                   alt="err"
-                  className={`absolute w-[420px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
+                  className={`absolute w-[300px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
                 />
                 <div className="image-container">
                   {mainTap && (
@@ -424,7 +424,7 @@ const Plutos = () => {
                         ref={imageRef}
                         src={level.imgTap}
                         alt="Wobble"
-                        className="wobble-image !w-[350px] select-none"
+                        className="wobble-image !w-[280px] select-none"
                       />
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
@@ -440,7 +440,7 @@ const Plutos = () => {
                         ref={imageRef}
                         src={level.imgBoost}
                         alt="Wobble"
-                        className="wobble-image !w-[350px] select-none"
+                        className="wobble-image !w-[280px] select-none"
                       />
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
