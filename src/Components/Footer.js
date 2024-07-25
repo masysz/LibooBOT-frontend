@@ -1,117 +1,56 @@
 import React from "react";
-import ref from "../images/ref4.webp";
-import boost from "../images/booster2.webp";
-import tasks from "../images/tasks2.webp";
-import donate from "../images/stats.webp";
-import tonwallet from "../images/wallet2.webp";
-import coinsmall from "../images/coins-6.webp";
 import { NavLink } from "react-router-dom";
+import frams from "../images/frams.webp";
+import tasks from "../images/tasks2.webp";
+import tap from "../images/coins-6.webp";
+import boost from "../images/booster2.webp";
+import donate from "../images/stats.webp";
 
 const Footer = () => {
+  const navItems = [
+    { name: "Frams", icon: frams, path: "/frams" },
+    { name: "Tasks", icon: tasks, path: "/tasks" },
+    { name: "Tap", icon: tap, path: "/" },
+    { name: "Boost", icon: boost, path: "/boost" },
+    { name: "Donate", icon: donate, path: "/donate" },
+  ];
+
   return (
-    <div className="w-full flex items-center justify-center space-x-2">
-      <NavLink
-        to="/ref"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={ref} className="w-[32px] -mb-1" alt="ref" />
-        <span className="font-medium">Ref</span>
-      </NavLink>
-      <NavLink
-        to="/tasks"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={tasks} className="w-[30px]" alt="tasks" />
-        <span className="font-medium">Tasks</span>
-      </NavLink>
-
-      {/*  */}
-
-      <NavLink
-        to="/"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={coinsmall} className="w-[30px] -mb-[1px]" alt="tap" />
-        <span className="font-medium">Tap</span>
-      </NavLink>
-      <NavLink
-        to="/boost"
-        className={({ isActive }) => {
-          return `
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-[8px] bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-[8px] bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={boost} className="w-[28px] -mb-[2px]" alt="boost" />
-        <span className="font-medium">Boost</span>
-      </NavLink>
-
-      {/*  */}
-
-      <NavLink
-        to="/Donate"
-        className={({ isActive }) => {
-          return `
-
-${
-            isActive
-              ? "w-[20%] h-[65px] pt-1 bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-              : "w-[20%] h-[65px] pt-1 bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-              `;
-                  }}
-                >
-                  <img src={donate} className="w-[32px] -mb-1" alt="ref" />
-                  <span className="font-medium">Donate</span>
-                </NavLink>
-                <NavLink
-                  to="/connect"
-                  className={({ isActive }) => {
-                    return `         
-
-${
-  isActive
-    ? "w-[20%] h-[65px] pt-[8px] bg-activebg border-[1px] border-activeborder flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-    : "w-[20%] h-[65px] pt-[8px] bg-cards border-[1px] border-borders flex flex-col rounded-[10px] items-center justify-center text-[#fff] text-[15px]"
-}
-    `;
-        }}
-      >
-        <img src={tonwallet} className="w-[24px]" alt="connect" />
-        <span className="font-medium">Wallet</span>
-      </NavLink>
+    <div className="fixed bottom-0 left-0 right-0 bg-[#E6E6FA] p-2 rounded-t-2xl">
+      <div className="flex items-center justify-between max-w-md mx-auto">
+        {navItems.map((item, index) => (
+          <NavLink
+            key={item.name}
+            to={item.path}
+            className={({ isActive }) => `
+              ${index === 2 ? 'w-1/4' : 'w-1/5'}
+              flex flex-col items-center justify-center
+              ${index === 2 ? '-mt-6' : ''}
+              ${isActive ? 'text-[#4169E1]' : 'text-[#6A5ACD]'}
+            `}
+          >
+            <div
+              className={`
+                ${index === 2 ? 'w-16 h-16' : 'w-12 h-12'}
+                flex items-center justify-center
+                rounded-full
+                ${isActive ? 'bg-[#B0E0E6]' : 'bg-[#F0F8FF]'}
+                ${index === 2 ? 'border-4' : 'border-2'}
+                ${isActive ? 'border-[#4169E1]' : 'border-[#B0C4DE]'}
+              `}
+            >
+              <img
+                src={item.icon}
+                alt={item.name}
+                className={`${index === 2 ? 'w-8 h-8' : 'w-6 h-6'}`}
+              />
+            </div>
+            <span className={`mt-1 text-xs ${index === 2 ? 'font-bold' : 'font-medium'}`}>
+              {item.name}
+            </span>
+          </NavLink>
+        ))}
+      </div>
     </div>
   );
 };
