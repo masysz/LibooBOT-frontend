@@ -14,7 +14,7 @@ module.exports = {
           red: "#d6436e",
           green: "#25da72",
           mycolor: "#3c5b8038",
-          cards: "#1f2942",
+          cards: "#507cff",
           energybar: "#32374e",
           btn: "#0b62c4",
           btn2: "#0b62c421",

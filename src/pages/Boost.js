@@ -449,7 +449,7 @@ const Boost = () => {
               {/* <div className="bg-borders w-full px-5 h-[1px] !mt-3 !mb-5"></div> */}
 
               <div className="w-full flex flex-col">
-                <h3 className="text-[18px] font-semibold pb-4">
+                <h3 className="text-[18px] text-[#507cff] font-semibold pb-4">
                   Your daily boosters:
                 </h3>
 
@@ -465,7 +465,7 @@ const Boost = () => {
                     </div>
 
                     <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru">
+                      <span className="font-semibold tapguru text-[#507cff]">
                         Booster
                       </span>
                       {freeGuru > 0 ? (

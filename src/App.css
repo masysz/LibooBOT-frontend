@@ -108,18 +108,22 @@ body {
 
 .tapguru{
     font-size: 16px;
+    color: #507cff;
 }
 .tapguru{
     font-size: 14px;
+    color: #507cff;
 }
 
 @media only screen and (max-width: 350px) {
 
   .tapguru{
     font-size: 12px;
+    color: #507cff;
   }
   .tapguru2{
     font-size: 10px;
+    color: #507cff;
 }
 
 
@@ -270,8 +274,8 @@ body {
 
 
 .taskbg{
-  background: linear-gradient(to bottom,  #1a1f2e, #1f4074);
-  background-color: #1a1f2e;
+  background: linear-gradient(to bottom, #507cff, #a4c7ff);
+  background-color: #507cff;
   color: #fff;
   height: var(--tg-viewport-stable-height);
   touch-action: none; /* Prevent touch actions */
