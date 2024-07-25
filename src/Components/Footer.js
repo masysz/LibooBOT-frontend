@@ -29,25 +29,29 @@ const Footer = () => {
               ${isActive ? 'text-[#4169E1]' : 'text-[#6A5ACD]'}
             `}
           >
-            <div
-              className={`
-                ${index === 2 ? 'w-16 h-16' : 'w-12 h-12'}
-                flex items-center justify-center
-                rounded-full
-                ${isActive ? 'bg-[#B0E0E6]' : 'bg-[#F0F8FF]'}
-                ${index === 2 ? 'border-4' : 'border-2'}
-                ${isActive ? 'border-[#4169E1]' : 'border-[#B0C4DE]'}
-              `}
-            >
-              <img
-                src={item.icon}
-                alt={item.name}
-                className={`${index === 2 ? 'w-8 h-8' : 'w-6 h-6'}`}
-              />
-            </div>
-            <span className={`mt-1 text-xs ${index === 2 ? 'font-bold' : 'font-medium'}`}>
-              {item.name}
-            </span>
+            {({ isActive }) => (
+              <>
+                <div
+                  className={`
+                    ${index === 2 ? 'w-16 h-16' : 'w-12 h-12'}
+                    flex items-center justify-center
+                    rounded-full
+                    ${isActive ? 'bg-[#B0E0E6]' : 'bg-[#F0F8FF]'}
+                    ${index === 2 ? 'border-4' : 'border-2'}
+                    ${isActive ? 'border-[#4169E1]' : 'border-[#B0C4DE]'}
+                  `}
+                >
+                  <img
+                    src={item.icon}
+                    alt={item.name}
+                    className={`${index === 2 ? 'w-8 h-8' : 'w-6 h-6'}`}
+                  />
+                </div>
+                <span className={`mt-1 text-xs ${index === 2 ? 'font-bold' : 'font-medium'}`}>
+                  {item.name}
+                </span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>
