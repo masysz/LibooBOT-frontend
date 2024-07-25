@@ -37,11 +37,12 @@ const SlideUpText = styled.div`
 
 const Container = styled.div`
   position: relative;
-  display: inline-block;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  height: 100%;
-  margin-bottom: 100px;
+  height: 100vh; // This will make it full height of the viewport
+  padding-top: 20px; // This adds 20px padding to the top
 `;
 
 const Plutos = () => {
@@ -405,53 +406,53 @@ const Plutos = () => {
               <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#9d99a9] mt-[2px]" />
             </div>
             <div className="w-full flex justify-center items-center relative mt-8">
-              <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
-              <div className={`${tapGuru ? "block" : "hidden"} pyro`}>
-                <div className="before"></div>
-                <div className="after"></div>
-              </div>
-              <div className="w-[280px] h-[280px] relative flex items-center justify-center">
-                <img
-                  src="/lihgt.gif"
-                  alt="err"
-                  className={`absolute w-[300px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
-                />
-                <div className="image-container">
-                  {mainTap && (
-                    <Container>
-                      <img
-                        onPointerDown={handleClick}
-                        ref={imageRef}
-                        src={level.imgTap}
-                        alt="Wobble"
-                        className="wobble-image !w-[280px] select-none"
-                      />
-                      {clicks.map((click) => (
-                        <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{tapValue.value}
-                        </SlideUpText>
-                      ))}
-                    </Container>
-                  )}
-                  {tapGuru && (
-                    <Container>
-                      <img
-                        onPointerDown={handleClickGuru}
-                        ref={imageRef}
-                        src={level.imgBoost}
-                        alt="Wobble"
-                        className="wobble-image !w-[280px] select-none"
-                      />
-                      {clicks.map((click) => (
-                        <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{tapValue.value * 5}
-                        </SlideUpText>
-                      ))}
-                    </Container>
-                  )}
-                </div>
-              </div>
-            </div>
+  <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
+  <div className={`${tapGuru ? "block" : "hidden"} pyro`}>
+    <div className="before"></div>
+    <div className="after"></div>
+  </div>
+  <div className="w-[280px] h-[280px] relative flex items-center justify-center">
+    <img
+      src="/lihgt.gif"
+      alt="err"
+      className={`absolute w-[300px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
+    />
+    <div className="image-container flex-grow flex justify-center items-center">
+      {mainTap && (
+        <Container>
+          <img
+            onPointerDown={handleClick}
+            ref={imageRef}
+            src={level.imgTap}
+            alt="Wobble"
+            className="wobble-image !w-[280px] select-none"
+          />
+          {clicks.map((click) => (
+            <SlideUpText key={click.id} x={click.x} y={click.y}>
+              +{tapValue.value}
+            </SlideUpText>
+          ))}
+        </Container>
+      )}
+      {tapGuru && (
+        <Container>
+          <img
+            onPointerDown={handleClickGuru}
+            ref={imageRef}
+            src={level.imgBoost}
+            alt="Wobble"
+            className="wobble-image !w-[280px] select-none"
+          />
+          {clicks.map((click) => (
+            <SlideUpText key={click.id} x={click.x} y={click.y}>
+              +{tapValue.value * 5}
+            </SlideUpText>
+          ))}
+        </Container>
+      )}
+    </div>
+  </div>
+</div>
             <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
               <div className="flex flex-col w-full items-center justify-center">
                 <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">

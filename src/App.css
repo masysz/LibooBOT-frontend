@@ -45,7 +45,7 @@ body {
 }
 
 .wobble-image {
-  width: 350px;
+  width: 280;
   transition: transform .2s;
   filter: grayscale(.1);
 }
