@@ -375,13 +375,12 @@ const Plutos = () => {
   };
 
   return (
-
+    
     <>
       {loading ? (
         <Spinner />
       ) : (
         <Animate>
-     
           <div className="w-full flex justify-center flex-col items-center overflow-hidden">
             <div className="flex space-x-[2px] justify-center items-center mt-8">
               <div className="w-[50px] h-[50px]">
@@ -453,27 +452,32 @@ const Plutos = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col space-y-2 w-full max-w-[300px] mt-4">
-  <div className="flex justify-between items-center text-white">
-    <div className="flex items-center">
-      <img src={flash} alt="Energy" className="w-5 h-5 mr-2" />
-      <span className="text-lg font-bold">{energy.toFixed(0)}</span>
-      <span className="text-sm ml-1">/ {battery.energy}</span>
-    </div>
-  </div>
-  <div className="h-4 bg-[#2C3E50] rounded-full overflow-hidden">
-    <div
-      className="h-full bg-gradient-to-r from-[#3498DB] to-[#2980B9] transition-all duration-300 ease-out"
-      style={{ width: `${energyPercentage}%` }}
-    ></div>
-  </div>
-</div>
+            <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
+              <div className="flex flex-col w-full items-center justify-center">
+                <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
+                  <img alt="flash" src={flash} className="w-[20px]" />
+                  <div>
+                    <span className="text-[18px] font-bold">
+                      {energy.toFixed(0)}
+                    </span>
+                    <span className="text-[14px] font-medium">
+                      / {battery.energy}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
+                  <div
+                    className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
+                    style={{ width: `${energyPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
             <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
           </div>
         </Animate>
       )}
     </>
-
   );
 };
 

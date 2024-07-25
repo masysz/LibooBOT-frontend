@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import frams from "../images/ref4.webp";
 import tasks from "../images/tasks2.webp";
-import tap from "../images/coins-6.webp";
+import tap from "../images/main-logo.png";
 import boost from "../images/booster2.webp";
 import donate from "../images/stats.webp";
 
