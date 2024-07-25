@@ -15,7 +15,7 @@ module.exports = {
           green: "#25da72",
           mycolor: "#3c5b8038",
           cards: "#d6e4ff",
-          energybar: "#32374e",
+          energybar: "#d6e4ff",
           btn: "#0b62c4",
           btn2: "#0b62c421",
           borders: "#2e3a56",
