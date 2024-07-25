@@ -8,7 +8,7 @@ import Spinner from "../Components/Spinner";
 import { useUser } from "../context/userContext";
 import Levels from "../Components/Levels";
 import flash from "../images/flash.webp";
-import coinsmall from "../images/coinsmall.webp";
+import coinsmall from "../images/main-logo.png";
 import useSound from "use-sound";
 import boopSfx from "../get.mp3";
 import burnSfx from "../burn.wav";
@@ -391,7 +391,7 @@ const Plutos = () => {
               <div className="w-[50px] h-[50px]">
                 <img src={coinsmall} className="w-full" alt="coin" />
               </div>
-              <h1 className="text-[#fff] text-[42px] font-extrabold">
+              <h1 className="text-[#171717] text-[42px] font-extrabold">
                 {formatNumber(balance + refBonus)} <br />
               </h1>
             </div>
@@ -403,7 +403,7 @@ const Plutos = () => {
               />
               <h2
                 onClick={() => setShowLevels(true)}
-                className="text-[#9d99a9] text-[20px] font-medium"
+                className="text-[#171717] text-[22px] font-medium"
               >
                 {level.name}
               </h2>
