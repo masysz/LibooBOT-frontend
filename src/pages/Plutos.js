@@ -41,8 +41,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh; // This will make it full height of the viewport
-  padding-top: 20px; // This adds 20px padding to the top
+  height: 100vh;
 `;
 
 const Plutos = () => {
