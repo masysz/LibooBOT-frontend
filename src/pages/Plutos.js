@@ -385,8 +385,8 @@ const Plutos = () => {
             <div className="flex space-x-[2px] justify-center items-center mt-8">
               <div className="w-[50px] h-[50px]">
                 <img src={coinsmall} className="w-full" alt="coin" />
-              </div>
-              <h1 className="text-[#171717] text-[45px] font-extrabold">
+              </div>               
+              <h1 className="text-[#507cff] text-[45px] font-extrabold font-family-[poppins]">
                 {formatNumber(balance)}
               </h1>
             </div>
@@ -398,7 +398,7 @@ const Plutos = () => {
               />
               <h2
                 onClick={() => setShowLevels(true)}
-                className="text-[#507cff] text-[22px] font-medium font-family-[poppins]"
+                className="text-[#171717] text-[22px] font-medium font-family-[poppins]"
               >
                 {level.name}
               </h2>
