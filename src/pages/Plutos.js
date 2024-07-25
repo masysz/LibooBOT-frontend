@@ -414,7 +414,7 @@ const Plutos = () => {
                 <img
                   src="/lihgt.gif"
                   alt="err"
-                  className={`absolute w-[350px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
+                  className={`absolute w-[420px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
                 />
                 <div className="image-container">
                   {mainTap && (
@@ -424,7 +424,7 @@ const Plutos = () => {
                         ref={imageRef}
                         src={level.imgTap}
                         alt="Wobble"
-                        className="wobble-image !w-[250px] select-none"
+                        className="wobble-image !w-[350px] select-none"
                       />
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
@@ -440,7 +440,7 @@ const Plutos = () => {
                         ref={imageRef}
                         src={level.imgBoost}
                         alt="Wobble"
-                        className="wobble-image !w-[250px] select-none"
+                        className="wobble-image !w-[350px] select-none"
                       />
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
