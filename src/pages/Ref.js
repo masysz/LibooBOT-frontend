@@ -53,7 +53,7 @@ const Ref = () => {
 
             <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
               <h2 className="text-xl font-semibold text-[#262626] mb-4">My Invite Link</h2>
-              <div className="flex items-center justify-between bg-gray-100 rounded-lg p-3">
+              <div className="flex items-center justify-between bg-[#d9dce4] rounded-lg p-3">
                 <p className="text-gray-700 text-sm truncate mr-2">
                   https://t.me/liboo_tonbot?start=r{id}
                 </p>
