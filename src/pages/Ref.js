@@ -11,6 +11,7 @@ const Ref = () => {
   const [claimLevel, setClaimLevel] = useState(false);
   const [copied, setCopied] = useState(false);
   const scrollContainerRef = useRef(null);
+  const pageRef = useRef(null);
 
   const totalEarnings = useMemo(() => {
     return referrals.reduce((total, user) => total + (user.balance || 0) * 0.05, 0);
@@ -18,25 +19,23 @@ const Ref = () => {
 
   useEffect(() => {
     const updateScrollHeight = () => {
-      if (scrollContainerRef.current) {
+      if (scrollContainerRef.current && pageRef.current) {
         const viewportHeight = window.innerHeight;
-        const headerElement = document.querySelector('header');
-        const inviteLinkElement = document.querySelector('.invite-link-section');
-        const footerElement = document.querySelector('footer');
-
-        const headerHeight = headerElement ? headerElement.offsetHeight : 0;
-        const inviteLinkHeight = inviteLinkElement ? inviteLinkElement.offsetHeight : 0;
-        const footerHeight = footerElement ? footerElement.offsetHeight : 0;
-        const padding = 40; // Additional padding
+        const pageTop = pageRef.current.getBoundingClientRect().top;
+        const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+        const inviteLinkHeight = document.querySelector('.invite-link-section')?.offsetHeight || 0;
+        const footerHeight = document.querySelector('footer')?.offsetHeight || 0;
         
-        const maxHeight = viewportHeight - headerHeight - inviteLinkHeight - footerHeight - padding;
-        scrollContainerRef.current.style.maxHeight = `${Math.max(maxHeight, 200)}px`; // Minimum height of 200px
+        const availableHeight = viewportHeight - pageTop - headerHeight - inviteLinkHeight - footerHeight - 40; // 40px for padding
+        
+        scrollContainerRef.current.style.height = `${Math.max(availableHeight, 200)}px`;
+        scrollContainerRef.current.style.overflowY = 'auto';
+        scrollContainerRef.current.style.WebkitOverflowScrolling = 'touch';
       }
     };
 
     updateScrollHeight();
     window.addEventListener('resize', updateScrollHeight);
-
     return () => window.removeEventListener('resize', updateScrollHeight);
   }, []);
 
@@ -90,7 +89,7 @@ const Ref = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-y-auto">
+    <div ref={pageRef} className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
       <div className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col">
         {loading ? (
           <Spinner />
@@ -129,7 +128,8 @@ const Ref = () => {
                 style={{
                   WebkitOverflowScrolling: 'touch',
                   scrollbarWidth: 'thin',
-                  scrollbarColor: '#4a5568 #CBD5E0'
+                  scrollbarColor: '#4a5568 #CBD5E0',
+                  msOverflowStyle: '-ms-autohiding-scrollbar'
                 }}
               >
                 {referrals.length === 0 ? (
