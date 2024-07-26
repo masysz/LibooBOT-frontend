@@ -4,8 +4,9 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          primary: "#12181f",
-          secondary: "#00f6ff",
+          primary: '#094e9d',
+          secondary: '#0b62c4',
+          accent: '#6ed86e',
           dimWhite: "#c2c2cc",
           dimBlue: "rgba(9, 151, 124, 0.1)",
           gray: { 100: "#808080", 200: "#323232", 300: "#212121" },
@@ -22,13 +23,7 @@ module.exports = {
           borders2: "#3d4a68",
           activeborder: "#0569aa",
           activebg: "#17436e",
-          primary: '#094e9d',
-          secondary: '#0b62c4',
-          accent: '#6ed86e',
-          background: {
-            start: '#0a0a1f',
-            end: '#1a1a3a',
-          },
+        
         },
         backgroundImage: {
           'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
