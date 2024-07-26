@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react'
+import Animate from '../Components/Animate';
 import { Outlet } from 'react-router-dom';
+import coinsmall from "../images/main-logo.png";
+import taskbook from "../images/taskbook.webp";
+import youtubeicon from "../images/youtube.gif";
+import telegramicon from "../images/telegram.gif";
+import twittericon from "../images/twitter.gif";
+import facebookicon from "../images/facebook.gif";
+import instagramicon from "../images/instagram.gif";
+import tiktokicon from "../images/tiktok.gif";
+import vkicon from "../images/vk.gif";
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
-import { IoCheckmarkSharp } from "react-icons/io5";
-import { useUser } from '../context/userContext';
+import { db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import Spinner from '../Components/Spinner';
 import TaskOne from '../Components/TaskOne';
 import TaskTwo from '../Components/TaskTwo';
@@ -14,158 +23,417 @@ import TaskSix from '../Components/TaskSix';
 import TaskSeven from '../Components/TaskSeven';
 import ClaimLeveler from '../Components/ClaimLeveler';
 import Levels from '../Components/Levels';
+import { IoCheckmarkSharp } from "react-icons/io5";
+import congrats from "../images/celebrate.gif";
+import { useUser } from '../context/userContext';
 import MilestoneRewards from '../Components/MilestoneRewards';
 import ReferralRewards from '../Components/Rewards';
 import DailyRewards from '../Components/DailyRewards';
 
-// Import images
-import coinsmall from "../images/main-logo.png";
-import telegramicon from "../images/telegram.gif";
-import twittericon from "../images/twitter.gif";
-import instagramicon from "../images/instagram.gif";
-
 const Tasks = () => {
-  const { id, taskCompleted, setTaskCompleted, taskCompleted3, setTaskCompleted3, taskCompleted6, setTaskCompleted6 } = useUser();
+  const {
+    id, 
+    balance, 
+    refBonus, 
+    taskCompleted, 
+    level, 
+    setTaskCompleted, 
+    taskCompleted2, 
+    setTaskCompleted2, 
+    taskCompleted3, 
+    setTaskCompleted3, 
+    taskCompleted4, 
+    setTaskCompleted4, 
+    taskCompleted5, 
+    setTaskCompleted5, 
+    taskCompleted6, 
+    setTaskCompleted6, 
+    taskCompleted7, 
+    setTaskCompleted7
+  } = useUser();
+
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+  const [showModal3, setShowModal3] = useState(false);
+  const [showModal4, setShowModal4] = useState(false);
+  const [showModal5, setShowModal5] = useState(false);
+  const [showModal6, setShowModal6] = useState(false);
+  const [showModal7, setShowModal7] = useState(false);
+  const [claimLevel, setClaimLevel] = useState(false);
+  const [showLevels, setShowLevels] = useState(false);
+  const [message, setMessage] = useState("");
   const [activeIndex, setActiveIndex] = useState(1);
   const [showDailyRewards, setShowDailyRewards] = useState(false);
 
-  const [modals, setModals] = useState({
-    taskOne: false,
-    taskTwo: false,
-    taskThree: false,
-    taskFour: false,
-    taskFive: false,
-    taskSix: false,
-    taskSeven: false,
-    claimLevel: false,
-    levels: false,
-  });
+  const taskID = "task_3100";
+  const taskID2 = "task_3101";
+  const taskID3 = "task_3102";
+  const taskID4 = "task_3103";
+  const taskID5 = "task_3104";
+  const taskID6 = "task_3105";
+  const taskID7 = "task_3106";
 
-  const toggleModal = (modalName) => {
-    setModals(prev => ({ ...prev, [modalName]: !prev[modalName] }));
-    document.getElementById("footermain").style.zIndex = modals[modalName] ? "0" : "50";
+  const handleMenu = (index) => {
+    setActiveIndex(index);
   };
 
+  const taskOne = () => {
+    setShowModal(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const taskTwo = () => {
+    setShowModal2(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const taskThree = () => {
+    setShowModal3(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const taskFour = () => {
+    setShowModal4(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const taskFive = () => {
+    setShowModal5(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const taskSix = () => {
+    setShowModal6(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const taskSeven = () => {
+    setShowModal7(true)
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const handleDailyRewards = () => {
+    setShowDailyRewards(true);
+    document.getElementById("footermain").style.zIndex = "50";
+  };
+  
   useEffect(() => {
-    // ... (keep your existing useEffect for checking task completion)
-  }, [id, setTaskCompleted, setTaskCompleted3, setTaskCompleted6]);
+    const checkTaskCompletion = async (id, taskId) => {
+      try {
+        const userTaskDocRef = doc(db, 'userTasks', `${id}_${taskId}`);
+        const docSnap = await getDoc(userTaskDocRef);
+        if (docSnap.exists()) {
+          return docSnap.data().completed;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        console.error('Error checking task completion: ', e);
+        return false;
+      }
+    };
 
-  const TaskItem = ({ icon, title, reward, completed, onClick }) => (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className='bg-white rounded-lg p-4 flex justify-between items-center shadow-md'
-    >
-      <div className='flex items-center space-x-4'>
-        <img src={icon} alt={title} className='w-12 h-12 object-contain'/>
-        <div>
-          <h3 className='font-semibold text-gray-800'>{title}</h3>
-          <div className='flex items-center space-x-1 text-sm text-gray-600'>
-            <img src={coinsmall} className="w-4 h-4" alt="coin"/>
-            <span>{reward}</span>
-          </div>
-        </div>
-      </div>
-      {completed ? (
-        <IoCheckmarkSharp className="w-6 h-6 text-green-500"/>
-      ) : (
-        <MdOutlineKeyboardArrowRight className="w-6 h-6 text-gray-400"/>
-      )}
-    </motion.div>
-  );
+    if (id) {
+      checkTaskCompletion(id, taskID).then((completed) => {
+        setTaskCompleted(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+      checkTaskCompletion(id, taskID2).then((completed) => {
+        setTaskCompleted2(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+      checkTaskCompletion(id, taskID3).then((completed) => {
+        setTaskCompleted3(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+      checkTaskCompletion(id, taskID4).then((completed) => {
+        setTaskCompleted4(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+      checkTaskCompletion(id, taskID5).then((completed) => {
+        setTaskCompleted5(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+      checkTaskCompletion(id, taskID6).then((completed) => {
+        setTaskCompleted6(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+      checkTaskCompletion(id, taskID7).then((completed) => {
+        setTaskCompleted7(completed);
+        if (completed) {
+          setMessage("");
+        }
+      });
+    }
+  }, [id, setTaskCompleted, setTaskCompleted2, setTaskCompleted3, setTaskCompleted4, setTaskCompleted5, setTaskCompleted6, setTaskCompleted7]);
 
-  const TabButton = ({ index, label }) => (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      onClick={() => setActiveIndex(index)}
-      className={`py-2 px-4 rounded-md transition-colors ${
-        activeIndex === index ? 'bg-white text-blue-600 shadow-md' : 'text-gray-600'
-      }`}
-    >
-      {label}
-    </motion.button>
-  );
+  const levelsAction = () => {
+    setShowLevels(true);
+    document.getElementById("footermain").style.zIndex = "50";
+  }
+
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat().format(num).replace(/,/g, " ");
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className='min-h-screen bg-gradient-to-b from-blue-100 to-blue-200 p-4'
-    >
+    <>
       {loading ? (
         <Spinner />
       ) : (
-        <div className='max-w-md mx-auto space-y-6'>
-          <div className='bg-blue-50 rounded-lg p-2 flex justify-between shadow-md'>
-            <TabButton index={1} label="Special" />
-            <TabButton index={2} label="Leagues" />
-            <TabButton index={3} label="Ref Bonus" />
-          </div>
+        <Animate>
+          <div className='w-full justify-center flex-col space-y-3 px-5'>
+            <div className='fixed top-0 left-0 right-0 pt-8 px-5'>
+              <div className="flex space-x-2 justify-center items-center relative">
+                <div id="congrat" className='opacity-0 invisible w-[80%] absolute pl-10 ease-in-out duration-500 transition-all'>
+                  <img src={congrats} alt="congrats" className="w-full"/>
+                </div>
+              </div>
 
-          <AnimatePresence mode='wait'>
-            <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className='space-y-4'
-            >
-              {activeIndex === 1 && (
-                <>
-                  <TaskItem
-                    icon={coinsmall}
-                    title="Daily Rewards"
-                    reward="Claim daily"
-                    onClick={() => toggleModal('dailyRewards')}
-                  />
-                  <TaskItem
-                    icon={telegramicon}
-                    title="Join Our Telegram Channel"
-                    reward="50 000"
-                    completed={taskCompleted}
-                    onClick={() => toggleModal('taskOne')}
-                  />
-                  <TaskItem
-                    icon={twittericon}
-                    title="Follow us on X"
-                    reward="50 000"
-                    completed={taskCompleted3}
-                    onClick={() => toggleModal('taskThree')}
-                  />
-                  <TaskItem
-                    icon={instagramicon}
-                    title="Follow us on Instagram"
-                    reward="80 000"
-                    completed={taskCompleted6}
-                    onClick={() => toggleModal('taskSix')}
-                  />
-                </>
-              )}
-              {activeIndex === 2 && <MilestoneRewards />}
-              {activeIndex === 3 && <ReferralRewards />}
-            </motion.div>
-          </AnimatePresence>
+              <div className='w-full border-[1px] bg-[#abc8ff] border-borders rounded-[10px] p-1 flex items-center'>
+  <div onClick={() => handleMenu(1)} className={`${activeIndex === 1 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center text-black`}>
+    Special
+  </div>
+  <div onClick={() => handleMenu(2)} className={`${activeIndex === 2 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center text-black`}>
+    Leagues
+  </div>
+  <div onClick={() => handleMenu(3)} className={`${activeIndex === 3 ? 'bg-cards' : ''}  rounded-[6px] py-[12px] px-3 w-[33%] flex justify-center text-center items-center text-black`}>
+    Ref Bonus
+  </div>
+</div>
+            </div>
+
+            <div className='!mt-[80px] w-full h-[60vh] flex flex-col overflow-y-auto'>
+              <div className={`${activeIndex === 1 ? 'flex' : 'hidden'} alltaskscontainer flex-col w-full space-y-2`}>
+                {/* Daily Rewards Button */}
+                <div onClick={handleDailyRewards} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+                  <div className='flex flex-1 items-center space-x-2'>
+                    <div className=''>
+                      <img src={coinsmall} alt="daily rewards" className='w-[50px]'/>
+                    </div>
+                    <div className='flex flex-col space-y-1'>
+                      <span className='font-semibold text-[#171717]'>
+                        Daily Rewards
+                      </span>
+                      <div className='flex items-center space-x-1'>
+                        <span className="w-[20px] h-[20px]">
+                          <img src={coinsmall} className="w-full" alt="coin"/>
+                        </span>
+                        <span className='font-medium text-[#171717]'>
+                          Claim daily
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className=''>
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
+                  </div>
+                </div>
+
+
+                <div onClick={taskOne} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+
+                    <div className='flex flex-1 items-center space-x-2'>
+
+                        <div className=''>
+                            <img src={telegramicon} alt="tasks" className='w-[50px]'/>
+                        </div>
+                        <div className='flex flex-col space-y-1'>
+                            <span className='font-semibold text-[#171717]'>
+                                Join Our Telegram Channel
+                            </span>
+                            <div className='flex items-center space-x-1'>
+                            <span className="w-[20px] h-[20px]">
+                <img src={coinsmall} className="w-full" alt="coin"/>
+              </span>
+              <span className='font-medium text-[#171717]'>
+                50 000
+              </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/*  */}
+
+                    <div className=''>
+                    {taskCompleted ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
+                                    </>
+                                    )}
+
+                                    
+                    </div>
+
+                </div>
+
+              
+
+<div onClick={taskThree} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+
+<div className='flex flex-1 items-center space-x-2'>
+
+    <div className=''>
+        <img src={twittericon} alt="taskbook" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+        <span className='font-semibold text-[#171717]'>
+            Follow us on X
+        </span>
+        <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+<img src={coinsmall} className="w-full" alt="coin"/>
+</span>
+<span className='font-medium text-[#171717]'>
+50 000
+</span>
         </div>
+    </div>
+
+</div>
+
+{/*  */}
+
+<div className=''>
+{taskCompleted3 ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
+                                    </>
+                                    )}
+</div>
+
+</div>
+
+
+
+<div onClick={taskSix} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+
+<div className='flex flex-1 items-center space-x-2'>
+
+    <div className=''>
+        <img src={instagramicon} alt="taskbook" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+        <span className='font-semibold text-[#171717]'>
+            Follow us on Instagram
+        </span>
+        <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+<img src={coinsmall} className="w-full" alt="coin"/>
+</span>
+<span className='font-medium text-[#171717]'>
+80 000
+</span>
+        </div>
+    </div>
+
+</div>
+
+<div className=''>
+{taskCompleted6 ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]"/>
+                                    </>
+                                    )}
+</div>
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+            <div className={`${activeIndex === 2 ? 'flex' : 'hidden'} alltaskscontainer flex-col w-full space-y-2`}>
+
+
+
+<MilestoneRewards/>
+
+
+
+</div>
+
+
+
+
+
+            <div className={`${activeIndex === 3 ? 'flex' : 'hidden'} alltaskscontainer flex-col w-full space-y-2`}>
+
+
+<ReferralRewards/>
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+<TaskOne showModal={showModal} setShowModal={setShowModal} />
+<TaskTwo showModal={showModal2} setShowModal={setShowModal2} />
+<TaskThree showModal={showModal3} setShowModal={setShowModal3} />
+<TaskFour showModal={showModal4} setShowModal={setShowModal4} />
+<TaskFive showModal={showModal5} setShowModal={setShowModal5} />
+<TaskSix showModal={showModal6} setShowModal={setShowModal6} />
+<TaskSeven showModal={showModal7} setShowModal={setShowModal7} />
+<ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
+<Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+<DailyRewards showModal={showDailyRewards} setShowModal={setShowDailyRewards} />
+
+
+
+    </div>
+    <Outlet />
+    </Animate>
       )}
+      </>
+  )
+}
 
-      <TaskOne showModal={modals.taskOne} setShowModal={() => toggleModal('taskOne')} />
-      <TaskTwo showModal={modals.taskTwo} setShowModal={() => toggleModal('taskTwo')} />
-      <TaskThree showModal={modals.taskThree} setShowModal={() => toggleModal('taskThree')} />
-      <TaskFour showModal={modals.taskFour} setShowModal={() => toggleModal('taskFour')} />
-      <TaskFive showModal={modals.taskFive} setShowModal={() => toggleModal('taskFive')} />
-      <TaskSix showModal={modals.taskSix} setShowModal={() => toggleModal('taskSix')} />
-      <TaskSeven showModal={modals.taskSeven} setShowModal={() => toggleModal('taskSeven')} />
-      <ClaimLeveler claimLevel={modals.claimLevel} setClaimLevel={() => toggleModal('claimLevel')} />
-      <Levels showLevels={modals.levels} setShowLevels={() => toggleModal('levels')} />
-      <DailyRewards showModal={showDailyRewards} setShowModal={setShowDailyRewards} />
-
-      <Outlet />
-    </motion.div>
-  );
-};
-
-export default Tasks;
+export default Tasks
