@@ -7,26 +7,30 @@ import coinsmall from "../images/main-logo.png";
 import { useUser } from "../context/userContext";
 
 const Ref = () => {
-  const { id, referrals, loading } = useUser();
+  const { id, referrals = [], loading } = useUser();
   const [claimLevel, setClaimLevel] = useState(false);
   const [copied, setCopied] = useState(false);
   const scrollContainerRef = useRef(null);
 
   const totalEarnings = useMemo(() => {
-    return referrals.reduce((total, user) => total + user.balance * 0.05, 0);
+    return referrals.reduce((total, user) => total + (user.balance || 0) * 0.05, 0);
   }, [referrals]);
 
   useEffect(() => {
     const updateScrollHeight = () => {
       if (scrollContainerRef.current) {
         const viewportHeight = window.innerHeight;
-        const headerHeight = document.querySelector('header').offsetHeight;
-        const inviteLinkHeight = document.querySelector('.invite-link-section').offsetHeight;
-        const footerHeight = document.querySelector('footer').offsetHeight;
+        const headerElement = document.querySelector('header');
+        const inviteLinkElement = document.querySelector('.invite-link-section');
+        const footerElement = document.querySelector('footer');
+
+        const headerHeight = headerElement ? headerElement.offsetHeight : 0;
+        const inviteLinkHeight = inviteLinkElement ? inviteLinkElement.offsetHeight : 0;
+        const footerHeight = footerElement ? footerElement.offsetHeight : 0;
         const padding = 40; // Additional padding
         
         const maxHeight = viewportHeight - headerHeight - inviteLinkHeight - footerHeight - padding;
-        scrollContainerRef.current.style.height = `${maxHeight}px`;
+        scrollContainerRef.current.style.height = `${Math.max(maxHeight, 200)}px`; // Minimum height of 200px
       }
     };
 
@@ -59,26 +63,26 @@ const Ref = () => {
       className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between mb-4"
     >
       <div className="flex items-center space-x-3 mb-2 sm:mb-0">
-        <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
+        <img src={user.level?.imgUrl} alt={user.level?.name} className="w-10 h-10" />
         <div>
           <h3 className="text-[#262626] font-semibold">{user.username}</h3>
-          <p className="text-gray-500 text-sm">{user.level.name}</p>
+          <p className="text-gray-500 text-sm">{user.level?.name}</p>
         </div>
       </div>
       <div className="flex flex-col items-end">
         <div className="flex items-center space-x-2">
           <img src={coinsmall} alt="coin" className="w-5 h-5" />
-          <span className="text-[#507cff] font-medium">{formatNumber(user.balance)}</span>
+          <span className="text-[#507cff] font-medium">{formatNumber(user.balance || 0)}</span>
         </div>
         <div className="text-green-500 text-sm">
-          +{formatNumber(user.balance * 0.05)} (5%)
+          +{formatNumber((user.balance || 0) * 0.05)} (5%)
         </div>
       </div>
       <div className="w-full mt-3 sm:w-32">
         <div className="bg-gray-200 rounded-full h-2 w-full">
           <div
             className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
-            style={{ width: `${(user.balance / 10000) * 100}%` }}
+            style={{ width: `${((user.balance || 0) / 10000) * 100}%` }}
           ></div>
         </div>
       </div>
