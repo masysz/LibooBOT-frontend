@@ -243,7 +243,7 @@ const TaskThree = ({ showModal, setShowModal }) => {
                   </div>
                 </div>
               </div>
-              <h1 className="text-[20px] text-[#262626] font-semibold pt-6 pb-4 px-2">
+              <h1 className="text-[20px] text-[#edf4ff] font-semibold pt-6 pb-4 px-2">
                 Your Tasks
               </h1>
               <div className="bg-cards rounded-[10px] p-[14px] flex justify-between items-center">

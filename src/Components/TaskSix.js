@@ -243,7 +243,7 @@ const TaskSix = ({ showModal, setShowModal }) => {
                   </div>
                 </div>
               </div>
-              <h1 className="text-[20px] font-semibold pt-6 pb-4 px-2 text-[#262626]">
+              <h1 className="text-[20px] font-semibold pt-6 pb-4 px-2 text-[#edf4ff]">
                 Your Tasks
               </h1>
               <div className="bg-cards rounded-[10px] p-[14px] flex justify-between items-center">
