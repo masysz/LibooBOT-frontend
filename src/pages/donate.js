@@ -196,8 +196,8 @@ const Donate = () => {
     <Animate>
       <style>{styles}</style>
       <div className="w-full flex flex-col space-y-3 px-5 pt-[80px]">
-        <div className="fixed top-0 left-0 right-0 pt-8 px-5 z-10">
-          <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
+        <div className="fixed top-0 left-0 right-0 pt-5 px-5 z-10">
+          <h1 className="text-[25px] text-[#ffff] font-semibold mb-4 text-center">Donate to Campaigns</h1>
         </div>
   
         <div className="w-full h-[calc(100vh-180px)] flex flex-col overflow-y-auto hide-scrollbar">
@@ -215,10 +215,10 @@ const Donate = () => {
                     }}
                   />
                 )}
-                <h2 className="text-[22px] font-semibold mb-2">{campaign.title}</h2>
-                <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                <h2 className="text-[22px] font-semibold mb-2 text-[#ffff]">{campaign.title}</h2>
+                <p className="text-[14px] text-[#edf4ff] mb-4">{campaign['short-description'] || 'No description available'}</p>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[18px] font-medium">
+                  <span className="text-[18px] font-medium font-[#ffff]">
                     {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
                   </span>
                 </div>
@@ -243,7 +243,7 @@ const Donate = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-[#5496ff] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto hide-scrollbar">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
+                <h2 className="text-[22px] font-semibold text-[#ffff]">{selectedCampaign.title}</h2>
                 <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
                   <IoClose size={24} />
                 </button>
@@ -255,9 +255,9 @@ const Donate = () => {
                   className="w-full h-[200px] object-cover rounded-[10px] mb-4"
                 />
               )}
-              <p className="text-[14px] text-[#b8b8b8] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
+              <p className="text-[14px] text-[#edf4ff] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
               <div className="mb-4">
-                <h3 className="text-[18px] font-semibold mb-2">Progress</h3>
+                <h3 className="text-[18px] font-semibold mb-2 text-[#edf4ff]">Progress</h3>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[16px]">
                     {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
@@ -290,7 +290,7 @@ const Donate = () => {
               </div>
               
               <div className="mb-4">
-                <h3 className="text-[18px] font-semibold mb-2">Donate</h3>
+                <h3 className="text-[18px] font-semibold mb-2 text-[#edf4ff]">Donate</h3>
                 <input
                   type="number"
                   value={donationAmount}
@@ -298,7 +298,7 @@ const Donate = () => {
                   className="w-full bg-[#252e57] text-white rounded-[8px] p-2 mb-4"
                   placeholder="Enter donation amount"
                 />
-                <p className="text-[14px] text-[#9a96a6] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                <p className="text-[15px] text-[#edf4ff] mb-2">Your current balance: {formatNumber(balance)} points</p>
               </div>
               <button
                 onClick={handleDonationSubmit}
