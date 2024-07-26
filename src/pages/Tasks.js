@@ -290,6 +290,54 @@ const Tasks = () => {
 
               
 
+
+
+{/* TELERGAM GROUP CHAT TASK
+
+                   <div onClick={taskTwo} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+
+<div className='flex flex-1 items-center space-x-2'>
+
+    <div className=''>
+        <img src={telegramicon} alt="taskbook" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+        <span className='font-semibold'>
+            Join Our Telegram Group
+        </span>
+        <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+<img src={coinsmall} className="w-full" alt="coin"/>
+</span>
+<span className='font-medium'>
+80 000
+</span>
+        </div>
+    </div>
+
+</div>
+
+
+<div className=''>
+{taskCompleted2 ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                                    </>
+                                    )}
+</div>
+
+</div>
+
+
+*/}
+
 <div onClick={taskThree} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
 <div className='flex flex-1 items-center space-x-2'>
@@ -332,7 +380,95 @@ const Tasks = () => {
 
 </div>
 
+{/*  */}
 
+{/* <div onClick={taskFour} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+
+<div className='flex flex-1 items-center space-x-2'>
+
+    <div className=''>
+        <img src={vkicon} alt="taskbook" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+        <span className='font-semibold'>
+            Follow us on VK
+        </span>
+        <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+<img src={coinsmall} className="w-full" alt="coin"/>
+</span>
+<span className='font-medium'>
+50 000
+</span>
+        </div>
+    </div>
+
+</div> */}
+
+{/*  */}
+
+{/* <div className=''>
+{taskCompleted4 ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                                    </>
+                                    )}
+</div>
+
+</div> */}
+
+{/* <div onClick={taskFive} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
+
+<div className='flex flex-1 items-center space-x-2'>
+
+    <div className=''>
+        <img src={tiktokicon} alt="taskbook" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+        <span className='font-semibold'>
+            Follow us on TikTok
+        </span>
+        <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+<img src={coinsmall} className="w-full" alt="coin"/>
+</span>
+<span className='font-medium'>
+50 000
+</span>
+        </div>
+    </div>
+
+</div> */}
+
+
+
+{/* <div className=''>
+{taskCompleted5 ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                                    </>
+                                    )}
+</div>
+
+</div> */}
+
+
+
+{/*  */}
 
 <div onClick={taskSix} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
@@ -357,6 +493,8 @@ const Tasks = () => {
 
 </div>
 
+{/*  */}
+
 <div className=''>
 {taskCompleted6 ? (
                                     <>
@@ -374,13 +512,57 @@ const Tasks = () => {
 
 </div>
 
+{/* <div onClick={taskSeven} className='bg-cards rounded-[10px] p-[14px] flex justify-between items-center'>
 
+<div className='flex flex-1 items-center space-x-2'>
+
+    <div className=''>
+        <img src={facebookicon} alt="taskbook" className='w-[50px]'/>
+    </div>
+    <div className='flex flex-col space-y-1'>
+        <span className='font-semibold'>
+            Follow us on Facebook
+        </span>
+        <div className='flex items-center space-x-1'>
+        <span className="w-[20px] h-[20px]">
+<img src={coinsmall} className="w-full" alt="coin"/>
+</span>
+<span className='font-medium'>
+50 000
+</span>
+        </div>
+    </div>
+
+</div>
+ */}
+
+
+{/* <div className=''>
+{taskCompleted7 ? (
+                                    <>
+
+                    <IoCheckmarkSharp className="w-[20px] h-[20px] text-[#5bd173] mt-[2px]"/>
+                                    </>
+                                    ) : (
+                                    
+                                    <>
+                      
+                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]"/>
+                                    </>
+                                    )}
+</div>
+
+</div>
+
+
+
+             */}
 
 
 
 </div>
 
-
+{/*  */}
 
 
             <div className={`${activeIndex === 2 ? 'flex' : 'hidden'} alltaskscontainer flex-col w-full space-y-2`}>
@@ -394,7 +576,7 @@ const Tasks = () => {
 </div>
 
 
-
+{/*  */}
 
 
             <div className={`${activeIndex === 3 ? 'flex' : 'hidden'} alltaskscontainer flex-col w-full space-y-2`}>
