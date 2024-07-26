@@ -52,7 +52,7 @@ const Section = styled.section`
   background-color: white;
   border-radius: 1rem;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.0rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
@@ -60,7 +60,7 @@ const ReferralsSection = styled(Section)`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: 80px;
+  padding-bottom: 120px;
 `;
 
 const InviteLinkWrapper = styled.div`
