@@ -30,12 +30,12 @@ const Ref = () => {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 py-4 h-full flex flex-col"
+        className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col"
       >
         {loading ? (
           <Spinner />
@@ -66,7 +66,7 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow overflow-hidden flex flex-col">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow overflow-y-auto flex flex-col">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
               <div className="overflow-y-auto flex-grow">
                 {referrals.length === 0 ? (
