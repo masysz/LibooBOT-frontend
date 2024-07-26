@@ -221,8 +221,8 @@ const TaskOne = ({ showModal, setShowModal }) => {
                             </button> */}
             </div>
             <div className="flex w-full flex-col">
-              <h1 className="text-[20px] font-semibold text-[#171717]">Join Our Socials</h1>
-              <p className="text-[#262626] text-[16px] font-medium pt-1 pb-10">
+              <h1 className="text-[20px] font-semibold text-[#ffff]">Join Our Telegram Channel</h1>
+              <p className="text-[#edf4ff] text-[16px] font-medium pt-1 pb-10">
                 Join our telegram channel to get regular updates about the project and its great potential.
               </p>
 
