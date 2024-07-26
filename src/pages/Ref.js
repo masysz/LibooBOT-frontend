@@ -30,12 +30,12 @@ const Ref = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col"
+        className="w-full max-w-4xl mx-auto px-4 py-4 flex flex-col"
       >
         {loading ? (
           <Spinner />
@@ -88,8 +88,7 @@ const Ref = () => {
                           <div>
                             <h3 className="text-[#262626] font-semibold">{user.username}</h3>
                             <p className="text-gray-500 text-sm">{user.level.name}</p>
-                          </div>.
-                          
+                          </div>
                         </div>
                         <div className="flex flex-col items-end">
                           <div className="flex items-center space-x-2">
