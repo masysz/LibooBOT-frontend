@@ -20,9 +20,13 @@ const Ref = () => {
     const updateScrollHeight = () => {
       if (scrollContainerRef.current) {
         const viewportHeight = window.innerHeight;
-        const offsetTop = scrollContainerRef.current.offsetTop;
-        const maxHeight = viewportHeight - offsetTop - 20; // 20px for bottom margin
-        scrollContainerRef.current.style.maxHeight = `${maxHeight}px`;
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const inviteLinkHeight = document.querySelector('.invite-link-section').offsetHeight;
+        const footerHeight = document.querySelector('footer').offsetHeight;
+        const padding = 40; // Additional padding
+        
+        const maxHeight = viewportHeight - headerHeight - inviteLinkHeight - footerHeight - padding;
+        scrollContainerRef.current.style.height = `${maxHeight}px`;
       }
     };
 
@@ -82,7 +86,7 @@ const Ref = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
       <div className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col">
         {loading ? (
           <Spinner />
@@ -98,7 +102,7 @@ const Ref = () => {
               </p>
             </header>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md invite-link-section">
               <h2 className="text-xl font-semibold text-[#262626] mb-4">My Invite Link</h2>
               <div className="flex items-center justify-between bg-[#d9dce4] rounded-lg p-3">
                 <p className="text-gray-700 text-sm truncate mr-2">
@@ -113,11 +117,11 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex flex-col">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
               <div 
                 ref={scrollContainerRef}
-                className="overflow-y-auto flex-grow"
+                className="overflow-y-auto"
                 style={{
                   WebkitOverflowScrolling: 'touch',
                   scrollbarWidth: 'thin',
