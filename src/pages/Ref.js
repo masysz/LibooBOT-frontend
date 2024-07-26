@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
 import ClaimLeveler from "../Components/ClaimLeveler";
@@ -10,10 +10,27 @@ const Ref = () => {
   const { id, referrals, loading } = useUser();
   const [claimLevel, setClaimLevel] = useState(false);
   const [copied, setCopied] = useState(false);
+  const scrollContainerRef = useRef(null);
 
   const totalEarnings = useMemo(() => {
     return referrals.reduce((total, user) => total + user.balance * 0.05, 0);
   }, [referrals]);
+
+  useEffect(() => {
+    const updateScrollHeight = () => {
+      if (scrollContainerRef.current) {
+        const viewportHeight = window.innerHeight;
+        const offsetTop = scrollContainerRef.current.offsetTop;
+        const maxHeight = viewportHeight - offsetTop - 20; // 20px for bottom margin
+        scrollContainerRef.current.style.maxHeight = `${maxHeight}px`;
+      }
+    };
+
+    updateScrollHeight();
+    window.addEventListener('resize', updateScrollHeight);
+
+    return () => window.removeEventListener('resize', updateScrollHeight);
+  }, []);
 
   const copyToClipboard = () => {
     const reflink = `https://t.me/Liboo_tonbot?start=r${id}`;
@@ -65,17 +82,12 @@ const Ref = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col overflow-hidden"
-      >
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
+      <div className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col">
         {loading ? (
           <Spinner />
         ) : (
-          <div className="flex-grow overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <>
             <header className="text-center mb-6">
               <h1 className="text-4xl font-bold text-[#262626] mb-1">
                 {referrals.length} <span className="text-[#507cff]">Users</span>
@@ -101,16 +113,24 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
-              <div className="overflow-y-auto pr-2" style={{ maxHeight: "calc(100vh - 400px)", WebkitOverflowScrolling: 'touch' }}>
+              <div 
+                ref={scrollContainerRef}
+                className="overflow-y-auto flex-grow"
+                style={{
+                  WebkitOverflowScrolling: 'touch',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
+              >
                 {referrals.length === 0 ? (
                   <p className="text-center text-gray-600 py-8">
                     You don't have any referrals yet. Start sharing your link!
                   </p>
                 ) : (
                   <AnimatePresence>
-                    <div className="space-y-4">
+                    <div className="space-y-4 pr-2">
                       {referrals.map((user, index) => (
                         <ReferralItem key={user.id || index} user={user} index={index} />
                       ))}
@@ -121,10 +141,10 @@ const Ref = () => {
             </section>
 
             <ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
-          </div>
+          </>
         )}
         <Outlet />
-      </motion.div>
+      </div>
     </div>
   );
 };
