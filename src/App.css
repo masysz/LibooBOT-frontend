@@ -7,7 +7,6 @@ body {
   background: linear-gradient(to bottom, #d9dce4, #5496ff); /* Fallback gradient */
   /*background-image: url('./images/background-forest.jpg');*/
   background-size: cover;
-  min-height: 100vh;
   background-position: center;
   color: #b9b9b9;
   height: var(--tg-viewport-stable-height);
