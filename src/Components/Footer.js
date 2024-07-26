@@ -26,7 +26,7 @@ const Footer = () => {
               ${index === 2 ? 'w-1/4' : 'w-1/5'}
               flex flex-col items-center justify-center
               ${index === 2 ? '-mt-6' : ''}
-              ${isActive ? 'text-[#4169E1]' : 'text-[#6A5ACD]'}
+              ${isActive ? 'text-[#4169E1] poppins-bold' : 'text-[#6A5ACD] poppins-bold'}
             `}
           >
             {({ isActive }) => (
@@ -47,7 +47,7 @@ const Footer = () => {
                     className={`${index === 2 ? 'w-8 h-8' : 'w-6 h-6'}`}
                   />
                 </div>
-                <span className={`mt-1 text-xs ${index === 2 ? 'font-bold' : 'font-medium'}`}>
+                <span className={`mt-1 text-xs ${index === 2 ? 'font-bold poppins-bold' : 'font-medium poppins-bold'}`}>
                   {item.name}
                 </span>
               </>

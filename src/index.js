@@ -65,12 +65,13 @@ root.render(
 
 
 
-  <DeviceCheck>
+
+  //<DeviceCheck>
   <TonConnectUIProvider manifestUrl={manifestUrl}>
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>
   </TonConnectUIProvider>
- </DeviceCheck>
+ //</DeviceCheck>
 
 );
