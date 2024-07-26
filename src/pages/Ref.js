@@ -35,7 +35,7 @@ const Ref = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between mb-4"
+      className="bg-gray-50 rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4"
     >
       <div className="flex items-center space-x-3 mb-2 sm:mb-0">
         <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
@@ -44,7 +44,7 @@ const Ref = () => {
           <p className="text-gray-500 text-sm">{user.level.name}</p>
         </div>
       </div>
-      <div className="flex flex-col items-end">
+      <div className="flex flex-col items-start sm:items-end">
         <div className="flex items-center space-x-2">
           <img src={coinsmall} alt="coin" className="w-5 h-5" />
           <span className="text-[#507cff] font-medium">{formatNumber(user.balance)}</span>
@@ -53,7 +53,7 @@ const Ref = () => {
           +{formatNumber(user.balance * 0.05)} (5%)
         </div>
       </div>
-      <div className="w-full mt-3 sm:w-32">
+      <div className="w-full sm:w-32 mt-2 sm:mt-0">
         <div className="bg-gray-200 rounded-full h-2 w-full">
           <div
             className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
@@ -70,7 +70,7 @@ const Ref = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col"
+        className="w-full max-w-4xl mx-auto px-4 py-4 flex flex-col h-full"
       >
         {loading ? (
           <Spinner />
@@ -81,7 +81,7 @@ const Ref = () => {
                 {referrals.length} <span className="text-[#507cff]">Users</span>
               </h1>
               <p className="text-lg text-gray-600">Your Referral Network</p>
-              <p className="text-xl text-[#507cff] font-semibold mt-2">
+              <p className="text-xl text-green-600 font-semibold mt-2">
                 Total Earnings: +{formatNumber(totalEarnings)}
               </p>
             </header>
@@ -101,16 +101,16 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col overflow-hidden">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
-              <div className="flex-grow overflow-y-auto" style={{ maxHeight: "calc(100vh - 400px)" }}>
+              <div className="flex-grow overflow-y-auto -mr-2 pr-2" style={{ WebkitOverflowScrolling: 'touch' }}>
                 {referrals.length === 0 ? (
                   <p className="text-center text-gray-600 py-8">
                     You don't have any referrals yet. Start sharing your link!
                   </p>
                 ) : (
                   <AnimatePresence>
-                    <div className="space-y-4 pr-2">
+                    <div className="space-y-4">
                       {referrals.map((user, index) => (
                         <ReferralItem key={user.id || index} user={user} index={index} />
                       ))}
