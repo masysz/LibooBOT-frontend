@@ -91,7 +91,7 @@ const Ref = () => {
           <div className="bg-borders w-full px-5 h-[1px] !mt-6"></div>
 
           <div className="w-full flex flex-col">
-            <h3 className="text-[22px] font-semibold pb-[16px] text-[#262626]">My Referrals:</h3>
+            <h3 className="text-[22px] font-semibold pb-[16px] text-[#edf4ff]">My Referrals:</h3>
 
             <div className="w-full flex flex-col space-y-3">
 
