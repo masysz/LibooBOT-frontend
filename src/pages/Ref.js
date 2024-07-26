@@ -8,7 +8,6 @@ import coinsmall from "../images/main-logo.png";
 import { useUser } from "../context/userContext";
 
 const PageContainer = styled.div`
-  min-height: 100vh;
   background: linear-gradient(to bottom, #d9dce4, #5496ff);
   display: flex;
   flex-direction: column;
@@ -61,7 +60,7 @@ const ReferralsSection = styled(Section)`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px;
+  padding-bottom: 80px;
 `;
 
 const InviteLinkWrapper = styled.div`
@@ -96,7 +95,7 @@ const CopyButton = styled.button`
 `;
 
 const ReferralsContainer = styled.div`
-  overflow-y: auto;
+  overflow-y: scroll;
   flex-grow: 1;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
