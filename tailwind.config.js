@@ -22,6 +22,16 @@ module.exports = {
           borders2: "#3d4a68",
           activeborder: "#0569aa",
           activebg: "#17436e",
+          primary: '#094e9d',
+          secondary: '#0b62c4',
+          accent: '#6ed86e',
+          background: {
+            start: '#0a0a1f',
+            end: '#1a1a3a',
+          },
+        },
+        backgroundImage: {
+          'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         },
         fontFamily: {
           poppins: ["Poppins", "sans-serif"],

@@ -1,171 +1,107 @@
-import React, { useState } from "react";
-import Animate from "../Components/Animate";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Outlet } from "react-router-dom";
 import ClaimLeveler from "../Components/ClaimLeveler";
 import Spinner from "../Components/Spinner";
 import coinsmall from "../images/main-logo.png";
 import { useUser } from "../context/userContext";
 
-
 const Ref = () => {
   const { id, referrals, loading } = useUser();
-  // eslint-disable-next-line
   const [claimLevel, setClaimLevel] = useState(false);
   const [copied, setCopied] = useState(false);
 
- 
   const copyToClipboard = () => {
-
-   const reflink = `https://t.me/Liboo_tonbot?start=r${id}`
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(reflink).then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 10000); // Reset the copied state after 2 seconds
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
-    } else {
-      // Fallback method
-      const textArea = document.createElement('textarea');
-      textArea.value = reflink;
-      document.body.appendChild(textArea);
-      textArea.select();
-      try {
-        document.execCommand('copy');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
-      } catch (err) {
-        console.error('Failed to copy', err);
-      }
-      document.body.removeChild(textArea);
-    }
+    const reflink = `https://t.me/Liboo_tonbot?start=r${id}`;
+    navigator.clipboard.writeText(reflink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }).catch(err => console.error('Failed to copy text: ', err));
   };
-
 
   const formatNumber = (num) => {
-    if (num < 100000) {
-      return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-    } else if (num < 1000000) {
-      return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-    } else {
-      // return (num / 1000000).toFixed(3).replace(".", ".") + " M";
-      return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-    }
+    return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   };
 
-
   return (
-        <>
-           
-        {loading ? ( // Display loading indicator if data is fetching
-        <Spinner/>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="w-full max-w-4xl mx-auto px-4 py-8 bg-gradient-to-b from-[#0a0a1f] to-[#1a1a3a] min-h-screen"
+    >
+      {loading ? (
+        <Spinner />
       ) : (
-    <>
-
-      <Animate>
-        <div className="w-full justify-center flex-col space-y-3 px-5">
-          <div className="flex space-y-0 flex-col justify-center items-center">
-            <h1 className="text-[#fff] -mb-2 text-[42px] font-semibold">
-            {referrals.length} Users
+        <>
+          <header className="text-center mb-12">
+            <h1 className="text-5xl font-bold text-white mb-2">
+              {referrals.length} <span className="text-[#6ed86e]">Users</span>
             </h1>
-            <span className="text-[#6ed86e] font-semibold text-[16px]">
-              {/* + 0 */}
-            </span>
-          </div>
+            <p className="text-xl text-gray-300">Your Referral Network</p>
+          </header>
 
-          <div className="w-full bg-cards rounded-[12px] px-3 py-4 flex flex-col">
-            <span className="w-full flex justify-between items-center pb-2">
-              <h2 className="text-[18px] font-semibold text-[#262626]">My invite link:</h2>
-              <span
-               onClick={copyToClipboard}
-                className="bg-gradient-to-b from-[#094e9d] to-[#0b62c4] font-medium py-[6px] px-4 rounded-[12px] flex items-center justify-center text-[16px]"
+          <section className="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-lg">
+            <h2 className="text-2xl font-semibold text-white mb-4">My Invite Link</h2>
+            <div className="flex items-center justify-between bg-gray-800 rounded-lg p-3">
+              <p className="text-gray-300 text-sm truncate mr-2">
+                https://t.me/liboo_tonbot?start=r{id}
+              </p>
+              <button
+                onClick={copyToClipboard}
+                className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 hover:from-[#0b62c4] hover:to-[#094e9d]"
               >
-              {copied ? <span>Copied!</span> : <span>Copy</span>}
-              </span>
-            </span>
-            <div className="text-[#262626] text-[13px]">
-            https://t.me/liboo_tonbot?start=r{id}
+                {copied ? "Copied!" : "Copy"}
+              </button>
             </div>
-          </div>
-          <div className="bg-borders w-full px-5 h-[1px] !mt-6"></div>
+          </section>
 
-          <div className="w-full flex flex-col">
-            <h3 className="text-[22px] font-semibold pb-[16px] text-[#edf4ff]">My Referrals:</h3>
-
-            <div className="w-full flex flex-col space-y-3">
-
-            {loading ? (
-        <p className='w-full text-center'>checking...</p>
-      ) : referrals.length === 0 ? (
-        <p className='text-center w-full now pt-8 px-5 text-[14px] text-[#262626] leading-[24px]'>
-         You don't have referrals😭
-          </p>
-      ) : (
-        <>
-
-
-        
-                            {referrals.map((user, index) => (
-
-                              <>
-
-<div
-                      key={index}
-                      className="bg-cards rounded-[10px] p-[14px] flex flex-wrap justify-between items-center"
-                    >
-                      <div className="flex flex-1 flex-col space-y-1">
-                        <div className="text-[#262626] pl-1 text-[16px] font-semibold">
-                        {user.username}
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-[14px] text-[#507cff]">
-                          <div className="">
-                            <img src={user.level.imgUrl} alt="bronze" className="w-[18px]" />
-                          </div>
-                          <span className="font-medium text-[#9a96a6]">
-                          {user.level.name}
-                          </span>
-                          <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-
-                          <span className="w-[20px]">
-                            <img
-                              src={coinsmall}
-                              className="w-full"
-                              alt="coin"
-                            />
-                          </span>
-                          <span className="font-normal text-[#507cff] text-[15px]">
-                          {formatNumber(user.balance)}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="text-[#ffce68] font-semibold text-[15px]">
-                      +{formatNumber(user.balance / 100 * 10)}
-                      </div>
-                      <div className="flex w-full mt-2 p-[4px] items-center bg-energybar rounded-[10px] border-[1px] border-borders">
-                        <div className="h-[10px] rounded-[8px] bg-btn w-[.5%]"></div>
+          <section className="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-lg">
+            <h2 className="text-2xl font-semibold text-white mb-6">My Referrals</h2>
+            {referrals.length === 0 ? (
+              <p className="text-center text-gray-300 py-8">
+                You don't have any referrals yet. Start sharing your link!
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {referrals.map((user, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="bg-gray-800 rounded-lg p-4 flex flex-wrap items-center justify-between"
+                  >
+                    <div className="flex items-center space-x-3 mb-2 sm:mb-0">
+                      <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
+                      <div>
+                        <h3 className="text-white font-semibold">{user.username}</h3>
+                        <p className="text-gray-400 text-sm">{user.level.name}</p>
                       </div>
                     </div>
-
-                    </>
-                  ))}
-</>
-                )}
-
-            </div>
-          </div>
+                    <div className="flex items-center space-x-2">
+                      <img src={coinsmall} alt="coin" className="w-5 h-5" />
+                      <span className="text-[#507cff] font-medium">{formatNumber(user.balance)}</span>
+                    </div>
+                    <div className="w-full mt-3 sm:w-auto sm:mt-0">
+                      <div className="bg-gray-700 rounded-full h-2 w-full sm:w-32">
+                        <div
+                          className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
+                          style={{ width: `${(user.balance / 10000) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </section>
 
           <ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
-        </div>
-        <Outlet />
-      </Animate>
-    </>
+        </>
       )}
-    
-    </>
-    
+      <Outlet />
+    </motion.div>
   );
 };
 
