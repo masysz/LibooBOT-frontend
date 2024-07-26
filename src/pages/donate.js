@@ -195,7 +195,7 @@ const Donate = () => {
   return (
     <Animate>
       <style>{styles}</style>
-      <div className="w-full flex flex-col space-y-3 px-5 pt-[80px]">
+      <div className="w-full flex flex-col space-y-3 px-5 pt-[50px]">
         <div className="fixed top-0 left-0 right-0 pt-5 px-5 z-10">
           <h1 className="text-[25px] text-[#ffff] font-semibold mb-4 text-center">Donate to Campaigns</h1>
         </div>
