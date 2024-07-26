@@ -144,33 +144,39 @@ const chargingValues = [
   {
     level: 1,
     duration: 10,
-    step: 600,
+    step: 700,
   },
   {
     level: 2,
-    duration: 6,
-    step: 360,
+    duration: 9,
+    step: 600,
   },
   {
     level: 3,
-    duration: 4,
-    step: 240,
+    duration: 6,
+    step: 500,
   },
   {
     level: 4,
-    duration: 2,
-    step: 120,
+    duration: 4,
+    step: 300,
   },
   {
     level: 5,
-    duration: 1,
-    step: 60,
+    duration: 3,
+    step: 200,
   },
   {
     level: 6,
-    duration: 0.5,
-    step: 30,
+    duration: 2,
+    step: 100,
   },
+  {
+    level: 7,
+    duration: 1,
+    step: 80,
+  },
+  
 ]
 
 
@@ -180,7 +186,7 @@ const upgradeCosts = [0, 2000, 5000, 10000, 20000, 400000, 800000, 1000000, 1500
 const energyUpgradeCosts = [0, 3000, 6000, 12000, 24000, 500000, 1000000, 2000000, 3000000, 4000000, 6000000, 8000000, 10000000, 20000000];
 
 
-const chargingUpgradeCosts = [0, 2000, 30000, 100000, 200000, 400000];
+const chargingUpgradeCosts = [0, 2000, 30000, 100000, 200000, 400000, 700000];
 
 
 const Boost = () => {
