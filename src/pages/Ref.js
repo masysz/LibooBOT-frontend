@@ -30,7 +30,7 @@ const Ref = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col ">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -66,9 +66,9 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col overflow-y-auto">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col ">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
-              <div className="flex-grow overflow-y-auto">
+              <div className="flex-grow">
                 {referrals.length === 0 ? (
                   <p className="text-center text-gray-600 py-8">
                     You don't have any referrals yet. Start sharing your link!
