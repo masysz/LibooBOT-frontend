@@ -166,6 +166,11 @@ const chargingValues = [
     duration: 1,
     step: 60,
   },
+  {
+    level: 6,
+    duration: 0.5,
+    step: 30,
+  },
 ]
 
 
@@ -175,7 +180,7 @@ const upgradeCosts = [0, 2000, 5000, 10000, 20000, 400000, 800000, 1000000, 1500
 const energyUpgradeCosts = [0, 3000, 6000, 12000, 24000, 500000, 1000000, 2000000, 3000000, 4000000, 6000000, 8000000, 10000000, 20000000];
 
 
-const chargingUpgradeCosts = [0, 2000, 30000, 100000, 200000];
+const chargingUpgradeCosts = [0, 2000, 30000, 100000, 200000, 400000];
 
 
 const Boost = () => {
@@ -683,13 +688,13 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center shadow-lg shadow-red/50">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center shadow-lg shadow-red/50">
                     <img alt="claim" src={multi} className="w-[80px]" />
                   </div>
-                  <h3 className="font-semibold text-[32px] py-4">
+                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
                    Multitap
                   </h3>
-                  <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
+                  <p className="pb-6 text-[#262626] text-[16px] text-center">
                   Increase amount of LIBOO you can earn per one tap <br/>
                   +1 per tap for each level
                   </p>
@@ -702,7 +707,7 @@ const Boost = () => {
                         alt="Coin Icon"
                       />
                     </div>
-                    <div className="font-bold text-[26px] flex items-center">{formatNumber(nextUpgradeCost)} <span className="text-[16px] font-medium text-[#9a96a6] pl-2"> | {tapValues[tapValue.level]?.value} level</span></div>
+                    <div className="font-bold text-[26px] flex items-center text-[#262626]">{formatNumber(nextUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {tapValues[tapValue.level]?.value} level</span></div>
                   </div>
                 </div>
 
@@ -735,13 +740,13 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
                     <img alt="claim" src={battery3} className="w-[80px]" />
                   </div>
-                  <h3 className="font-semibold text-[32px] py-4">
+                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
                  Energy Limit
                   </h3>
-                  <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
+                  <p className="pb-6 text-[#262626] text-[16px] text-center">
                   Increase the limit of energy storage <br/>
                   +500 energy limit for each level.
                   </p>
@@ -754,7 +759,7 @@ const Boost = () => {
                         alt="Coin Icon"
                       />
                     </div>
-                    <div className="font-bold text-[26px] flex items-center">{formatNumber(nextEnergyUpgradeCost)} <span className="text-[16px] font-medium text-[#9a96a6] pl-2"> | {energyValues[battery.level]?.level} level</span></div>
+                    <div className="font-bold text-[26px] flex items-center text-[#262626]">{formatNumber(nextEnergyUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {energyValues[battery.level]?.level} level</span></div>
                   </div>
                 </div>
 
@@ -787,13 +792,13 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
                     <img alt="claim" src={flash} className="w-[80px]" />
                   </div>
-                  <h3 className="font-semibold text-[32px] py-4">
+                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
                  Recharging Speed
                   </h3>
-                  <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
+                  <p className="pb-6 text-[#262626] text-[16px] text-center">
                   Increase speed of recharge<br/>
                   more level, more recharge speed.
                   </p>
@@ -806,7 +811,7 @@ const Boost = () => {
                         alt="Coin Icon"
                       />
                     </div>
-                    <div className="font-bold text-[26px] flex items-center">{formatNumber(nextChargingUpgradeCost)} <span className="text-[16px] font-medium text-[#9a96a6] pl-2"> | {chargingValues[timeRefill.level]?.level} level</span></div>
+                    <div className="font-bold text-[26px] flex items-center text-[#262626]">{formatNumber(nextChargingUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {chargingValues[timeRefill.level]?.level} level</span></div>
                   </div>
                 </div>
 
@@ -840,13 +845,13 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
                     <img alt="claim" src={boost} className="w-[80px]" />
                   </div>
-                  <h3 className="font-semibold text-[32px] py-4">
+                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
                  Booster
                   </h3>
-                  <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
+                  <p className="pb-6 text-[#262626] text-[16px] text-center">
                  Multiply your taps by x5 for 20 seconds. Do not consume energy while active.
                   </p>
 
@@ -891,13 +896,13 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
                     <img alt="claim" src={gastank} className="w-[80px]" />
                   </div>
-                  <h3 className="font-semibold text-[32px] py-4">
+                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
                 Full Energy
                   </h3>
-                  <p className="pb-6 text-[#9a96a6] text-[16px] text-center">
+                  <p className="pb-6 text-[#262626] text-[16px] text-center">
                 Fill your energy to the max
                   </p>
 
@@ -946,7 +951,7 @@ const Boost = () => {
 
 
                 <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#252e57] flex items-center justify-center">
+                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
                     <img alt="claim" src={botr} className="w-[80px]" />
                   </div>
                   <h3 className="font-semibold text-[32px] py-4">
