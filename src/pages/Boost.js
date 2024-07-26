@@ -682,7 +682,7 @@ const Boost = () => {
             <div
               className={`${
                 isUpgradeModalVisible  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFE6] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -734,7 +734,7 @@ const Boost = () => {
             <div
               className={`${
                 isUpgradeModalVisibleEn  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFE6] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -786,7 +786,7 @@ const Boost = () => {
             <div
               className={`${
                 isUpgradeModalVisibleEnc  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFE6] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -839,7 +839,7 @@ const Boost = () => {
             <div
               className={`${
                 guru  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFE6] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -890,7 +890,7 @@ const Boost = () => {
             <div
               className={`${
                 tank  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFE6] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
@@ -945,7 +945,7 @@ const Boost = () => {
                <div
               className={`${
                 bot  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFE6] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
+              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5`}
             >
               <div className="w-full flex flex-col justify-between py-8">
               <button
