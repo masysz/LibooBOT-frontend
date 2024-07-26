@@ -4,7 +4,7 @@ import frams from "../images/ref4.webp";
 import tasks from "../images/tasks2.webp";
 import tap from "../images/main-logo.png";
 import boost from "../images/booster2.webp";
-import donate from "../images/stats.webp";
+import donate from "../images/donate.png";
 
 const Footer = () => {
   const navItems = [
@@ -26,7 +26,7 @@ const Footer = () => {
               ${index === 2 ? 'w-1/4' : 'w-1/5'}
               flex flex-col items-center justify-center
               ${index === 2 ? '-mt-6' : ''}
-              ${isActive ? 'text-[#4169E1] poppins-bold' : 'text-[#6A5ACD] poppins-bold'}
+              ${isActive ? 'text-[#4169E1] poppins-bold' : 'text-[#6A5ACD] poppins-extrabold'}
             `}
           >
             {({ isActive }) => (
