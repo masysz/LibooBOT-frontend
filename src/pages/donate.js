@@ -244,7 +244,7 @@ const Donate = () => {
             <div className="bg-[#5496ff] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto hide-scrollbar">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[22px] font-semibold text-[#ffff]">{selectedCampaign.title}</h2>
-                <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
+                <button onClick={() => setShowPopup(false)} className="text-[#ffff]">
                   <IoClose size={24} />
                 </button>
               </div>
