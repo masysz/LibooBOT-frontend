@@ -82,7 +82,7 @@ const Ref = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-y-auto">
       <div className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col">
         {loading ? (
           <Spinner />
@@ -120,8 +120,8 @@ const Ref = () => {
                 className="overflow-y-auto flex-grow"
                 style={{
                   WebkitOverflowScrolling: 'touch',
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none'
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: '#4a5568 #CBD5E0'
                 }}
               >
                 {referrals.length === 0 ? (
