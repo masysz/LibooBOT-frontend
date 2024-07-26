@@ -221,8 +221,8 @@ const TaskThree = ({ showModal, setShowModal }) => {
                             </button> */}
             </div>
             <div className="flex w-full flex-col">
-              <h1 className="text-[20px] font-semibold">Follow us on X</h1>
-              <p className="text-[#9a96a6] text-[16px] font-medium pt-1 pb-10">
+              <h1 className="text-[20px] font-semibold text-[#171717">Follow us on X</h1>
+              <p className="text-[#262626] text-[16px] font-medium pt-1 pb-10">
                 Follow us on X to get regular updates about this airdrop
                 bot and its great potentials
               </p>
@@ -236,20 +236,20 @@ const TaskThree = ({ showModal, setShowModal }) => {
                     <img src={coinsmall} className="w-[50px]" alt="Coin Icon" />
                   </div>
                   <div className="flex flex-col space-y-1">
-                    <span className="font-semibold">Reward</span>
+                    <span className="font-semibold text-[#262626]">Reward</span>
                     <div className="flex items-center">
-                      <span className="font-medium">50 000</span>
+                      <span className="font-medium text-[#262626]">50 000</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <h1 className="text-[20px] font-semibold pt-6 pb-4 px-2">
+              <h1 className="text-[20px] text-[#262626] font-semibold pt-6 pb-4 px-2">
                 Your Tasks
               </h1>
               <div className="bg-cards rounded-[10px] p-[14px] flex justify-between items-center">
                 <div className="flex flex-1 items-center space-x-2">
                   <div className="flex flex-col space-y-1">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-[#171717]">
                       Follow on X
                     </span>
 
@@ -268,7 +268,7 @@ const TaskThree = ({ showModal, setShowModal }) => {
                       {showTaskButton && (
                         <button
                           onClick={handleTaskLinkClick}
-                          className={`flex font-medium bg-btn hover:bg-[#1e3356] ease-in duration-300 py-[6px] px-4 rounded-[8px] items-center justify-center text-[16px]`}
+                          className={`flex font-medium bg-btn hover:bg-[#1e3356] ease-in duration-300 py-[6px] px-4 rounded-[8px] text-[#262626] items-center justify-center text-[16px]`}
                         >
                           Follow
                         </button>
@@ -282,7 +282,7 @@ const TaskThree = ({ showModal, setShowModal }) => {
                       className="flex font-medium bg-btn py-[6px] px-4 rounded-[8px] items-center justify-center text-[16px]"
                     >
                       <span> Check</span>
-                      <span className="text-[#b0b0b0] pointer-events-none select-none">
+                      <span className="text-[#262626] pointer-events-none select-none">
                         {counter !== null && (
                           <>
                             <span className="text-[#fff]">ing</span>
