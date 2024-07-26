@@ -35,7 +35,7 @@ const Ref = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between"
+      className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between mb-4"
     >
       <div className="flex items-center space-x-3 mb-2 sm:mb-0">
         <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
@@ -81,7 +81,7 @@ const Ref = () => {
                 {referrals.length} <span className="text-[#507cff]">Users</span>
               </h1>
               <p className="text-lg text-gray-600">Your Referral Network</p>
-              <p className="text-xl text-green-600 font-semibold mt-2">
+              <p className="text-xl text-[#507cff] font-semibold mt-2">
                 Total Earnings: +{formatNumber(totalEarnings)}
               </p>
             </header>
@@ -110,7 +110,7 @@ const Ref = () => {
                   </p>
                 ) : (
                   <AnimatePresence>
-                    <div className="space-y-4">
+                    <div className="space-y-4 pr-2">
                       {referrals.map((user, index) => (
                         <ReferralItem key={user.id || index} user={user} index={index} />
                       ))}
