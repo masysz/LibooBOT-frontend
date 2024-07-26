@@ -57,6 +57,13 @@ const Section = styled.section`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
+const ReferralsSection = styled(Section)`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+`;
+
 const InviteLinkWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -109,6 +116,10 @@ const ReferralsContainer = styled.div`
   }
 `;
 
+const ReferralsList = styled.div`
+  padding-right: 8px;
+`;
+
 const ReferralItemWrapper = styled(motion.div)`
   background-color: #f9fafb;
   border-radius: 0.5rem;
@@ -134,8 +145,8 @@ const Ref = () => {
     if (scrollContainerRef.current) {
       const viewportHeight = window.innerHeight;
       const containerTop = scrollContainerRef.current.getBoundingClientRect().top;
-      const maxHeight = viewportHeight - containerTop - 20; // 20px for bottom margin
-      scrollContainerRef.current.style.maxHeight = `${maxHeight}px`;
+      const maxHeight = viewportHeight - containerTop - 40; // 40px for bottom margin and padding
+      scrollContainerRef.current.style.height = `${maxHeight}px`;
     }
   }, []);
 
@@ -222,7 +233,7 @@ const Ref = () => {
               </InviteLinkWrapper>
             </Section>
 
-            <Section style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+            <ReferralsSection>
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
               <ReferralsContainer ref={scrollContainerRef}>
                 {referrals.length === 0 ? (
@@ -230,14 +241,16 @@ const Ref = () => {
                     You don't have any referrals yet. Start sharing your link!
                   </p>
                 ) : (
-                  <AnimatePresence>
-                    {referrals.map((user, index) => (
-                      <ReferralItem key={user.id || index} user={user} index={index} />
-                    ))}
-                  </AnimatePresence>
+                  <ReferralsList>
+                    <AnimatePresence>
+                      {referrals.map((user, index) => (
+                        <ReferralItem key={user.id || index} user={user} index={index} />
+                      ))}
+                    </AnimatePresence>
+                  </ReferralsList>
                 )}
               </ReferralsContainer>
-            </Section>
+            </ReferralsSection>
 
             <ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
           </>
