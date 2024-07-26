@@ -113,7 +113,7 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
               <div 
                 ref={scrollContainerRef}
