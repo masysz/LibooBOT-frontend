@@ -32,6 +32,7 @@ const SlideUpText = styled.div`
   font-weight: 600;
   left: ${({ x }) => x}px;
   top: ${({ y }) => y}px;
+  pointer-events: none; /* To prevent any interaction */
 `;
 
 const Container = styled.div`
