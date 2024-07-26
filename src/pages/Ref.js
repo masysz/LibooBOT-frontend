@@ -35,7 +35,7 @@ const Ref = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="bg-gray-50 rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4"
+      className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between mb-4"
     >
       <div className="flex items-center space-x-3 mb-2 sm:mb-0">
         <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
@@ -44,7 +44,7 @@ const Ref = () => {
           <p className="text-gray-500 text-sm">{user.level.name}</p>
         </div>
       </div>
-      <div className="flex flex-col items-start sm:items-end">
+      <div className="flex flex-col items-end">
         <div className="flex items-center space-x-2">
           <img src={coinsmall} alt="coin" className="w-5 h-5" />
           <span className="text-[#507cff] font-medium">{formatNumber(user.balance)}</span>
@@ -53,7 +53,7 @@ const Ref = () => {
           +{formatNumber(user.balance * 0.05)} (5%)
         </div>
       </div>
-      <div className="w-full sm:w-32 mt-2 sm:mt-0">
+      <div className="w-full mt-3 sm:w-32">
         <div className="bg-gray-200 rounded-full h-2 w-full">
           <div
             className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
@@ -65,17 +65,17 @@ const Ref = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 py-4 flex flex-col h-full"
+        className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col overflow-hidden"
       >
         {loading ? (
           <Spinner />
         ) : (
-          <>
+          <div className="flex-grow overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
             <header className="text-center mb-6">
               <h1 className="text-4xl font-bold text-[#262626] mb-1">
                 {referrals.length} <span className="text-[#507cff]">Users</span>
@@ -101,9 +101,9 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow flex flex-col overflow-hidden">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
-              <div className="flex-grow overflow-y-auto -mr-2 pr-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div className="overflow-y-auto pr-2" style={{ maxHeight: "calc(100vh - 400px)", WebkitOverflowScrolling: 'touch' }}>
                 {referrals.length === 0 ? (
                   <p className="text-center text-gray-600 py-8">
                     You don't have any referrals yet. Start sharing your link!
@@ -121,7 +121,7 @@ const Ref = () => {
             </section>
 
             <ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
-          </>
+          </div>
         )}
         <Outlet />
       </motion.div>
