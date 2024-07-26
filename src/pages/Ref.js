@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Outlet } from "react-router-dom";
 import ClaimLeveler from "../Components/ClaimLeveler";
@@ -10,6 +10,12 @@ const Ref = () => {
   const { id, referrals, loading } = useUser();
   const [claimLevel, setClaimLevel] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+
+  useEffect(() => {
+    const earnings = referrals.reduce((total, user) => total + user.balance * 0.05, 0);
+    setTotalEarnings(earnings);
+  }, [referrals]);
 
   const copyToClipboard = () => {
     const reflink = `https://t.me/Liboo_tonbot?start=r${id}`;
@@ -23,17 +29,13 @@ const Ref = () => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   };
 
-  const calculateEarnings = (balance) => {
-    return balance * 0.05; // 5% of the user's balance
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff]">
+    <div className="h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl mx-auto px-4 py-4"
+        className="w-full max-w-4xl mx-auto px-4 py-4 h-full flex flex-col"
       >
         {loading ? (
           <Spinner />
@@ -44,6 +46,9 @@ const Ref = () => {
                 {referrals.length} <span className="text-[#507cff]">Users</span>
               </h1>
               <p className="text-lg text-gray-600">Your Referral Network</p>
+              <p className="text-xl text-green-600 font-semibold mt-2">
+                Total Earnings: +{formatNumber(totalEarnings)}
+              </p>
             </header>
 
             <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
@@ -61,50 +66,52 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex-grow overflow-hidden flex flex-col">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
-              {referrals.length === 0 ? (
-                <p className="text-center text-gray-600 py-8">
-                  You don't have any referrals yet. Start sharing your link!
-                </p>
-              ) : (
-                <div className="space-y-4">
-                  {referrals.map((user, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between"
-                    >
-                      <div className="flex items-center space-x-3 mb-2 sm:mb-0">
-                        <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
-                        <div>
-                          <h3 className="text-[#262626] font-semibold">{user.username}</h3>
-                          <p className="text-gray-500 text-sm">{user.level.name}</p>
+              <div className="overflow-y-auto flex-grow">
+                {referrals.length === 0 ? (
+                  <p className="text-center text-gray-600 py-8">
+                    You don't have any referrals yet. Start sharing your link!
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    {referrals.map((user, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        className="bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-between"
+                      >
+                        <div className="flex items-center space-x-3 mb-2 sm:mb-0">
+                          <img src={user.level.imgUrl} alt={user.level.name} className="w-10 h-10" />
+                          <div>
+                            <h3 className="text-[#262626] font-semibold">{user.username}</h3>
+                            <p className="text-gray-500 text-sm">{user.level.name}</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <div className="flex items-center space-x-2">
-                          <img src={coinsmall} alt="coin" className="w-5 h-5" />
-                          <span className="text-[#507cff] font-medium">{formatNumber(user.balance)}</span>
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center space-x-2">
+                            <img src={coinsmall} alt="coin" className="w-5 h-5" />
+                            <span className="text-[#507cff] font-medium">{formatNumber(user.balance)}</span>
+                          </div>
+                          <div className="text-green-500 text-sm">
+                            +{formatNumber(user.balance * 0.05)} (5%)
+                          </div>
                         </div>
-                        <div className="text-green-500 text-sm">
-                          +{formatNumber(calculateEarnings(user.balance))} (5%)
+                        <div className="w-full mt-3 sm:w-32">
+                          <div className="bg-gray-200 rounded-full h-2 w-full">
+                            <div
+                              className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
+                              style={{ width: `${(user.balance / 10000) * 100}%` }}
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="w-full mt-3 sm:w-32">
-                        <div className="bg-gray-200 rounded-full h-2 w-full">
-                          <div
-                            className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
-                            style={{ width: `${(user.balance / 10000) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </section>
 
             <ClaimLeveler claimLevel={claimLevel} setClaimLevel={setClaimLevel} />
