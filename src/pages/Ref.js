@@ -30,7 +30,7 @@ const Ref = () => {
         const padding = 40; // Additional padding
         
         const maxHeight = viewportHeight - headerHeight - inviteLinkHeight - footerHeight - padding;
-        scrollContainerRef.current.style.height = `${Math.max(maxHeight, 200)}px`; // Minimum height of 200px
+        scrollContainerRef.current.style.maxHeight = `${Math.max(maxHeight, 200)}px`; // Minimum height of 200px
       }
     };
 
@@ -90,7 +90,7 @@ const Ref = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[#d9dce4] to-[#5496ff] flex flex-col overflow-y-auto">
       <div className="w-full max-w-4xl mx-auto px-4 py-4 flex-grow flex flex-col">
         {loading ? (
           <Spinner />
@@ -121,11 +121,11 @@ const Ref = () => {
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex flex-col">
+            <section className="bg-white rounded-2xl p-6 mb-6 shadow-md flex flex-col flex-grow">
               <h2 className="text-xl font-semibold text-[#262626] mb-6">My Referrals</h2>
               <div 
                 ref={scrollContainerRef}
-                className="overflow-y-auto"
+                className="overflow-y-auto flex-grow"
                 style={{
                   WebkitOverflowScrolling: 'touch',
                   scrollbarWidth: 'thin',
