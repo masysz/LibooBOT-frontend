@@ -221,8 +221,8 @@ const TaskSix = ({ showModal, setShowModal }) => {
                             </button> */}
             </div>
             <div className="flex w-full flex-col">
-              <h1 className="text-[20px] font-semibold text-[#171717]">Follow us on Instagram</h1>
-              <p className="text-[#262626] text-[16px] font-medium pt-1 pb-10">
+              <h1 className="text-[20px] font-semibold text-[#ffff]">Follow us on Instagram</h1>
+              <p className="text-[#edf4ff] text-[16px] font-medium pt-1 pb-10">
                 Follow us on Instagram to get regular updates about this project
                 the mini app and its great potentials.
               </p>
