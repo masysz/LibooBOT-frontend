@@ -196,14 +196,14 @@ const Donate = () => {
     <Animate>
       <style>{styles}</style>
       <div className="w-full flex flex-col space-y-3 px-5 pt-[80px]">
-        <div className="fixed top-0 left-0 right-0 pt-8 px-5 bg-[#1a1f2e] z-10">
+        <div className="fixed top-0 left-0 right-0 pt-8 px-5 z-10">
           <h1 className="text-[32px] font-semibold mb-4 text-center">Donate to Campaigns</h1>
         </div>
   
         <div className="w-full h-[calc(100vh-180px)] flex flex-col overflow-y-auto hide-scrollbar">
           <div className="flex flex-col w-full space-y-4 pb-[100px]">
             {campaigns.map(campaign => (
-              <div key={campaign.id} className='bg-[#2a2f4e] rounded-[10px] p-[14px] flex flex-col'>
+              <div key={campaign.id} className='bg-[#5496ff] rounded-[10px] p-[14px] flex flex-col'>
                 {campaign.image && (
                   <img 
                     src={campaign.image} 
@@ -215,7 +215,7 @@ const Donate = () => {
                     }}
                   />
                 )}
-                <h2 className="text-[24px] font-semibold mb-2">{campaign.title}</h2>
+                <h2 className="text-[22px] font-semibold mb-2">{campaign.title}</h2>
                 <p className="text-[14px] text-[#b8b8b8] mb-4">{campaign['short-description'] || 'No description available'}</p>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[18px] font-medium">
@@ -241,7 +241,7 @@ const Donate = () => {
   
         {showPopup && selectedCampaign && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-[#1e2340] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto hide-scrollbar">
+            <div className="bg-[#5496ff] rounded-[20px] p-6 w-[90%] max-w-[500px] max-h-[90vh] overflow-y-auto hide-scrollbar">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-[24px] font-semibold">{selectedCampaign.title}</h2>
                 <button onClick={() => setShowPopup(false)} className="text-[#9a96a6]">
