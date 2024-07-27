@@ -11,7 +11,7 @@ import coinsmall from "../images/main-logo.png";
 const LeaderboardContainer = styled.div`
   background-color: #f8fafc;
   border-radius: 16px;
-  padding: 20px 10px; // Añadido padding horizontal de 10px
+  padding: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 85vh;
   display: flex;
@@ -275,7 +275,7 @@ const TapsLeaderboard = () => {
         )}
         <CurrentUserSection>
           <UserInfo>
-            <Username>{getUserDisplayName({firstName})}</Username>
+            <Username>{getUserDisplayName({ id, firstName: name })}</Username>
             <TapBalance>
               <CoinIcon src={coinsmall} alt="coin" />
               {formatNumber(tapBalance)}
