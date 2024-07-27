@@ -275,7 +275,7 @@ const TapsLeaderboard = () => {
         )}
         <CurrentUserSection>
           <UserInfo>
-            <Username>{getUserDisplayName(user)}</Username>
+            <Username>{getUserDisplayName({ user: name })}</Username>
             <TapBalance>
               <CoinIcon src={coinsmall} alt="coin" />
               {formatNumber(tapBalance)}
