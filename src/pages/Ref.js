@@ -10,7 +10,6 @@ import { useUser } from "../context/userContext";
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: auto
 `;
 
 const ContentWrapper = styled.div`
@@ -51,7 +50,6 @@ const Section = styled.section`
   background-color: white;
   border-radius: 1rem;
   padding: 1.5rem;
-  height: auto;
   margin-bottom: 2.0rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
@@ -60,7 +58,7 @@ const ReferralsSection = styled(Section)`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  height: auto;
+  height: 30%
   scrollbar-width: thin;
   scrollbar-color: #4a5568 #CBD5E0;
   
