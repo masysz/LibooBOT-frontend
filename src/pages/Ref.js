@@ -9,13 +9,13 @@ import { useUser } from "../context/userContext";
 
 const PageContainer = styled.div`
   display: flex;
+  height: 85vh;
   flex-direction: column;
   overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
   width: 100%;
-  height: 85vh;
   max-width: 64rem;
   margin: 0 auto;
   padding: 1rem;
@@ -27,26 +27,26 @@ const ContentWrapper = styled.div`
 
 const Header = styled.header`
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 `;
 
 const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 22px;
   font-weight: bold;
   color: #262626;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 1.125rem;
+  font-size: 18px;
   color: #4b5563;
 `;
 
 const TotalEarnings = styled.p`
-  font-size: 1.25rem;
-  color: #10b981;
-  font-weight: 600;
-  margin-top: 0.5rem;
+  font-size: 16pxrem;
+  color: green;
+  font-weight: bold;
+  margin-top: 0.2rem;
 `;
 
 const Section = styled.section`
