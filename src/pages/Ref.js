@@ -57,9 +57,9 @@ const Section = styled.section`
 
 const ReferralsSection = styled(Section)`
   display: flex;
+  height: 60%;
   overflow: scroll;
   flex-direction: column;
-  margin-bottom: 180px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a5568 #CBD5E0;
@@ -112,6 +112,7 @@ const CopyButton = styled.button`
 
 const ReferralsContainer = styled.div`
   overflow-y: auto;
+  height: 70%;
   flex-grow: 1;
   scrollbar-width: thin;
   scrollbar-color: #4a5568 #CBD5E0;
