@@ -10,7 +10,6 @@ import { useUser } from "../context/userContext";
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding-bottom: 100px;
 `;
 
 const ContentWrapper = styled.div`
@@ -57,7 +56,6 @@ const Section = styled.section`
 
 const ReferralsSection = styled(Section)`
   display: flex;
-  height: 50%;
   flex-direction: column;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -124,6 +122,7 @@ const ReferralItemWrapper = styled(motion.div)`
   padding: 1rem;
   display: flex;
   flex-wrap: wrap;
+  overflow-y: auto;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
