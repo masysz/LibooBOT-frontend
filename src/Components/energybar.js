@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 
 const EnergyBar = ({ energy, battery, energyPercentage, flash, leaderboard }) => {
   return (
-    <div className="w-full fixed bottom-[120px] left-0 right-0 px-5">
-      <div className="flex w-full items-center justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-2">
+    <div className="w-full fixed bottom-[120px] left-0 right-0 px-5 flex justify-center">
+      <div className="flex w-full max-w-lg items-center justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
         <div className="flex flex-col w-[70%]">
           <div className="flex items-center text-white mb-2">
             <img alt="flash" src={flash} className="w-[22px] mr-2" />
@@ -21,9 +21,9 @@ const EnergyBar = ({ energy, battery, energyPercentage, flash, leaderboard }) =>
         </div>
         <NavLink 
           to="/tapsleaderboard" 
-          className="w-[22%] flex items-center justify-center bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
+          className="w-[30%] flex items-center justify-center bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
         >
-          <img src={leaderboard} alt="Leaderboard" className="w-5 h-5 mr-2" />
+          <img src={leaderboard} alt="Leaderboard" className="w-5 h-5 mr-1" />
           <span className="text-[11px] text-white font-semibold whitespace-nowrap">Leaderboard</span>
         </NavLink>
       </div>
