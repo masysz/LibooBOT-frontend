@@ -16,6 +16,7 @@ import { IoClose } from "react-icons/io5";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import Spinner from '../Components/Spinner';
 import "../App.css";
+import Modal from '../Components/boostmodals';
 
 
 
@@ -675,266 +676,198 @@ const Boost = () => {
             </div>
 
 
-               {/* Multitap Modal */}
+            Certainly! I'll provide you with the updated code for all the modals using the Modal component you've already created. Here's the entire code for all modals:
+jsxCopyimport React from 'react';
+import { IoClose } from 'react-icons/io5';
+import Modal from './Modal'; // Ensure this path is correct
+import multi from '../path/to/multi.png';
+import battery3 from '../path/to/battery3.png';
+import flash from '../path/to/flash.png';
+import boost from '../path/to/boost.png';
+import gastank from '../path/to/gastank.png';
+import coinsmall from '../path/to/coinsmall.png';
 
+// Multitap Modal
+<Modal
+  isVisible={isUpgradeModalVisible}
+  onClose={() => setIsUpgradeModalVisible(false)}
+>
+  <div className="w-full flex flex-col justify-between py-8">
+    <div className="w-full flex justify-center flex-col items-center">
+      <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center shadow-lg shadow-red/50">
+        <img alt="claim" src={multi} className="w-[80px]" />
+      </div>
+      <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
+        Multitap
+      </h3>
+      <p className="pb-6 text-[#262626] text-[16px] text-center">
+        Increase amount of LIBOO you can earn per one tap <br/>
+        +1 per tap for each level
+      </p>
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={coinsmall} className="w-[25px]" alt="Coin Icon" />
+        </div>
+        <div className="font-bold text-[26px] flex items-center text-[#262626]">
+          {formatNumber(nextUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {tapValues[tapValue.level]?.value} level</span>
+        </div>
+      </div>
+    </div>
+    <div className="w-full flex justify-center pb-6 pt-4">
+      <button
+        onClick={handleUpgrade}
+        disabled={!hasSufficientBalance}
+        className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+      >
+        {isUpgrading ? 'Boosting...' : hasSufficientBalance ? 'Go ahead!' : 'Insufficient Balance'}
+      </button>
+    </div>
+  </div>
+</Modal>
 
+// Energy Limit Modal
+<Modal
+  isVisible={isUpgradeModalVisibleEn}
+  onClose={() => setIsUpgradeModalVisibleEn(false)}
+>
+  <div className="w-full flex flex-col justify-between py-8">
+    <div className="w-full flex justify-center flex-col items-center">
+      <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
+        <img alt="claim" src={battery3} className="w-[80px]" />
+      </div>
+      <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
+        Energy Limit
+      </h3>
+      <p className="pb-6 text-[#262626] text-[16px] text-center">
+        Increase the limit of energy storage <br/>
+        +500 energy limit for each level.
+      </p>
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={coinsmall} className="w-[25px]" alt="Coin Icon" />
+        </div>
+        <div className="font-bold text-[26px] flex items-center text-[#262626]">
+          {formatNumber(nextEnergyUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {energyValues[battery.level]?.level} level</span>
+        </div>
+      </div>
+    </div>
+    <div className="w-full flex justify-center pb-6 pt-4">
+      <button
+        onClick={handleEnergyUpgrade}
+        disabled={!hasSufficientBalanceEn}
+        className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+      >
+        {isUpgrading ? 'Boosting...' : hasSufficientBalanceEn ? 'Go ahead!' : 'Insufficient Balance'}
+      </button>
+    </div>
+  </div>
+</Modal>
 
-            <div
-              className={`${
-                isUpgradeModalVisible  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
-            >
-              <div className="w-full flex flex-col justify-between py-8">
-              <button
-                      onClick={() =>  setIsUpgradeModalVisible(false)}
-                      className="flex items-center justify-center absolute right-8 top-8 text-center rounded-[12px] font-medium text-[16px]"
-                    >
-                     <IoClose size={24} className="text-[#9a96a6]"/>
-                    </button>
+// Charging Modal
+<Modal
+  isVisible={isUpgradeModalVisibleEnc}
+  onClose={() => setIsUpgradeModalVisibleEnc(false)}
+>
+  <div className="w-full flex flex-col justify-between py-8">
+    <div className="w-full flex justify-center flex-col items-center">
+      <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
+        <img alt="claim" src={flash} className="w-[80px]" />
+      </div>
+      <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
+        Recharging Speed
+      </h3>
+      <p className="pb-6 text-[#262626] text-[16px] text-center">
+        Increase speed of recharge<br/>
+        more level, more recharge speed.
+      </p>
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={coinsmall} className="w-[25px]" alt="Coin Icon" />
+        </div>
+        <div className="font-bold text-[26px] flex items-center text-[#262626]">
+          {formatNumber(nextChargingUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {chargingValues[timeRefill.level]?.level} level</span>
+        </div>
+      </div>
+    </div>
+    <div className="w-full flex justify-center pb-6 pt-4">
+      <button
+        onClick={handlerRechargeUpgrade}
+        disabled={!hasSufficientBalanceEnc}
+        className={`${!hasSufficientBalanceEnc ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+      >
+        {isUpgrading ? 'Boosting...' : hasSufficientBalanceEnc ? 'Go ahead!' : 'Insufficient Balance'}
+      </button>
+    </div>
+  </div>
+</Modal>
 
+// Tapping Guru Modal
+<Modal
+  isVisible={guru}
+  onClose={() => setGuru(false)}
+>
+  <div className="w-full flex flex-col justify-between py-8">
+    <div className="w-full flex justify-center flex-col items-center">
+      <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
+        <img alt="claim" src={boost} className="w-[80px]" />
+      </div>
+      <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
+        Booster
+      </h3>
+      <p className="pb-6 text-[#262626] text-[16px] text-center">
+        Multiply your taps by x5 for 20 seconds. Do not consume energy while active.
+      </p>
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={coinsmall} className="w-[25px]" alt="Coin Icon" />
+        </div>
+        <div className="font-bold text-[26px] flex items-center">Free</div>
+      </div>
+    </div>
+    <div className="w-full flex justify-center pb-6 pt-4">
+      <button
+        onClick={handleTapGuru}
+        className="bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
+      >
+        Go ahead!
+      </button>
+    </div>
+  </div>
+</Modal>
 
-                <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center shadow-lg shadow-red/50">
-                    <img alt="claim" src={multi} className="w-[80px]" />
-                  </div>
-                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
-                   Multitap
-                  </h3>
-                  <p className="pb-6 text-[#262626] text-[16px] text-center">
-                  Increase amount of LIBOO you can earn per one tap <br/>
-                  +1 per tap for each level
-                  </p>
-
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img
-                        src={coinsmall}
-                        className="w-[25px]"
-                        alt="Coin Icon"
-                      />
-                    </div>
-                    <div className="font-bold text-[26px] flex items-center text-[#262626]">{formatNumber(nextUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {tapValues[tapValue.level]?.value} level</span></div>
-                  </div>
-                </div>
-
-                <div className="w-full flex justify-center pb-6 pt-4">
-                  <button
-                                       onClick={handleUpgrade}
-                                       disabled={!hasSufficientBalance}
-                    className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
-                  >
-                    {isUpgrading ? 'Boosting...' : hasSufficientBalance ? 'Go ahead!' : 'Insufficient Balance'}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* energylimit modal */}
-
-            <div
-              className={`${
-                isUpgradeModalVisibleEn  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
-            >
-              <div className="w-full flex flex-col justify-between py-8">
-              <button
-                      onClick={() =>  setIsUpgradeModalVisibleEn(false)}
-                      className="flex items-center justify-center absolute right-8 top-8 text-center rounded-[12px] font-medium text-[16px]"
-                    >
-                     <IoClose size={24} className="text-[#9a96a6]"/>
-                    </button>
-
-
-                <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
-                    <img alt="claim" src={battery3} className="w-[80px]" />
-                  </div>
-                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
-                 Energy Limit
-                  </h3>
-                  <p className="pb-6 text-[#262626] text-[16px] text-center">
-                  Increase the limit of energy storage <br/>
-                  +500 energy limit for each level.
-                  </p>
-
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img
-                        src={coinsmall}
-                        className="w-[25px]"
-                        alt="Coin Icon"
-                      />
-                    </div>
-                    <div className="font-bold text-[26px] flex items-center text-[#262626]">{formatNumber(nextEnergyUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {energyValues[battery.level]?.level} level</span></div>
-                  </div>
-                </div>
-
-                <div className="w-full flex justify-center pb-6 pt-4">
-                  <button
-                                       onClick={handleEnergyUpgrade}
-                                       disabled={!hasSufficientBalanceEn}
-                    className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
-                  >
-                    {isUpgrading ? 'Boosting...' : hasSufficientBalanceEn ? 'Go ahead!' : 'Insufficient Balance'}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* charging modal */}
-
-            <div
-              className={`${
-                isUpgradeModalVisibleEnc  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
-            >
-              <div className="w-full flex flex-col justify-between py-8">
-              <button
-                      onClick={() =>  setIsUpgradeModalVisibleEnc(false)}
-                      className="flex items-center justify-center absolute right-8 top-8 text-center rounded-[12px] font-medium text-[16px]"
-                    >
-                     <IoClose size={24} className="text-[#9a96a6]"/>
-                    </button>
-
-
-                <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
-                    <img alt="claim" src={flash} className="w-[80px]" />
-                  </div>
-                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
-                 Recharging Speed
-                  </h3>
-                  <p className="pb-6 text-[#262626] text-[16px] text-center">
-                  Increase speed of recharge<br/>
-                  more level, more recharge speed.
-                  </p>
-
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img
-                        src={coinsmall}
-                        className="w-[25px]"
-                        alt="Coin Icon"
-                      />
-                    </div>
-                    <div className="font-bold text-[26px] flex items-center text-[#262626]">{formatNumber(nextChargingUpgradeCost)} <span className="text-[16px] font-medium text-[#262626] pl-2"> | {chargingValues[timeRefill.level]?.level} level</span></div>
-                  </div>
-                </div>
-
-                <div className="w-full flex justify-center pb-6 pt-4">
-                  <button
-                                       onClick={handlerRechargeUpgrade}
-                                       disabled={!hasSufficientBalanceEnc}
-                    className={`${!hasSufficientBalanceEnc ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
-                  >
-                    {isUpgrading ? 'Boosting...' : hasSufficientBalanceEnc ? 'Go ahead!' : 'Insufficient Balance'}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            
-            {/* tapping Guru Model */}
-
-            <div
-              className={`${
-                guru  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
-            >
-              <div className="w-full flex flex-col justify-between py-8">
-              <button
-                      onClick={() =>  setGuru(false)}
-                      className="flex items-center justify-center absolute right-8 top-8 text-center rounded-[12px] font-medium text-[16px]"
-                    >
-                     <IoClose size={24} className="text-[#9a96a6]"/>
-                    </button>
-
-
-                <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
-                    <img alt="claim" src={boost} className="w-[80px]" />
-                  </div>
-                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
-                 Booster
-                  </h3>
-                  <p className="pb-6 text-[#262626] text-[16px] text-center">
-                 Multiply your taps by x5 for 20 seconds. Do not consume energy while active.
-                  </p>
-
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img
-                        src={coinsmall}
-                        className="w-[25px]"
-                        alt="Coin Icon"
-                      />
-                    </div>
-                    <div className="font-bold text-[26px] flex items-center">Free</div>
-                  </div>
-                </div>
-
-                <div className="w-full flex justify-center pb-6 pt-4">
-                  <button
-                                        onClick={handleTapGuru}
-                                       
-                    className={`bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
-                  >
-                   Go ahead!
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* full tank Model */}
-
-            <div
-              className={`${
-                tank  === true ? "visible" : "invisible"
-              } absolute bottom-0 left-0 right-0 h-fit bg-[#BCCFFFF2] z-[100] rounded-tl-[20px] rounded-tr-[20px] flex justify-center px-4 py-5 custom-shadow`}
-            >
-              <div className="w-full flex flex-col justify-between py-8">
-              <button
-                      onClick={() =>  setTank(false)}
-                      className="flex items-center justify-center absolute right-8 top-8 text-center rounded-[12px] font-medium text-[16px]"
-                    >
-                     <IoClose size={24} className="text-[#9a96a6]"/>
-                    </button>
-
-
-                <div className="w-full flex justify-center flex-col items-center">
-                  <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
-                    <img alt="claim" src={gastank} className="w-[80px]" />
-                  </div>
-                  <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
-                Full Energy
-                  </h3>
-                  <p className="pb-6 text-[#262626] text-[16px] text-center">
-                Fill your energy to the max
-                  </p>
-
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img
-                        src={coinsmall}
-                        className="w-[25px]"
-                        alt="Coin Icon"
-                      />
-                    </div>
-                    <div className="font-bold text-[26px] flex items-center">Free</div>
-                  </div>
-                </div>
-
-                <div className="w-full flex justify-center pb-6 pt-4">
-                  <button
-                                        onClick={handleFullTank}
-                                       
-                    className={`bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
-                  >
-                   Go ahead!
-                  </button>
-                </div>
-              </div>
-            </div>
+// Full Tank Modal
+<Modal
+  isVisible={tank}
+  onClose={() => setTank(false)}
+>
+  <div className="w-full flex flex-col justify-between py-8">
+    <div className="w-full flex justify-center flex-col items-center">
+      <div className="w-[120px] h-[120px] rounded-[25px] bg-[#d6e4ff] flex items-center justify-center">
+        <img alt="claim" src={gastank} className="w-[80px]" />
+      </div>
+      <h3 className="font-semibold text-[32px] py-4 text-[#171717]">
+        Full Energy
+      </h3>
+      <p className="pb-6 text-[#262626] text-[16px] text-center">
+        Fill your energy to the max
+      </p>
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="">
+          <img src={coinsmall} className="w-[25px]" alt="Coin Icon" />
+        </div>
+        <div className="font-bold text-[26px] flex items-center">Free</div>
+      </div>
+    </div>
+    <div className="w-full flex justify-center pb-6 pt-4">
+      <button
+        onClick={handleFullTank}
+        className="bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
+      >
+        Go ahead!
+      </button>
+    </div>
+  </div>
+</Modal>
 
 
 
