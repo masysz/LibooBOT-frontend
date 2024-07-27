@@ -428,7 +428,7 @@ const Plutos = () => {
                         ref={imageRef}
                         src={level.imgTap}
                         alt="Wobble"
-                        className="wobble-image !w-[280px] select-none"
+                        className="wobble-image !w-[260px] select-none"
                       />
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
@@ -444,7 +444,7 @@ const Plutos = () => {
                         ref={imageRef}
                         src={level.imgBoost}
                         alt="Wobble"
-                        className="wobble-image !w-[280px] select-none"
+                        className="wobble-image !w-[260px] select-none"
                       />
                       {clicks.map((click) => (
                         <SlideUpText key={click.id} x={click.x} y={click.y}>
