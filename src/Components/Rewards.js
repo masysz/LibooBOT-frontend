@@ -47,15 +47,21 @@ const RewardIconTitle = styled.div`
 `;
 
 const RewardIcon = styled.img`
-  width: 55px;
-  height: 55px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
+`;
+
+const RewardInfo = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const RewardTitle = styled.h3`
   font-size: 16px;
   font-weight: 600;
   color: #171717;
+  margin: 0;
 `;
 
 const RewardBonus = styled.div`
@@ -68,21 +74,33 @@ const RewardBonus = styled.div`
 
 const ProgressBarContainer = styled.div`
   width: 100%;
-  background-color: #f0f4ff;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 10px;
 `;
 
 const ProgressBar = styled.div`
+  width: 100%;
   height: 8px;
+  background-color: #f0f4ff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 5px;
+`;
+
+const ProgressFill = styled.div`
+  height: 100%;
   background-color: #094e9d;
   border-radius: 10px;
   transition: width 0.3s ease;
 `;
 
+const ProgressLabels = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #4b5563;
+`;
+
 const ClaimButton = styled.button`
-  background-color: ${props => props.disabled ? '#e5e7eb' : '#699cff'};
+  background-color: ${props => props.claimed ? '#4fa764' : props.disabled ? '#e5e7eb' : '#699cff'};
   color: ${props => props.disabled ? '#9ca3af' : '#ffffff'};
   border: none;
   border-radius: 8px;
@@ -91,10 +109,12 @@ const ClaimButton = styled.button`
   font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: background-color 0.3s;
-  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: ${props => props.disabled ? '#e5e7eb' : '#4fa764'};
+    background-color: ${props => props.claimed ? '#4fa764' : props.disabled ? '#e5e7eb' : '#4fa764'};
   }
 `;
 
@@ -153,28 +173,41 @@ const ReferralRewards = () => {
         {friendsRewards.map((reward) => {
           const progress = (referrals.length / reward.referralsRequired) * 100;
           const isClaimable = referrals.length >= reward.referralsRequired && !claimedReferralRewards.includes(reward.title);
+          const isClaimed = claimedReferralRewards.includes(reward.title);
           return (
             <RewardItem key={reward.title}>
               <RewardHeader>
                 <RewardIconTitle>
                   <RewardIcon src={reward.imgRef} alt={reward.title} />
-                  <div>
+                  <RewardInfo>
                     <RewardTitle>{reward.title}</RewardTitle>
                     <RewardBonus>
-                      <img src={coinsmall} alt="coin" style={{ width: '20px', marginRight: '4px' }} />
+                      <img src={coinsmall} alt="coin" style={{ width: '16px', marginRight: '4px' }} />
                       {formatNumber(reward.bonusAward)}
                     </RewardBonus>
-                  </div>
+                  </RewardInfo>
                 </RewardIconTitle>
                 <ClaimButton
-                  disabled={!isClaimable}
+                  disabled={!isClaimable && !isClaimed}
+                  claimed={isClaimed}
                   onClick={() => handleClaim(reward)}
                 >
-                  {isClaimable ? 'Claim' : 'Not Available'}
+                  {isClaimed ? (
+                    <>
+                      <IoCheckmarkCircle size={18} style={{ marginRight: '4px' }} />
+                      Already Claimed
+                    </>
+                  ) : isClaimable ? 'Claim' : 'Not Available'}
                 </ClaimButton>
               </RewardHeader>
               <ProgressBarContainer>
-                <ProgressBar style={{ width: `${Math.min(progress, 100)}%` }} />
+                <ProgressBar>
+                  <ProgressFill style={{ width: `${Math.min(progress, 100)}%` }} />
+                </ProgressBar>
+                <ProgressLabels>
+                  <span>{referrals.length} Friends</span>
+                  <span>{reward.referralsRequired} Friends</span>
+                </ProgressLabels>
               </ProgressBarContainer>
             </RewardItem>
           );
