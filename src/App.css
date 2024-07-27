@@ -449,3 +449,32 @@ body {
   font-weight: 900;
   font-style: italic;
 }
+
+
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+.bg-blue-100 {
+  background-color: #EBF8FF;
+}
+
+.bg-gray-100 {
+  background-color: #F7FAFC;
+}
+
+.border-blue-600 {
+  border-color: #3182CE;
+}
+
+.border-gray-300 {
+  border-color: #E2E8F0;
+}
+
+.text-blue-600 {
+  color: #3182CE;
+}
+
+.text-gray-600 {
+  color: #4A5568;
+}
