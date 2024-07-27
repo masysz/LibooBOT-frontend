@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
-import { IoCheckmarkCircle, IoCheckmarkSharp } from 'react-icons/io5';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 import styled from 'styled-components';
 import congratspic from "../images/celebrate.gif";
 import coinsmall from "../images/coinsmall.webp";
@@ -30,11 +29,10 @@ const MilestoneContainer = styled.div`
 
 const MilestoneItem = styled.div`
   background-color: #ffffff;
-  border-radius: 0.5rem;
-  padding: 1rem;
+  border-radius: 10px;
+  padding: 14px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s;
 
@@ -43,44 +41,85 @@ const MilestoneItem = styled.div`
   }
 `;
 
-const MilestoneIcon = styled.img`
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-right: 1rem;
+const MilestoneHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 `;
 
-const MilestoneInfo = styled.div`
-  flex: 1;
+const MilestoneIconName = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const MilestoneIcon = styled.img`
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
 `;
 
 const MilestoneName = styled.h3`
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
-  color: #262626;
-  margin-bottom: 0.25rem;
+  color: #171717;
 `;
 
 const MilestoneReward = styled.div`
   display: flex;
   align-items: center;
-  font-size: 0.875rem;
-  color: #4b5563;
+  font-size: 14px;
+  font-weight: 500;
+  color: #171717;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 100%;
 `;
 
 const ProgressBar = styled.div`
   width: 100%;
   height: 8px;
   background-color: #f0f4ff;
-  border-radius: 4px;
-  margin-top: 0.5rem;
+  border-radius: 10px;
   overflow: hidden;
+  margin-bottom: 5px;
 `;
 
 const ProgressFill = styled.div`
   height: 100%;
   background-color: #5bd173;
-  border-radius: 4px;
+  border-radius: 10px;
   transition: width 0.3s ease;
+`;
+
+const ProgressLabels = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #4b5563;
+`;
+
+const ClaimButton = styled.button`
+  background-color: #5bd173;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #4fa764;
+  }
+
+  &:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
 `;
 
 const CongratsOverlay = styled.div`
@@ -124,8 +163,6 @@ const MilestoneRewards = () => {
       } catch (error) {
         console.error('Error claiming milestone reward:', error);
       }
-    } else {
-      console.error('Already Claimed or not eligible:');
     }
   };
 
@@ -142,29 +179,31 @@ const MilestoneRewards = () => {
         
         return (
           <MilestoneItem key={milestone.name}>
-            <MilestoneIcon src={milestone.icon} alt={milestone.name} />
-            <MilestoneInfo>
-              <MilestoneName>{milestone.name}</MilestoneName>
+            <MilestoneHeader>
+              <MilestoneIconName>
+                <MilestoneIcon src={milestone.icon} alt={milestone.name} />
+                <MilestoneName>{milestone.name}</MilestoneName>
+              </MilestoneIconName>
               <MilestoneReward>
-                <img src={coinsmall} alt="coin" style={{ width: '1rem', marginRight: '0.25rem' }} />
+                <img src={coinsmall} alt="coin" style={{ width: '16px', marginRight: '4px' }} />
                 {formatNumber(milestone.reward)}
               </MilestoneReward>
+            </MilestoneHeader>
+            <ProgressBarContainer>
               <ProgressBar>
                 <ProgressFill style={{ width: `${Math.min(progress, 100)}%` }} />
               </ProgressBar>
-            </MilestoneInfo>
-            {isClaimed ? (
-              <IoCheckmarkSharp size={20} color="#5bd173" />
-            ) : isClaimable ? (
-              <button
-                onClick={() => handleClaim(milestone)}
-                className="bg-btn text-black rounded-[8px] font-semibold py-2 px-3"
-              >
-                Claim
-              </button>
-            ) : (
-              <MdOutlineKeyboardArrowRight size={20} color="#171717" />
-            )}
+              <ProgressLabels>
+                <span>{formatNumber(tapBalance)}</span>
+                <span>{formatNumber(milestone.tapBalanceRequired)}</span>
+              </ProgressLabels>
+            </ProgressBarContainer>
+            <ClaimButton 
+              onClick={() => handleClaim(milestone)}
+              disabled={!isClaimable || isClaimed}
+            >
+              {isClaimed ? 'Claimed' : isClaimable ? 'Claim' : 'Not Available'}
+            </ClaimButton>
           </MilestoneItem>
         );
       })}
