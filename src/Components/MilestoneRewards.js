@@ -101,7 +101,7 @@ const ProgressLabels = styled.div`
 `;
 
 const ClaimButton = styled.button`
-  background-color: #094e9d;
+  background-color: #699cff;
   color: #ffffff;
   border: none;
   border-radius: 8px;
