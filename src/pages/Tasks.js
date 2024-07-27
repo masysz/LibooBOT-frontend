@@ -62,11 +62,11 @@ const TabContainer = styled.div`
 
 const Tab = styled.button`
   flex: 1;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  padding: 0.1rem;
+  border-radius: 1rem;
   font-weight: 500;
   transition: all 0.3s;
-  font-size: 16px;
+  font-size: 12px;
   background-color: ${props => props.active ? '#ffffff' : 'transparent'};
   box-shadow: ${props => props.active ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none'};
 `;
