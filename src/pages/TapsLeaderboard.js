@@ -11,6 +11,7 @@ import coinsmall from "../images/main-logo.png";
 
 const LeaderboardContainer = styled.div`
   align-content: center;
+  align-items: center;
   width: 95%;
   background-color: #f8fafc;
   border-radius: 16px;
