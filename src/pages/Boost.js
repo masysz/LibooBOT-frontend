@@ -470,7 +470,7 @@ const Boost = () => {
                   <button
                   disabled={freeGuru <= 0}
                     onClick={() => setGuru(true)}
-                    className={`${freeGuru > 0 ? 'opacity-100' : 'opacity-[.5]'} bg-cards w-[48%] border-[1px] border-borders rounded-[8px] p-[8px] flex space-x-1`}
+                    className={`${freeGuru > 0 ? 'opacity-100' : 'opacity-[.5]'} bg-[#fafcff] w-[48%] border-[1px] border-borders border-color[#dbdbdb] rounded-[8px] p-[8px] flex space-x-1`}
                   >
                     <div className="w-[40px] flex items-center justify-center">
                       <img src={boost} alt="boost" className={`w-full ${freeGuru > 0 ? '' : 'grayscale-[1]'}`} />
@@ -494,7 +494,7 @@ const Boost = () => {
                   <button
                   disabled={fullTank <= 0}
                     onClick={() => setTank(true)}
-                    className={`${fullTank > 0 ? 'opacity-100' : 'opacity-[.5]'} bg-cards w-[48%] border-[1px] border-borders rounded-[8px] p-[8px] flex`}
+                    className={`${fullTank > 0 ? 'opacity-100' : 'opacity-[.5]'} bg-[#fafcff] w-[48%] border-[1px] border-borders border-color[#dbdbdb] rounded-[8px] p-[8px] flex`}
                   >
                     <div className="w-[40px] flex items-center justify-center">
                       <img src={gastank} alt="flash" className={`w-[26px] ${fullTank > 0 ? '' : 'grayscale-[1]'}`} />
@@ -524,7 +524,7 @@ const Boost = () => {
     <button
       onClick={() => setIsUpgradeModalVisible(true)}  
       disabled={tapValue.level >= tapValues.length} 
-      className={`${tapValue.level >= tapValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
+      className={`${tapValue.level >= tapValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-[#fafcff] rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
     >
       <div className="flex flex-1 items-center space-x-2">
         <div className="">
@@ -562,7 +562,7 @@ const Boost = () => {
     <button
       onClick={() => setIsUpgradeModalVisibleEn(true)} 
       disabled={battery.level >= energyValues.length} 
-      className={`${battery.level >= energyValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
+      className={`${battery.level >= energyValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-[#fafcff] rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
     >
       <div className="flex flex-1 items-center space-x-2">
         <div className="">
@@ -600,7 +600,7 @@ const Boost = () => {
     <button
       onClick={() => setIsUpgradeModalVisibleEnc(true)} 
       disabled={timeRefill.level >= chargingValues.length} 
-      className={`${timeRefill.level >= chargingValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
+      className={`${timeRefill.level >= chargingValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-[#fafcff] rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
     >
       <div className="flex flex-1 items-center space-x-2">
         <div className="">
@@ -645,7 +645,7 @@ const Boost = () => {
                 {/*  */}
                 {/* <button
                   onClick={() => setBot(true)}
-                  className="bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center"
+                  className="bg-[#fafcff] rounded-[10px] px-[14px] py-[8px] flex justify-between items-center"
                 >
                   <div className="flex flex-1 items-center space-x-2">
                     <div className="">
