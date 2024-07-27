@@ -77,7 +77,7 @@ const userLevels = [
     return (
         <>
             {showLevels ? (
-                <div className="fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-center taskbg px-[16px] h-full">
+                <div className="fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-center taskbg px-[16px] h-100vh">
                     <div className={`w-full flex flex-col items-center justify-start pt-6`}>
 
                         <div className='flex w-full flex-col items-center text-center'>
