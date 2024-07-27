@@ -8,11 +8,8 @@ import coinsmall from "../images/main-logo.png";
 import { useUser } from "../context/userContext";
 
 const PageContainer = styled.div`
-  background: linear-gradient(to bottom, #d9dce4, #5496ff);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  overflow: scroll;
 `;
 
 const ContentWrapper = styled.div`
@@ -23,6 +20,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow-y: auto;
 `;
 
 const Header = styled.header`
@@ -63,6 +61,7 @@ const ReferralsSection = styled(Section)`
   overflow-y: auto;
   overflow: scroll;
   flex-direction: column;
+  margin-bottom: 2.0rem;
   padding-bottom: 150px;
 `;
 
