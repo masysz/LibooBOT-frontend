@@ -706,7 +706,7 @@ const Boost = () => {
       <button
         onClick={handleUpgrade}
         disabled={!hasSufficientBalance}
-        className={`${!hasSufficientBalance ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+        className={`${!hasSufficientBalance ? 'bg-btn2 text-[#ffff]' : 'bg-[#699cff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
       >
         {isUpgrading ? 'Boosting...' : hasSufficientBalance ? 'Go ahead!' : 'Insufficient Balance'}
       </button>
@@ -745,7 +745,7 @@ const Boost = () => {
       <button
         onClick={handleEnergyUpgrade}
         disabled={!hasSufficientBalanceEn}
-        className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+        className={`${!hasSufficientBalanceEn ? 'bg-btn2 text-[#ffff]' : 'bg-[#699cff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
       >
         {isUpgrading ? 'Boosting...' : hasSufficientBalanceEn ? 'Go ahead!' : 'Insufficient Balance'}
       </button>
@@ -783,7 +783,7 @@ const Boost = () => {
       <button
         onClick={handlerRechargeUpgrade}
         disabled={!hasSufficientBalanceEnc}
-        className={`${!hasSufficientBalanceEnc ? 'bg-btn2 text-[#979797]' : 'bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
+        className={`${!hasSufficientBalanceEnc ? 'bg-btn2 text-[#ffff]' : 'bg-[#699cff]'} w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]`}
       >
         {isUpgrading ? 'Boosting...' : hasSufficientBalanceEnc ? 'Go ahead!' : 'Insufficient Balance'}
       </button>
@@ -817,7 +817,7 @@ const Boost = () => {
     <div className="w-full flex justify-center pb-6 pt-4">
       <button
         onClick={handleTapGuru}
-        className="bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
+        className="bg-[#699cff] w-full py-5 text-white px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
       >
         Go ahead!
       </button>
@@ -851,7 +851,7 @@ const Boost = () => {
     <div className="w-full flex justify-center pb-6 pt-4">
       <button
         onClick={handleFullTank}
-        className="bg-gradient-to-b gradient from-[#3d47ff] to-[#575fff] w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
+        className="bg-[#699cff] text-white w-full py-5 px-3 flex items-center justify-center text-center rounded-[12px] font-semibold text-[22px]"
       >
         Go ahead!
       </button>
