@@ -9,7 +9,7 @@ import { useUser } from "../context/userContext";
 
 const PageContainer = styled.div`
   display: flex;
-  height: 85vh;
+  height: 90vh;
   flex-direction: column;
   overflow: hidden;
 `;
@@ -31,14 +31,15 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 25px;
+  font-weight: 700;
   color: #262626;
   margin-bottom: 0.2rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
   color: #4b5563;
 `;
 
