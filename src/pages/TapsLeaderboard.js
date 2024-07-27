@@ -13,7 +13,7 @@ const LeaderboardContainer = styled.div`
 
   border-radius: 0px 0px 1rem 1rem;
   height: 85vh;
-  padding: -20px 10px; 
+  padding: 30px 10px; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
