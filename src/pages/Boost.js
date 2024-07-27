@@ -825,7 +825,8 @@ const Boost = () => {
   </div>
 </Modal>
 
-// Full Tank Modal
+{/* fulltank modal */}
+
 <Modal
   isVisible={tank}
   onClose={() => setTank(false)}
