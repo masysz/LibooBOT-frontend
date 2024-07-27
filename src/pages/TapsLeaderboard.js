@@ -10,9 +10,7 @@ import coinsmall from "../images/main-logo.png";
 
 
 const LeaderboardContainer = styled.div`
-  background-color: #f8fafc;
-  backdrop-filter: blur(10px);
-  background-opacity: 50;
+
   border-radius: 0px 0px 1rem 1rem;
   height: 85vh;
   padding: -20px 10px; 
@@ -25,7 +23,7 @@ const LeaderboardHeader = styled.h2`
   font-size: 22px;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
