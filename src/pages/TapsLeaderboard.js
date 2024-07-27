@@ -10,6 +10,7 @@ import coinsmall from "../images/main-logo.png";
 
 
 const LeaderboardContainer = styled.div`
+  width: 90%;
   background-color: #f8fafc;
   border-radius: 16px;
   height: 85vh;
