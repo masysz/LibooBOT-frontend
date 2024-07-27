@@ -12,6 +12,8 @@ import coinsmall from "../images/main-logo.png";
 import useSound from "use-sound";
 import boopSfx from "../get.mp3";
 import burnSfx from "../burn.wav";
+import { NavLink } from "react-router-dom";
+import leaderboard from "../images/leaderboard.png";
 
 const slideUp = keyframes`
   0% {
@@ -452,27 +454,31 @@ const Plutos = () => {
     </div>
   </div>
 </div>
-            <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-              <div className="flex flex-col w-full items-center justify-center">
-                <div className="flex pb-[6px] space-x-1 items-center justify-center text-[#fff]">
-                  <img alt="flash" src={flash} className="w-[20px]" />
-                  <div>
-                    <span className="text-[18px] font-bold">
-                      {energy.toFixed(0)}
-                    </span>
-                    <span className="text-[14px] font-medium">
-                      / {battery.energy}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
-                  <div
-                    className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
-                    style={{ width: `${energyPercentage}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
+<div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
+  <div className="flex w-full items-center justify-between">
+    <div className="flex flex-col w-4/5">
+      <div className="flex pb-[6px] space-x-1 items-center text-[#fff]">
+        <img alt="flash" src={flash} className="w-[20px]" />
+        <div>
+          <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
+          <span className="text-[14px] font-medium">/ {battery.energy}</span>
+        </div>
+      </div>
+      <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
+        <div
+          className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
+          style={{ width: `${energyPercentage}%` }}
+        ></div>
+      </div>
+    </div>
+    <div className="w-1/5 flex justify-center items-center">
+      <NavLink to="/tapsleaderboard" className="flex flex-col items-center">
+        <img src={leaderboard} alt="Leaderboard" className="w-8 h-8" />
+        <span className="text-[10px] text-white mt-1">Leaderboard</span>
+      </NavLink>
+    </div>
+  </div>
+</div>
             <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
           </div>
         </Animate>
