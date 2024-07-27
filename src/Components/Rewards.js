@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-import congratspic from "../images/celebrate.gif";
+import styled from 'styled-components';
 import Animate from '../Components/Animate';
-import ref from "../images/ref1.png";
-import coinsmall from "../images/coinsmall.webp";
+import congratspic from "../images/celebrate.gif";
+import coinsmall from "../images/main-logo.png";
 
 const friendsRewards = [
   { title: 'Invite 3 friends', referralsRequired: 2, bonusAward: 50000, imgRef: '/ref1.webp' },
@@ -14,10 +14,111 @@ const friendsRewards = [
   { title: 'Invite 10 friends', referralsRequired: 10, bonusAward: 250000, imgRef: '/ref3.webp' },
 ];
 
+const RewardsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const RewardItem = styled.div`
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const RewardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+const RewardIconTitle = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const RewardIcon = styled.img`
+  width: 55px;
+  height: 55px;
+  margin-right: 10px;
+`;
+
+const RewardTitle = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: #171717;
+`;
+
+const RewardBonus = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #171717;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 100%;
+  background-color: #f0f4ff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+`;
+
+const ProgressBar = styled.div`
+  height: 8px;
+  background-color: #094e9d;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+`;
+
+const ClaimButton = styled.button`
+  background-color: ${props => props.disabled ? '#e5e7eb' : '#699cff'};
+  color: ${props => props.disabled ? '#9ca3af' : '#ffffff'};
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: background-color 0.3s;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: ${props => props.disabled ? '#e5e7eb' : '#4fa764'};
+  }
+`;
+
+const CongratsOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  pointer-events: none;
+`;
+
+const CongratsImage = styled.img`
+  width: 80%;
+  max-width: 300px;
+`;
+
 const ReferralRewards = () => {
   const { referrals, balance, setBalance, id, claimedReferralRewards, setClaimedReferralRewards } = useUser();
   const [congrats, setCongrats] = useState(false);
-
 
   const handleClaim = async (reward) => {
     if (referrals.length >= reward.referralsRequired && !claimedReferralRewards.includes(reward.title)) {
@@ -39,142 +140,60 @@ const ReferralRewards = () => {
       } catch (error) {
         console.error('Error claiming referral reward:', error);
       }
-    } else {
-      console.error('Already Claimed');
     }
   };
 
-    const formatNumberCliam = (num) => {
-        if (num < 100000) {
-          return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-        } else if (num < 1000000) {
-          return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-        } else if (num < 10000000) {
-            return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-          } else {
-          // return (num / 10000000).toFixed(3).replace(".", ".") + " T";
-          return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-        }
-      };
-
-
-  useEffect(() => {
- 
-    // Show the back button when the component mounts
-    window.Telegram.WebApp.BackButton.show();
-
-    // Attach a click event listener to handle the back navigation
-    const handleBackButtonClick = () => {
-      window.history.back();
-    };
-
-    window.Telegram.WebApp.BackButton.onClick(handleBackButtonClick);
-
-    // Clean up the event listener and hide the back button when the component unmounts
-    return () => {
-      window.Telegram.WebApp.BackButton.offClick(handleBackButtonClick);
-      window.Telegram.WebApp.BackButton.hide();
-    };
-
-  }, []);
-
-
-
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat().format(num).replace(/,/g, " ");
+  };
 
   return (
     <Animate>
-
-<div className="w-full flex flex-col space-y-4">
-
-      {friendsRewards
-        .filter((reward) => !claimedReferralRewards.includes(reward.title))
-        .map((reward) => {
+      <RewardsContainer>
+        {friendsRewards.map((reward) => {
           const progress = (referrals.length / reward.referralsRequired) * 100;
           const isClaimable = referrals.length >= reward.referralsRequired && !claimedReferralRewards.includes(reward.title);
           return (
-            <div key={reward.title} className='bg-cards rounded-[10px] p-[14px] flex flex-wrap justify-between items-center text-[#171717]'>
-
-<div className='flex flex-1 items-center space-x-2'>
-
-    <div className=''>
-        <img src={reward.imgRef}alt="bronze" className='w-[55px]'/>
-    </div>
-    <div className='flex flex-col space-y-1'>
-        <span className='font-semibold text-[#171717]'>
-        {reward.title}
-        </span>
-        <div className='flex items-center space-x-1'>
-        <span className="w-[20px] h-[20px]">
-<img src={coinsmall} className="w-full" alt="coin"/>
-</span>
-<span className='font-medium text-[#171717]'>
-{formatNumberCliam(reward.bonusAward)}
-</span>
-        </div>
-    </div>
-
-</div>
-
-{/*  */}
-
-<div className=''>
-<button
- disabled={!isClaimable}
- onClick={() => handleClaim(reward)}
-  className={` ${isClaimable ? 'bg-btn text-white' : "bg-btn2 text-[#fff6]"} relative rounded-[8px] font-semibold py-2 px-3`}>
- {isClaimable ? 'Claim' : 'Claim'}
-</button>
-
-
-</div>
-
-
-<div className='flex w-full mt-2 p-[4px] items-center bg-energybar rounded-[10px] border-[1px] border-borders'>
-
-
-    
-     <div className={`h-[8px] rounded-[8px] ${progress >= 100 ? 'bg-btn' : 'bg-btn'}`} style={{ width: `${progress > 100 ? 100 : progress}%` }}> 
-     </div>
-
-   
-
-
-
-
-</div>
-
-</div>
+            <RewardItem key={reward.title}>
+              <RewardHeader>
+                <RewardIconTitle>
+                  <RewardIcon src={reward.imgRef} alt={reward.title} />
+                  <div>
+                    <RewardTitle>{reward.title}</RewardTitle>
+                    <RewardBonus>
+                      <img src={coinsmall} alt="coin" style={{ width: '20px', marginRight: '4px' }} />
+                      {formatNumber(reward.bonusAward)}
+                    </RewardBonus>
+                  </div>
+                </RewardIconTitle>
+                <ClaimButton
+                  disabled={!isClaimable}
+                  onClick={() => handleClaim(reward)}
+                >
+                  {isClaimable ? 'Claim' : 'Not Available'}
+                </ClaimButton>
+              </RewardHeader>
+              <ProgressBarContainer>
+                <ProgressBar style={{ width: `${Math.min(progress, 100)}%` }} />
+              </ProgressBarContainer>
+            </RewardItem>
           );
         })}
+      </RewardsContainer>
 
+      {congrats && (
+        <CongratsOverlay>
+          <CongratsImage src={congratspic} alt="Congratulations" />
+        </CongratsOverlay>
+      )}
 
-<div className="w-full absolute top-[-35px] left-0 right-0 flex justify-center z-20 pointer-events-none select-none">
-        {congrats ? <img src={congratspic} alt="congrats" className="w-[80%]" /> : null}
+      <div className={`${congrats ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
+        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
+          <IoCheckmarkCircle size={24} />
+          <span className="font-medium">Good</span>
+        </div>
       </div>
-
-<div className={`${congrats === true ? "visible bottom-6" : "invisible bottom-[-10px]"} z-[60] ease-in duration-300 w-full fixed left-0 right-0 px-4`}>
-              <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
-
-
-
-              <IoCheckmarkCircle size={24} className=""/>
-
-              <span className="font-medium">
-                Good
-              </span>
-
-              </div>
-
-
-            </div>
-
-
-    </div>
-
-
-
-  
-      </Animate>
+    </Animate>
   );
 };
 
