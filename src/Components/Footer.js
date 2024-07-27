@@ -5,6 +5,7 @@ import tasks from "../images/tasks2.webp";
 import tap from "../images/main-logo.png";
 import boost from "../images/booster2.webp";
 import donate from "../images/donate.png";
+import leaderboard from "../images/leaderboard.png"; // Asegúrate de añadir este icono
 
 const Footer = () => {
   const navItems = [
@@ -13,6 +14,7 @@ const Footer = () => {
     { name: "Tap", icon: tap, path: "/" },
     { name: "Boost", icon: boost, path: "/boost" },
     { name: "Donate", icon: donate, path: "/donate" },
+    { name: "Leaderboard", icon: leaderboard, path: "/tapsleaderboard" },
   ];
 
   return (
@@ -23,7 +25,7 @@ const Footer = () => {
             key={item.name}
             to={item.path}
             className={({ isActive }) => `
-              ${index === 2 ? 'w-1/4' : 'w-1/5'}
+              ${index === 2 ? 'w-1/6' : 'w-1/6'}
               flex flex-col items-center justify-center
               ${index === 2 ? '-mt-6' : ''}
               ${isActive ? 'text-[#4169E1] poppins-bold' : 'text-[#6A5ACD] poppins-extrabold'}
@@ -33,7 +35,7 @@ const Footer = () => {
               <>
                 <div
                   className={`
-                    ${index === 2 ? 'w-16 h-16' : 'w-12 h-12'}
+                    ${index === 2 ? 'w-14 h-14' : 'w-10 h-10'}
                     flex items-center justify-center
                     rounded-full
                     ${isActive ? 'bg-[#B0E0E6]' : 'bg-[#F0F8FF]'}
@@ -44,10 +46,10 @@ const Footer = () => {
                   <img
                     src={item.icon}
                     alt={item.name}
-                    className={`${index === 2 ? 'w-8 h-8' : 'w-6 h-6'}`}
+                    className={`${index === 2 ? 'w-7 h-7' : 'w-5 h-5'}`}
                   />
                 </div>
-                <span className={`mt-1 text-xs ${index === 2 ? 'font-bold poppins-bold' : 'font-medium poppins-bold'}`}>
+                <span className={`mt-1 text-[10px] ${index === 2 ? 'font-bold poppins-bold' : 'font-medium poppins-bold'}`}>
                   {item.name}
                 </span>
               </>
