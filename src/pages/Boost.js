@@ -675,19 +675,8 @@ const Boost = () => {
               </div>
             </div>
 
+{/* multitap modal */}
 
-            Certainly! I'll provide you with the updated code for all the modals using the Modal component you've already created. Here's the entire code for all modals:
-jsxCopyimport React from 'react';
-import { IoClose } from 'react-icons/io5';
-import Modal from './Modal'; // Ensure this path is correct
-import multi from '../path/to/multi.png';
-import battery3 from '../path/to/battery3.png';
-import flash from '../path/to/flash.png';
-import boost from '../path/to/boost.png';
-import gastank from '../path/to/gastank.png';
-import coinsmall from '../path/to/coinsmall.png';
-
-// Multitap Modal
 <Modal
   isVisible={isUpgradeModalVisible}
   onClose={() => setIsUpgradeModalVisible(false)}
@@ -725,7 +714,8 @@ import coinsmall from '../path/to/coinsmall.png';
   </div>
 </Modal>
 
-// Energy Limit Modal
+{/* Energy limit modal */}
+
 <Modal
   isVisible={isUpgradeModalVisibleEn}
   onClose={() => setIsUpgradeModalVisibleEn(false)}
@@ -763,7 +753,7 @@ import coinsmall from '../path/to/coinsmall.png';
   </div>
 </Modal>
 
-// Charging Modal
+{/* recharging speed modal */}
 <Modal
   isVisible={isUpgradeModalVisibleEnc}
   onClose={() => setIsUpgradeModalVisibleEnc(false)}
@@ -801,7 +791,7 @@ import coinsmall from '../path/to/coinsmall.png';
   </div>
 </Modal>
 
-// Tapping Guru Modal
+{/* booster modal */}
 <Modal
   isVisible={guru}
   onClose={() => setGuru(false)}
