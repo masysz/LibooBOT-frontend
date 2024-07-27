@@ -257,7 +257,7 @@ const TapsLeaderboard = () => {
                 <Username>{getUserDisplayName(user)}</Username>
                 <UserStats>
                   <IoRocketOutline size={16} style={{ marginRight: '4px' }} />
-                  Level {user.level?.name || 'N/A'}
+                  Level: {user.level?.name || 'N/A'}
                 </UserStats>
               </UserInfo>
               <TapBalance>
@@ -275,7 +275,7 @@ const TapsLeaderboard = () => {
         )}
         <CurrentUserSection>
           <UserInfo>
-            <Username>{getUserDisplayName({ id, firstName: name })}</Username>
+            <Username>{getUserDisplayName(user)}</Username>
             <TapBalance>
               <CoinIcon src={coinsmall} alt="coin" />
               {formatNumber(tapBalance)}
