@@ -10,6 +10,7 @@ import { useUser } from "../context/userContext";
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 100px;
 `;
 
 const ContentWrapper = styled.div`
