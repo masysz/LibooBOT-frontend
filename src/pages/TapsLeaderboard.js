@@ -10,9 +10,6 @@ import coinsmall from "../images/main-logo.png";
 
 
 const LeaderboardContainer = styled.div`
-  align-content: center;
-  align-items: center;
-  width: 95%;
   background-color: #f8fafc;
   border-radius: 16px;
   height: 85vh;
@@ -23,7 +20,7 @@ const LeaderboardContainer = styled.div`
 `;
 
 const LeaderboardHeader = styled.h2`
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 20px;
@@ -90,7 +87,7 @@ const LeaderboardItem = styled.li`
 `;
 
 const Rank = styled.span`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #64748b;
   width: 40px;
@@ -105,7 +102,7 @@ const UserInfo = styled.div`
 `;
 
 const Username = styled.span`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #1e293b;
   margin-bottom: 4px;
@@ -119,7 +116,7 @@ const UserStats = styled.div`
 `;
 
 const TapBalance = styled.span`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #0284c7;
   display: flex;
@@ -144,7 +141,7 @@ const CurrentUserSection = styled.div`
 `;
 
 const CurrentUserRank = styled.span`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #0284c7;
   display: flex;
