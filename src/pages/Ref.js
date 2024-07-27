@@ -10,12 +10,12 @@ import { useUser } from "../context/userContext";
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 85vh;
   overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
   width: 100%;
+  height: 85vh;
   max-width: 64rem;
   margin: 0 auto;
   padding: 1rem;
