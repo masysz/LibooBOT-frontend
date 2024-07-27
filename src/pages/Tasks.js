@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -22,7 +21,7 @@ import ReferralRewards from '../Components/Rewards';
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 85vh;
   overflow: hidden;
 `;
 
@@ -56,6 +55,9 @@ const TabContainer = styled.div`
   border-radius: 0.5rem;
   padding: 0.25rem;
   margin-bottom: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 `;
 
 const Tab = styled.button`
@@ -111,6 +113,31 @@ const TaskReward = styled.div`
   align-items: center;
   font-size: 0.875rem;
   color: #4b5563;
+`;
+
+const ScrollableContent = styled.div`
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.5rem;
+  margin-right: -0.5rem;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 const Tasks = () => {
@@ -224,17 +251,19 @@ const Tasks = () => {
               <Tab active={activeTab === 'leagues'} onClick={() => setActiveTab('leagues')}>Leagues</Tab>
               <Tab active={activeTab === 'refBonus'} onClick={() => setActiveTab('refBonus')}>Ref Bonus</Tab>
             </TabContainer>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                {renderTaskContent()}
-              </motion.div>
-            </AnimatePresence>
+            <ScrollableContent>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {renderTaskContent()}
+                </motion.div>
+              </AnimatePresence>
+            </ScrollableContent>
           </>
         )}
       </ContentWrapper>
@@ -242,7 +271,6 @@ const Tasks = () => {
       <TaskThree showModal={showModal3} setShowModal={setShowModal3} />
       <TaskSix showModal={showModal6} setShowModal={setShowModal6} />
       <DailyRewards showModal={showDailyRewards} setShowModal={setShowDailyRewards} />
-      <Outlet />
     </PageContainer>
   );
 };
