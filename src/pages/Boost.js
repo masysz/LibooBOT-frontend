@@ -16,10 +16,184 @@ import { IoClose } from "react-icons/io5";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import Spinner from '../Components/Spinner';
 import "../App.css";
+import styled from 'styled-components';
 import Modal from '../Components/boostmodals';
 
 
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fafb;
+`;
 
+const ContentWrapper = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  width: 100%;
+`;
+
+const Header = styled.header`
+  margin-bottom: 1.5rem;
+`;
+
+const Title = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #171717;
+`;
+
+const BoosterSection = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const UpgradeSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Card = styled.div`
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+`;
+
+const BoosterCard = styled(Card)`
+  flex-direction: column;
+  text-align: center;
+`;
+
+const UpgradeCard = styled(Card)`
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.disabled ? 0.7 : 1};
+`;
+
+const IconWrapper = styled.div`
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+`;
+
+const BoosterIconWrapper = styled(IconWrapper)`
+  background-color: #f0f4ff;
+  border-radius: 50%;
+`;
+
+const UpgradeIconWrapper = styled(IconWrapper)`
+  margin-right: 1rem;
+`;
+
+const Icon = styled.img`
+  width: 30px;
+  height: 30px;
+`;
+
+const BoosterIcon = styled(Icon)``;
+const UpgradeIcon = styled(Icon)``;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+`;
+
+const BoosterInfo = styled(InfoWrapper)`
+  margin-bottom: 1rem;
+`;
+
+const UpgradeInfo = styled(InfoWrapper)``;
+
+const Name = styled.h3`
+  font-size: 1rem;
+  font-weight: 600;
+  color: #171717;
+  margin-bottom: 0.25rem;
+`;
+
+const BoosterName = styled(Name)``;
+const UpgradeName = styled(Name)``;
+
+const Value = styled.div`
+  font-size: 0.875rem;
+  color: #4b5563;
+`;
+
+const BoosterValue = styled(Value)``;
+
+const UpgradeValue = styled(Value)`
+  display: flex;
+  align-items: center;
+`;
+
+const CountdownTimer = styled.span`
+  color: #507cff;
+  font-weight: 500;
+`;
+
+const BoosterButton = styled.button`
+  background-color: #507cff;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #3b5bdb;
+  }
+
+  &:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+`;
+
+const CoinIcon = styled.img`
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+`;
+
+const Divider = styled.span`
+  width: 1px;
+  height: 12px;
+  background-color: #d1d5db;
+  margin: 0 0.5rem;
+`;
+
+const LevelIndicator = styled.span`
+  color: #507cff;
+  font-weight: 500;
+`;
+
+const MaxLevel = styled.span`
+  color: #10b981;
+  font-weight: 600;
+`;
+
+const ArrowIcon = styled(MdOutlineKeyboardArrowRight)`
+  color: #9ca3af;
+  font-size: 1.5rem;
+`;
 
 
 
@@ -435,245 +609,148 @@ const Boost = () => {
 
 
   return (
-    <>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Animate>
-          <div className="w-full justify-center flex-col space-y-3 px-5">
-            <div className="flex flex-col w-full">
-              {/* <div className="w-full items-center justify-center pb-2 flex">
-                <h2 className="text-[#9d99a9] text-[20px] font-medium">
-                  Your Share balance
-                </h2>
-              </div>
-              <div className="flex space-x-1 ml-[-8px] justify-center items-center">
-                <div className="w-[50px] h-[50px]">
-                  <img src={coinsmall} className="w-full" alt="coin" />
-                </div>
-                <h1 className="text-[#fff] text-[42px] font-extrabold">
-                  {formatNumber(balance + refBonus)}
-                </h1>
-              </div> */}
-              <div>
-
-    </div>
-              {/* <div className="bg-borders w-full px-5 h-[1px] !mt-3 !mb-5"></div> */}
-
-              <div className="w-full flex flex-col">
-                <h3 className="text-[18px] text-[#171717] font-semibold pb-4">
-                  Your daily boosters:
-                </h3>
-               
-                <div className="w-full flex justify-between items-center">
-                  {/*  */}
-                  <button
+    <PageContainer>
+      <ContentWrapper>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <Animate>
+            <Header>
+              <Title>Your Daily Boosters</Title>
+            </Header>
+  
+            <BoosterSection>
+              <BoosterCard>
+                <BoosterIconWrapper>
+                  <BoosterIcon src={boost} alt="Booster" />
+                </BoosterIconWrapper>
+                <BoosterInfo>
+                  <BoosterName>Booster</BoosterName>
+                  <BoosterValue>
+                    {freeGuru > 0 ? (
+                      <span className="text-[#507cff]">{freeGuru}/3</span>
+                    ) : (
+                      <CountdownTimer>
+                        {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
+                      </CountdownTimer>
+                    )}
+                  </BoosterValue>
+                </BoosterInfo>
+                <BoosterButton
+                  onClick={() => setGuru(true)}
                   disabled={freeGuru <= 0}
-                    onClick={() => setGuru(true)}
-                    className={`${freeGuru > 0 ? 'opacity-100' : 'opacity-[.5]'} bg-cards w-[48%] border-[1px] border-borders rounded-[8px] p-[8px] flex space-x-1`}
-                  >
-                    <div className="w-[40px] flex items-center justify-center">
-                      <img src={boost} alt="boost" className={`w-full ${freeGuru > 0 ? '' : 'grayscale-[1]'}`} />
-                    </div>
-
-                    <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru">
-                        Booster
-                      </span>
-                      {freeGuru > 0 ? (
-   <span className="font-medium tapguru2 text-[#507cff]">{freeGuru}/3</span>
-                      ) : (
-                        <span className="font-normal tapguru2 text-[#507cff]">      
-                      {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
-                      </span>
-                      )}
-                   
-                    </div>
-                  </button>
-                  {/*  */}
-                  <button
+                >
+                  Activate
+                </BoosterButton>
+              </BoosterCard>
+  
+              <BoosterCard>
+                <BoosterIconWrapper>
+                  <BoosterIcon src={gastank} alt="Full Energy" />
+                </BoosterIconWrapper>
+                <BoosterInfo>
+                  <BoosterName>Full Energy</BoosterName>
+                  <BoosterValue>
+                    {fullTank > 0 ? (
+                      <span className="text-[#507cff]">{fullTank}/3</span>
+                    ) : (
+                      <CountdownTimer>
+                        {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
+                      </CountdownTimer>
+                    )}
+                  </BoosterValue>
+                </BoosterInfo>
+                <BoosterButton
+                  onClick={() => setTank(true)}
                   disabled={fullTank <= 0}
-                    onClick={() => setTank(true)}
-                    className={`${fullTank > 0 ? 'opacity-100' : 'opacity-[.5]'} bg-cards w-[48%] border-[1px] border-borders rounded-[8px] p-[8px] flex`}
-                  >
-                    <div className="w-[40px] flex items-center justify-center">
-                      <img src={gastank} alt="flash" className={`w-[26px] ${fullTank > 0 ? '' : 'grayscale-[1]'}`} />
-                    </div>
-
-                    <div className="flex flex-1 flex-col text-left">
-                      <span className="font-semibold tapguru">Full Energy</span>
-                      {fullTank> 0 ? (
-   <span className="font-medium tapguru2 text-[#507cff]">{fullTank}/3</span>
-                      ) : (
-                        <span className="font-normal tapguru2 text-[#507cff]">      
-                      {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
-                      </span>
-                      )}
-                   
-                    </div>
-                  </button>
-                </div>
-
-                <div className="w-full flex flex-col pt-4">
-  <h3 className="text-[18px] font-semibold text-[#171717]">Boosters:</h3>
-</div>
-
-<div className="w-full flex flex-col h-[50vh] pt-2 pb-[60px] overflow-y-auto hide-scrollbar">
+                >
+                  Activate
+                </BoosterButton>
+              </BoosterCard>
+            </BoosterSection>
   
-  <div className={`flex alltaskscontainer flex-col w-full space-y-2 pb-20`}>
-    <button
-      onClick={() => setIsUpgradeModalVisible(true)}  
-      disabled={tapValue.level >= tapValues.length} 
-      className={`${tapValue.level >= tapValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
-    >
-      <div className="flex flex-1 items-center space-x-2">
-        <div className="">
-          <img src={multi} alt="multi" className="w-[35px]" />
-        </div>
-        <div className="flex flex-col space-y-1 text-left">
-          <span className="font-semibold text-[17px] text-[#171717]">
-            Multitap
-          </span>
-          <div className="flex items-center space-x-1">
-            <span className="w-[20px] h-[20px]">
-              <img src={coinsmall} className="w-full" alt="coin" />
-            </span>
-            <span className="font-medium flex items-center text-[#171717]">
-              <span className="text-[15px] text-[#171717]">
-                {tapValue.level >= tapValues.length ? (
-                  <>MAX</>
-                ) : (
-                  <>{formatNumber(nextUpgradeCost)}</>
-                )} 
-              </span>{" "}
-              <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-              <span className="text-[#507cff] text-[15px]">
-                Level {tapValue.level}
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="">
-        <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-      </div>
-    </button>
-
-    <button
-      onClick={() => setIsUpgradeModalVisibleEn(true)} 
-      disabled={battery.level >= energyValues.length} 
-      className={`${battery.level >= energyValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
-    >
-      <div className="flex flex-1 items-center space-x-2">
-        <div className="">
-          <img src={battery3} alt="battery" className="w-[35px]" />
-        </div>
-        <div className="flex flex-col space-y-1 text-left">
-          <span className="font-semibold text-[17px] text-[#171717]">
-            Energy Limit
-          </span>
-          <div className="flex items-center space-x-1">
-            <span className="w-[20px] h-[20px]">
-              <img src={coinsmall} className="w-full" alt="coin" />
-            </span>
-            <span className="font-medium flex items-center">
-              <span className="text-[15px] text-[#171717]">
-                {battery.level >= energyValues.length ? (
-                  <>MAX</>
-                ) : (
-                  <>{formatNumber(nextEnergyUpgradeCost)}</>
-                )} 
-              </span>{" "}
-              <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-              <span className="text-[#507cff] text-[15px]">
-                Level {battery.level}
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="">
-        <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-      </div>
-    </button>
-
-    <button
-      onClick={() => setIsUpgradeModalVisibleEnc(true)} 
-      disabled={timeRefill.level >= chargingValues.length} 
-      className={`${timeRefill.level >= chargingValues.length ? 'opacity-[.7]' : 'opacity-100'} bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center`}
-    >
-      <div className="flex flex-1 items-center space-x-2">
-        <div className="">
-          <img src={flash} alt="flash" className="w-[35px]" />
-        </div>
-        <div className="flex flex-col space-y-1 text-left">
-          <span className="font-semibold text-[17px] text-[#171717]">
-            Recharging Speed
-          </span>
-          <div className="flex items-center space-x-1">
-            <span className="w-[20px] h-[20px]">
-              <img src={coinsmall} className="w-full" alt="coin" />
-            </span>
-            <span className="font-medium flex items-center">
-              <span className="text-[15px] text-[#171717]">
-                {timeRefill.level >= chargingValues.length ? (
-                  <>MAX</>
-                ) : (
-                  <>{formatNumber(nextChargingUpgradeCost)}</>
-                )} 
-              </span>{" "}
-              <span className="bg-[#bdbdbd] w-[1px] h-[13px] mx-2"></span>
-              <span className="text-[#507cff] text-[15px]">
-                Level {timeRefill.level}
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="">
-        <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-      </div>
-    </button>
-    </div>
-    </div>
+            <Header>
+              <Title>Boosters</Title>
+            </Header>
   
-
+            <UpgradeSection>
+              <UpgradeCard
+                onClick={() => setIsUpgradeModalVisible(true)}
+                disabled={tapValue.level >= tapValues.length}
+              >
+                <UpgradeIconWrapper>
+                  <UpgradeIcon src={multi} alt="Multitap" />
+                </UpgradeIconWrapper>
+                <UpgradeInfo>
+                  <UpgradeName>Multitap</UpgradeName>
+                  <UpgradeValue>
+                    <CoinIcon src={coinsmall} alt="coin" />
+                    {tapValue.level >= tapValues.length ? (
+                      <MaxLevel>MAX</MaxLevel>
+                    ) : (
+                      <>{formatNumber(nextUpgradeCost)}</>
+                    )}
+                    <Divider />
+                    <LevelIndicator>Level {tapValue.level}</LevelIndicator>
+                  </UpgradeValue>
+                </UpgradeInfo>
+                <ArrowIcon />
+              </UpgradeCard>
+  
+              <UpgradeCard
+                onClick={() => setIsUpgradeModalVisibleEn(true)}
+                disabled={battery.level >= energyValues.length}
+              >
+                <UpgradeIconWrapper>
+                  <UpgradeIcon src={battery3} alt="Energy Limit" />
+                </UpgradeIconWrapper>
+                <UpgradeInfo>
+                  <UpgradeName>Energy Limit</UpgradeName>
+                  <UpgradeValue>
+                    <CoinIcon src={coinsmall} alt="coin" />
+                    {battery.level >= energyValues.length ? (
+                      <MaxLevel>MAX</MaxLevel>
+                    ) : (
+                      <>{formatNumber(nextEnergyUpgradeCost)}</>
+                    )}
+                    <Divider />
+                    <LevelIndicator>Level {battery.level}</LevelIndicator>
+                  </UpgradeValue>
+                </UpgradeInfo>
+                <ArrowIcon />
+              </UpgradeCard>
+  
+              <UpgradeCard
+                onClick={() => setIsUpgradeModalVisibleEnc(true)}
+                disabled={timeRefill.level >= chargingValues.length}
+              >
+                <UpgradeIconWrapper>
+                  <UpgradeIcon src={flash} alt="Recharging Speed" />
+                </UpgradeIconWrapper>
+                <UpgradeInfo>
+                  <UpgradeName>Recharging Speed</UpgradeName>
+                  <UpgradeValue>
+                    <CoinIcon src={coinsmall} alt="coin" />
+                    {timeRefill.level >= chargingValues.length ? (
+                      <MaxLevel>MAX</MaxLevel>
+                    ) : (
+                      <>{formatNumber(nextChargingUpgradeCost)}</>
+                    )}
+                    <Divider />
+                    <LevelIndicator>Level {timeRefill.level}</LevelIndicator>
+                  </UpgradeValue>
+                </UpgradeInfo>
+                <ArrowIcon />
+              </UpgradeCard>
+            </UpgradeSection>
+            
+        
+       
+        
+                 
 
              
 
-    
-                {/*  */}
-                {/* <button
-                  onClick={() => setBot(true)}
-                  className="bg-cards rounded-[10px] px-[14px] py-[8px] flex justify-between items-center"
-                >
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img src={botr} alt="bot" className="w-[35px]" />
-                    </div>
-                    <div className="flex flex-col space-y-1 text-left">
-                      <span className="font-semibold text-[17px]">Tap Bot</span>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-[20px] h-[20px]">
-                          <img src={coinsmall} className="w-full" alt="coin" />
-                        </span>
-                        <span className="font-medium flex items-center">
-                          <span className="text-[15px]">1 000 000</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div> */}
-
-                  {/*  */}
-
-                  {/* <div className="">
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-                  </div>
-                </button> */}
-
-                {/*  */}
-              </div>
-            </div>
 
 {/* multitap modal */}
 
@@ -946,13 +1023,13 @@ const Boost = () => {
   <>
   </>
 )}
-
-          </div>
-          <Outlet />
-        </Animate>
+            <Outlet />
+          </Animate>
+        
+        
       )}
-    </>
-  );
-};
+    </ContentWrapper>
+  </PageContainer>
+)};
 
 export default Boost;
