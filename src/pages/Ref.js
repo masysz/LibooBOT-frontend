@@ -9,7 +9,7 @@ import { useUser } from "../context/userContext";
 
 const PageContainer = styled.div`
   display: flex;
-  height: 90vh;
+  height: 85vh;
   flex-direction: column;
   overflow: hidden;
 `;
