@@ -455,31 +455,31 @@ const Plutos = () => {
   </div>
 </div>
 <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-  <div className="flex w-full items-center justify-between">
-    <div className="flex flex-col w-4/5">
-      <div className="flex pb-[6px] space-x-1 items-center text-[#fff]">
-        <img alt="flash" src={flash} className="w-[20px]" />
+  <div className="flex w-full items-center justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
+    <div className="flex flex-col w-[70%]">
+      <div className="flex pb-3 space-x-2 items-center text-[#fff]">
+        <img alt="flash" src={flash} className="w-[24px]" />
         <div>
-          <span className="text-[18px] font-bold">{energy.toFixed(0)}</span>
-          <span className="text-[14px] font-medium">/ {battery.energy}</span>
+          <span className="text-[20px] font-bold">{energy.toFixed(0)}</span>
+          <span className="text-[16px] font-medium ml-1">/ {battery.energy}</span>
         </div>
       </div>
-      <div className="flex w-full p-[4px] h-[20px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
+      <div className="flex w-full p-[4px] h-[24px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
         <div
           className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
           style={{ width: `${energyPercentage}%` }}
         ></div>
       </div>
     </div>
-    <div className="w-1/5 flex justify-center items-center">
-      <NavLink to="/tapsleaderboard" className="flex flex-col items-center">
-        <img src={leaderboard} alt="Leaderboard" className="w-8 h-8" />
-        <span className="text-[10px] text-white mt-1">Leaderboard</span>
-      </NavLink>
-    </div>
+    <NavLink 
+      to="/tapsleaderboard" 
+      className="w-[30%] flex items-center justify-center space-x-2 bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
+    >
+      <img src={leaderboard} alt="Leaderboard" className="w-6 h-6" />
+      <span className="text-[12px] text-white font-semibold">Leaderboard</span>
+    </NavLink>
   </div>
-</div>
-            <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+</div>    <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
           </div>
         </Animate>
       )}
