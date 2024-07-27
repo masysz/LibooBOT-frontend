@@ -26,7 +26,7 @@ const EnergyBar = ({ energy, battery, energyPercentage, flash, leaderboard }) =>
           className="w-[22%] flex items-center justify-center space-x-2 bg-white bg-opacity-30 rounded-xl px-3 p-1  py-2 transition-all duration-300 hover:bg-opacity-50"
         >
           <img src={leaderboard} alt="Leaderboard" className="w-5 h-5" />
-          <span className="text-[12px] text-white font-semibold whitespace-nowrap">Leaderboard</span>
+          <span className="text-[11px] px-2 text-white font-semibold whitespace-nowrap">Leaderboard</span>
         </NavLink>
       </div>
     </div>
