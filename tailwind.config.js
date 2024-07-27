@@ -50,6 +50,12 @@ module.exports = {
         xl: "1700px",
       },
     },
-    plugins: [require('tailwindcss')],
+    plugins: [
+      require('tailwindcss'),
+      require('@tailwindcss/forms'),
+      require('@tailwindcss/typography'),
+      require('@tailwindcss/aspect-ratio')
+    ],
+    
   };
   

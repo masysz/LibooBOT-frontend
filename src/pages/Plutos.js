@@ -455,7 +455,7 @@ const Plutos = () => {
   </div>
 </div>
 <div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-  <div className="flex w-full items-center justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
+  <div className="flex w-full items-end justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
     <div className="flex flex-col w-[70%]">
       <div className="flex pb-3 space-x-2 items-center text-[#fff]">
         <img alt="flash" src={flash} className="w-[24px]" />
@@ -473,10 +473,10 @@ const Plutos = () => {
     </div>
     <NavLink 
       to="/tapsleaderboard" 
-      className="w-[30%] flex items-center justify-center space-x-2 bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
+      className="w-[28%] flex items-center justify-center space-x-2 bg-white bg-opacity-30 rounded-xl px-3 py-2 transition-all duration-300 hover:bg-opacity-50"
     >
-      <img src={leaderboard} alt="Leaderboard" className="w-6 h-6" />
-      <span className="text-[12px] text-white font-semibold">Leaderboard</span>
+      <img src={leaderboard} alt="Leaderboard" className="w-5 h-5" />
+      <span className="text-[11px] text-white font-semibold whitespace-nowrap">Leaderboard</span>
     </NavLink>
   </div>
 </div>    <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
