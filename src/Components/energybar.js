@@ -1,32 +1,27 @@
-// EnergyBar.js
 import React from 'react';
 import { NavLink } from "react-router-dom";
 
 const EnergyBar = ({ energy, battery, energyPercentage, flash, leaderboard }) => {
   return (
-    <div className="w-full fixed bottom-[120px] left-0 right-0 px-5">
-      <div className="flex w-full items-end justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
-        <div className="flex flex-col w-[70%]">
-          <div className="flex pb-3 space-x-2 items-center text-[#fff]">
-            <img alt="flash" src={flash} className="w-[24px]" />
-            <div>
-              <span className="text-[20px] font-bold">{energy.toFixed(0)}</span>
-              <span className="text-[16px] font-medium ml-1">/ {battery.energy}</span>
-            </div>
-          </div>
-          <div className="flex w-full p-[4px] h-[24px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
-            <div
-              className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
-              style={{ width: `${energyPercentage}%` }}
-            ></div>
-          </div>
+    <div className="fixed bottom-4 left-0 right-0 px-4">
+      <div className="flex items-center justify-between bg-white/20 backdrop-blur-lg rounded-xl p-2">
+        <div className="flex items-center space-x-2 text-white">
+          <img src={flash} alt="Energy" className="w-5 h-5" />
+          <span className="text-lg font-bold">{energy.toFixed(0)}</span>
+          <span className="text-sm">/ {battery.energy}</span>
+        </div>
+        <div className="w-1/2 bg-energybar rounded-full h-4 overflow-hidden">
+          <div
+            className="bg-blue-500 h-full transition-all duration-300"
+            style={{ width: `${energyPercentage}%` }}
+          ></div>
         </div>
         <NavLink 
           to="/tapsleaderboard" 
-          className="w-[28%] flex items-center justify-center space-x-2 bg-white bg-opacity-30 rounded-xl px-3 py-2 transition-all duration-300 hover:bg-opacity-50"
+          className="flex items-center space-x-1 bg-white/30 rounded-lg px-2 py-1 hover:bg-white/50 transition-colors"
         >
-          <img src={leaderboard} alt="Leaderboard" className="w-5 h-5" />
-          <span className="text-[11px] text-white font-semibold whitespace-nowrap p-5">Leaderboard</span>
+          <img src={leaderboard} alt="Leaderboard" className="w-4 h-4" />
+          <span className="text-xs text-white font-semibold">Leaderboard</span>
         </NavLink>
       </div>
     </div>
