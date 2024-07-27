@@ -19,7 +19,6 @@ const ContentWrapper = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   overflow-y: auto;
 `;
 
@@ -49,6 +48,7 @@ const TotalEarnings = styled.p`
 
 const Section = styled.section`
   background-color: white;
+  height: 30%;
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 2.0rem;
@@ -57,8 +57,6 @@ const Section = styled.section`
 
 const ReferralsSection = styled(Section)`
   display: flex;
-  height: 60%;
-  overflow: scroll;
   flex-direction: column;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -112,27 +110,11 @@ const CopyButton = styled.button`
 
 const ReferralsContainer = styled.div`
   overflow-y: auto;
-  height: 70%;
-  flex-grow: 1;
-  scrollbar-width: thin;
-  scrollbar-color: #4a5568 #CBD5E0;
-  
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: #CBD5E0;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background-color: #4a5568;
-    border-radius: 4px;
-  }
 `;
 
 const ReferralsList = styled.div`
   padding-right: 8px;
+  overflow-y: auto;
 `;
 
 const ReferralItemWrapper = styled(motion.div)`
