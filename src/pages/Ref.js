@@ -48,7 +48,7 @@ const TotalEarnings = styled.p`
 
 const Section = styled.section`
   background-color: white;
-  height: 30%;
+  height: 50%;
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 2.0rem;
