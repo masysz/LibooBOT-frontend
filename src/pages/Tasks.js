@@ -52,7 +52,7 @@ const TabContainer = styled.div`
   display: flex;
   justify-content: space-between;
   background-color: #f0f4ff;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   padding: 0.25rem;
   margin-bottom: 1rem;
   position: sticky;
@@ -62,10 +62,11 @@ const TabContainer = styled.div`
 
 const Tab = styled.button`
   flex: 1;
-  padding: 0.75rem;
-  border-radius: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   font-weight: 500;
   transition: all 0.3s;
+  font-size: 16px;
   background-color: ${props => props.active ? '#ffffff' : 'transparent'};
   box-shadow: ${props => props.active ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none'};
 `;
@@ -79,7 +80,7 @@ const TaskContainer = styled.div`
 const TaskItem = styled.div`
   background-color: #ffffff;
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -102,7 +103,7 @@ const TaskInfo = styled.div`
 `;
 
 const TaskName = styled.h3`
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   color: #262626;
   margin-bottom: 0.25rem;
