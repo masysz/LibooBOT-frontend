@@ -30,21 +30,47 @@ const slideUp = keyframes`
 const SlideUpText = styled.div`
   position: absolute;
   animation: ${slideUp} 3s ease-out;
-  font-size: 2.1em;
+  font-size: clamp(1rem, 4vw, 2.1rem);
   color: #ffffffa6;
   font-weight: 600;
   left: ${({ x }) => x}px;
   top: ${({ y }) => y}px;
-  pointer-events: none; /* To prevent any interaction */
+  pointer-events: none;
 `;
 
 const Container = styled.div`
   position: relative;
-  display: inline-block;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  padding: 1rem;
+`;
+
+const BalanceText = styled.div`
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+`;
+
+const LevelButton = styled.button`
+  font-size: clamp(0.8rem, 3vw, 1.375rem);
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+`;
+
+const TapContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+const TapButton = styled.button`
+  font-size: clamp(0.8rem, 3vw, 1.375rem);
+  padding: 0.5rem 1rem;
 `;
 
 const Plutos = () => {
@@ -377,99 +403,40 @@ const Plutos = () => {
     }
   };
 
- return (
-    <>
+ 
+  return (
+    <Container>
       {loading ? (
-        <Spinner />
+        <div>Loading...</div>
       ) : (
-        <Animate>
-          <div className="w-full flex justify-center flex-col items-center overflow-hidden">
-            <div className="flex space-x-[2px] justify-center items-center mt-8">
-              <div className="w-[50px] h-[50px]">
-                <img src={coinsmall} className="w-full" alt="coin" />
-              </div>               
-              <h1 className="text-[#507cff] text-[45px] font-extrabold font-family-[poppins]">
-                {formatNumber(balance)}
-              </h1>
-            </div>
-            
-            <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
-              <img
-                src={level.imgUrl}
-                className="w-[25px] relative"
-                alt="bronze"
-              />
-              <h2
-                onClick={() => setShowLevels(true)}
-                className="text-[#171717] text-[22px] font-medium"
-              >
-                {level.name}
-              </h2>
-              <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]" />
-            </div>
-            
-            <div className="w-full flex justify-center items-center relative mt-8">
-              <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
-              <div className={`${tapGuru ? "block" : "hidden"} pyro`}>
-                <div className="before"></div>
-                <div className="after"></div>
-              </div>
-              <div className="w-[280px] h-[280px] relative flex items-center justify-center">
-                <img
-                  src="/lihgt.gif"
-                  alt="err"
-                  className={`absolute w-[300px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
-                />
-                <div className="image-container flex-grow flex justify-center items-center">
-                  {mainTap && (
-                    <Container>
-                      <img
-                        onPointerDown={handleClick}
-                        ref={imageRef}
-                        src={level.imgTap}
-                        alt="Wobble"
-                        className="wobble-image !w-[280px] select-none"
-                      />
-                      {clicks.map((click) => (
-                        <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{tapValue.value}
-                        </SlideUpText>
-                      ))}
-                    </Container>
-                  )}
-                  {tapGuru && (
-                    <Container>
-                      <img
-                        onPointerDown={handleClickGuru}
-                        ref={imageRef}
-                        src={level.imgBoost}
-                        alt="Wobble"
-                        className="wobble-image !w-[280px] select-none"
-                      />
-                      {clicks.map((click) => (
-                        <SlideUpText key={click.id} x={click.x} y={click.y}>
-                          +{tapValue.value * 5}
-                        </SlideUpText>
-                      ))}
-                    </Container>
-                  )}
-                </div>
-              </div>
-            </div>
-  
-            <EnergyBar 
-              energy={energy}
-              battery={battery}
-              energyPercentage={energyPercentage}
-              flash={flash}
-              leaderboard={leaderboard}
-            />
-  
-            <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
-          </div>
-        </Animate>
+        <>
+          <BalanceText>{formatNumber(balance)}</BalanceText>
+          
+          <LevelButton onClick={() => setShowLevels(true)}>
+            {level.name}
+          </LevelButton>
+          
+          <TapContainer>
+            {mainTap && (
+              <TapButton onClick={handleTap}>
+                Tap (+{tapValue.value})
+              </TapButton>
+            )}
+            {tapGuru && (
+              <TapButton onClick={handleTap}>
+                Guru Tap (+{tapValue.value * 5})
+              </TapButton>
+            )}
+          </TapContainer>
+          
+          {clicks.map((click, index) => (
+            <SlideUpText key={index} x={click.x} y={click.y}>
+              +{click.value}
+            </SlideUpText>
+          ))}
+        </>
       )}
-    </>
+    </Container>
   );
 };
 
