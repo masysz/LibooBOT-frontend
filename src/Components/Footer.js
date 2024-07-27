@@ -16,42 +16,34 @@ const Footer = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#E6E6FA] p-4 rounded-t-2xl shadow-lg">
-      <div className="flex items-center justify-around max-w-lg mx-auto space-x-4">
-        {navItems.map((item, index) => (
+    <div className="fixed bottom-0 left-0 right-0 bg-[#f7f7f7] p-2 shadow-md border-t border-gray-300">
+      <div className="flex items-center justify-between max-w-lg mx-auto space-x-1">
+        {navItems.map((item) => (
           <NavLink
             key={item.name}
             to={item.path}
             className={({ isActive }) => `
               flex flex-col items-center justify-center
-              ${isActive ? 'text-[#4169E1] poppins-bold' : 'text-[#6A5ACD] poppins-extrabold'}
-              transition-all duration-300 ease-in-out
+              text-sm font-medium transition-all duration-300
+              ${isActive ? 'text-blue-600' : 'text-gray-600'}
             `}
           >
-            {({ isActive }) => (
-              <>
-                <div
-                  className={`
-                    ${index === 0 ? 'w-16 h-16' : 'w-12 h-12'}
-                    flex items-center justify-center
-                    rounded-full
-                    ${isActive ? 'bg-[#B0E0E6]' : 'bg-[#F0F8FF]'}
-                    ${index === 0 ? 'border-4' : 'border-2'}
-                    ${isActive ? 'border-[#4169E1]' : 'border-[#B0C4DE]'}
-                    transition-all duration-300 ease-in-out
-                  `}
-                >
-                  <img
-                    src={item.icon}
-                    alt={item.name}
-                    className={`${index === 0 ? 'w-8 h-8' : 'w-6 h-6'}`}
-                  />
-                </div>
-                <span className={`mt-1 text-xs ${index === 0 ? 'font-bold poppins-bold' : 'font-medium poppins-bold'}`}>
-                  {item.name}
-                </span>
-              </>
-            )}
+            <div
+              className={`
+                w-10 h-10 flex items-center justify-center
+                rounded-full
+                ${isActive ? 'bg-blue-100' : 'bg-white'}
+                border-2 ${isActive ? 'border-blue-600' : 'border-gray-300'}
+                transition-all duration-300
+              `}
+            >
+              <img
+                src={item.icon}
+                alt={item.name}
+                className="w-6 h-6"
+              />
+            </div>
+            <span className="mt-1">{item.name}</span>
           </NavLink>
         ))}
       </div>
