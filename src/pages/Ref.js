@@ -54,7 +54,7 @@ const Section = styled.section`
   background-color: white;
   border-radius: 1rem;
   padding: 1.5rem;
-  margin-bottom: 2.0rem;
+  margin-bottom: 1.0rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
@@ -71,7 +71,7 @@ const InviteLinkWrapper = styled.div`
   justify-content: space-between;
   background-color: #d9dce4;
   border-radius: 0.5rem;
-  padding: 0.75rem;
+  padding: 0.5rem;
 `;
 
 const InviteLink = styled.p`
