@@ -174,14 +174,6 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-const RankChange = styled.span`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  margin-left: 8px;
-  color: ${props => props.change > 0 ? '#10b981' : props.change < 0 ? '#ef4444' : '#6b7280'};
-`;
-
 const TapsLeaderboard = () => {
   const { id, name, tapBalance } = useUser();
   const [leaderboard, setLeaderboard] = useState([]);
@@ -222,7 +214,13 @@ const TapsLeaderboard = () => {
   };
 
   const getUserDisplayName = (user) => {
-    return user.name || 'Anonymous User';
+    if (user.username) {
+      return user.username;
+    } else if (user.firstName) {
+      return `${user.firstName} (${user.id})`;
+    } else {
+      return `User ${user.id}`;
+    }
   };
 
   const getRankIcon = (rank) => {
@@ -277,7 +275,7 @@ const TapsLeaderboard = () => {
         )}
         <CurrentUserSection>
           <UserInfo>
-            <Username>{name}</Username>
+            <Username>{getUserDisplayName({ id, firstName: name })}</Username>
             <TapBalance>
               <CoinIcon src={coinsmall} alt="coin" />
               {formatNumber(tapBalance)}
