@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import React, { useState, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
@@ -10,6 +10,8 @@ import { useUser } from "../context/userContext";
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: 70vh;
+  overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
@@ -20,6 +22,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  flex: 1;
 `;
 
 const Header = styled.header`
@@ -57,24 +60,8 @@ const Section = styled.section`
 const ReferralsSection = styled(Section)`
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  height: 30%
-  scrollbar-width: thin;
-  scrollbar-color: #4a5568 #CBD5E0;
-  
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: #CBD5E0;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background-color: #4a5568;
-    border-radius: 4px;
-  }
-
+  flex: 1;
+  min-height: 0;
 `;
 
 const InviteLinkWrapper = styled.div`
@@ -110,12 +97,11 @@ const CopyButton = styled.button`
 
 const ReferralsContainer = styled.div`
   overflow-y: auto;
-  height: auto;
+  flex: 1;
 `;
 
 const ReferralsList = styled.div`
   padding-right: 8px;
-  overflow-y: auto;
 `;
 
 const ReferralItemWrapper = styled(motion.div)`
@@ -124,7 +110,6 @@ const ReferralItemWrapper = styled(motion.div)`
   padding: 1rem;
   display: flex;
   flex-wrap: wrap;
-  overflow-y: auto;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
@@ -140,21 +125,6 @@ const Ref = () => {
     return referrals.reduce((total, user) => total + (user.balance || 0) * 0.05, 0);
   }, [referrals]);
 
-  const updateScrollHeight = useCallback(() => {
-    if (scrollContainerRef.current) {
-      const viewportHeight = window.innerHeight;
-      const containerTop = scrollContainerRef.current.getBoundingClientRect().top;
-      const maxHeight = viewportHeight - containerTop - 40; // 40px for bottom margin and padding
-      scrollContainerRef.current.style.height = `${maxHeight}px`;
-    }
-  }, []);
-
-  useEffect(() => {
-    updateScrollHeight();
-    window.addEventListener('resize', updateScrollHeight);
-    return () => window.removeEventListener('resize', updateScrollHeight);
-  }, [updateScrollHeight]);
-
   const copyToClipboard = useCallback(() => {
     const reflink = `https://t.me/Liboo_tonbot?start=r${id}`;
     navigator.clipboard.writeText(reflink)
@@ -165,9 +135,9 @@ const Ref = () => {
       .catch(err => console.error('Failed to copy text: ', err));
   }, [id]);
 
-  const formatNumber = (num) => {
+  const formatNumber = useCallback((num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
-  };
+  }, []);
 
   const ReferralItem = React.memo(({ user, index }) => (
     <ReferralItemWrapper
