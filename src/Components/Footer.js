@@ -16,6 +16,9 @@ const Footer = () => {
   ];
 
   return (
+
+    
+    
     <div className="fixed bottom-0 left-0 right-0 bg-[#E6E6FA] p-1 rounded-t-2xl">
       <div className="flex items-center justify-between max-w-md mx-auto">
         {navItems.map((item, index) => (
