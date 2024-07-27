@@ -27,6 +27,7 @@ const ContentWrapper = styled.div`
 
 const Header = styled.header`
   text-align: center;
+  margin-bottom: 1rem;
 `;
 
 const Title = styled.h1`
@@ -51,9 +52,7 @@ const TotalEarnings = styled.p`
 
 const Section = styled.section`
   background-color: white;
-  background-opacity: 40; 
-  backdrop-filter: blur(10px);
-  border-radius: 0px 0px 1rem 1rem;
+  border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 1.0rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

@@ -11,9 +11,11 @@ import coinsmall from "../images/main-logo.png";
 
 const LeaderboardContainer = styled.div`
   background-color: #f8fafc;
-  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  background-opacity: 50;
+  border-radius: 0px 0px 1rem 1rem;
   height: 85vh;
-  padding: 20px 10px; 
+  padding: 0px 10px; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
