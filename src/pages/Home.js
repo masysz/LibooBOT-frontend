@@ -72,13 +72,13 @@ const Home = () => {
 
         
 
-            <div id="footermain" className={`flex flex-col bg-[#1a1f2e] space-y-6 fixed bottom-0 py-6 left-0 right-0 justify-center items-center px-5 rounded-t-2xl`}>
+    
 
            <Footer/>
            </div>
            </div>
            </div>
-           </div>
+           
            </>
   );
 };
