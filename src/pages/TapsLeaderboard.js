@@ -11,7 +11,7 @@ import coinsmall from "../images/main-logo.png";
 
 
 const PageContainer = styled.div`
-  padding: 25px
+  margin: 50px
   height: 85vh;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@ const PageContainer = styled.div`
 const LeaderboardContainer = styled.div`
   background-color: #f8fafc;
   border-radius: 16px;
-  padding: 20px 0px; 
+  padding: 20px 10px; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
