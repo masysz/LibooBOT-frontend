@@ -56,13 +56,27 @@ const Section = styled.section`
 `;
 
 const ReferralsSection = styled(Section)`
-  flex-grow: 1;
   display: flex;
-  overflow-y: auto;
   overflow: scroll;
   flex-direction: column;
-  margin-bottom: 2.0rem;
-  padding-bottom: 150px;
+  margin-bottom: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #CBD5E0;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #CBD5E0;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #4a5568;
+    border-radius: 4px;
+  }
+
 `;
 
 const InviteLinkWrapper = styled.div`
@@ -97,9 +111,8 @@ const CopyButton = styled.button`
 `;
 
 const ReferralsContainer = styled.div`
-  overflow-y: scroll;
+  overflow-y: auto;
   flex-grow: 1;
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: #4a5568 #CBD5E0;
   
