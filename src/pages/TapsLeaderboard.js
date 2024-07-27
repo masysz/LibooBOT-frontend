@@ -11,7 +11,7 @@ import coinsmall from "../images/main-logo.png";
 const LeaderboardContainer = styled.div`
   background-color: #f8fafc;
   border-radius: 16px;
-  padding: 20px;
+  padding: 20px 10px; // Añadido padding horizontal de 10px
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 85vh;
   display: flex;
@@ -213,7 +213,13 @@ const TapsLeaderboard = () => {
   }, [id]);
 
   const formatNumber = (num) => {
-    return new Intl.NumberFormat().format(num).replace(/,/g, " ");
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    } else {
+      return num.toString();
+    }
   };
 
   const getRankIcon = (rank) => {
@@ -238,6 +244,12 @@ const TapsLeaderboard = () => {
     }, 100);
   };
 
+  const getUserDisplayName = (user) => {
+    if (user.name) return user.name;
+    if (user.username) return user.username;
+    return 'Anonymous User';
+  };
+
   return (
     <Animate>
       <LeaderboardContainer>
@@ -247,7 +259,7 @@ const TapsLeaderboard = () => {
             <LeaderboardItem key={user.id} isCurrentUser={user.id === id}>
               <Rank>{getRankIcon(user.rank) || `#${user.rank}`}</Rank>
               <UserInfo>
-                <Username>{user.name || `User ${user.id.slice(0, 6)}`}</Username>
+                <Username>{getUserDisplayName(user)}</Username>
                 <UserStats>
                   <IoRocketOutline size={16} style={{ marginRight: '4px' }} />
                   Level {user.level?.name || 'N/A'}
@@ -272,7 +284,7 @@ const TapsLeaderboard = () => {
         )}
         <CurrentUserSection>
           <UserInfo>
-            <Username>{name}</Username>
+            <Username>{getUserDisplayName({ name, username })}</Username>
             <TapBalance>
               <CoinIcon src={coinsmall} alt="coin" />
               {formatNumber(tapBalance)}
