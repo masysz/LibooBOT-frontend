@@ -10,7 +10,7 @@ import { useUser } from "../context/userContext";
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 100px;
+  padding-bottom: 100px;
 `;
 
 const ContentWrapper = styled.div`
@@ -49,7 +49,6 @@ const TotalEarnings = styled.p`
 
 const Section = styled.section`
   background-color: white;
-  min-height: 20%
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 2.0rem;
@@ -58,6 +57,7 @@ const Section = styled.section`
 
 const ReferralsSection = styled(Section)`
   display: flex;
+  height: 50%;
   flex-direction: column;
   overflow-y: auto;
   scrollbar-width: thin;
