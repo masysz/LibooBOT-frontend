@@ -12,6 +12,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow: scroll;
 `;
 
 const ContentWrapper = styled.div`
@@ -59,8 +60,10 @@ const Section = styled.section`
 const ReferralsSection = styled(Section)`
   flex-grow: 1;
   display: flex;
+  overflow-y: auto;
+  overflow: scroll;
   flex-direction: column;
-  padding-bottom: 120px;
+  padding-bottom: 150px;
 `;
 
 const InviteLinkWrapper = styled.div`
