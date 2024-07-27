@@ -8,12 +8,20 @@ import { FaCrown, FaMedal, FaChevronDown } from 'react-icons/fa';
 import { IoTrophyOutline, IoRocketOutline } from 'react-icons/io5';
 import coinsmall from "../images/main-logo.png";
 
+
+
+const PageContainer = styled.div`
+  padding: 25px
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+`;
+
 const LeaderboardContainer = styled.div`
   background-color: #f8fafc;
   border-radius: 16px;
-  padding: 1rem;
+  padding: 20px 0px; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: 85vh;
   display: flex;
   flex-direction: column;
 `;
@@ -151,8 +159,8 @@ const LoadMoreButton = styled.button`
   background-color: #0284c7;
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
+  border-radius: 10px;
+  padding: 10px 20px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -247,6 +255,7 @@ const TapsLeaderboard = () => {
 
   return (
     <Animate>
+      <PageContainer>
       <LeaderboardContainer>
         <LeaderboardHeader>Taps Leaderboard</LeaderboardHeader>
         <LeaderboardList ref={listRef}>
@@ -287,6 +296,7 @@ const TapsLeaderboard = () => {
           </CurrentUserRank>
         </CurrentUserSection>
       </LeaderboardContainer>
+      </PageContainer>
     </Animate>
   );
 };
