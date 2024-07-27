@@ -5,7 +5,7 @@ import tasks from "../images/tasks2.webp";
 import tap from "../images/main-logo.png";
 import boost from "../images/booster2.webp";
 import donate from "../images/donate.png";
-import "../app.css"
+import "../App.css";
 
 const Footer = () => {
   const navItems = [
