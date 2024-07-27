@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, query, orderBy, limit, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
 import styled from 'styled-components';
 import Animate from '../Components/Animate';
-import { FaCrown, FaMedal, FaChevronUp, FaChevronDown } from 'react-icons/fa';
+import { FaCrown, FaMedal, FaChevronDown } from 'react-icons/fa';
 import { IoTrophyOutline, IoRocketOutline } from 'react-icons/io5';
 import coinsmall from "../images/main-logo.png";
 
@@ -200,8 +200,7 @@ const TapsLeaderboard = () => {
       const leaderboardData = querySnapshot.docs.map((doc, index) => ({
         id: doc.id,
         rank: index + 1,
-        ...doc.data(),
-        rankChange: Math.floor(Math.random() * 5) - 2 // Simulated rank change
+        ...doc.data()
       }));
       setLeaderboard(leaderboardData);
 
@@ -220,6 +219,10 @@ const TapsLeaderboard = () => {
     } else {
       return num.toString();
     }
+  };
+
+  const getUserDisplayName = (user) => {
+    return user.name || 'Anonymous User';
   };
 
   const getRankIcon = (rank) => {
@@ -244,18 +247,12 @@ const TapsLeaderboard = () => {
     }, 100);
   };
 
-  const getUserDisplayName = (user) => {
-    if (user.name) return user.name;
-    if (user.username) return user.username;
-    return 'Anonymous User';
-  };
-
   return (
     <Animate>
       <LeaderboardContainer>
         <LeaderboardHeader>Taps Leaderboard</LeaderboardHeader>
         <LeaderboardList ref={listRef}>
-          {leaderboard.slice(0, visibleItems).map((user, index) => (
+          {leaderboard.slice(0, visibleItems).map((user) => (
             <LeaderboardItem key={user.id} isCurrentUser={user.id === id}>
               <Rank>{getRankIcon(user.rank) || `#${user.rank}`}</Rank>
               <UserInfo>
@@ -269,10 +266,6 @@ const TapsLeaderboard = () => {
                 <CoinIcon src={coinsmall} alt="coin" />
                 {formatNumber(user.tapBalance)}
               </TapBalance>
-              <RankChange change={user.rankChange}>
-                {user.rankChange > 0 ? <FaChevronUp /> : user.rankChange < 0 ? <FaChevronDown /> : '-'}
-                {Math.abs(user.rankChange)}
-              </RankChange>
             </LeaderboardItem>
           ))}
         </LeaderboardList>
@@ -284,7 +277,7 @@ const TapsLeaderboard = () => {
         )}
         <CurrentUserSection>
           <UserInfo>
-            <Username>{getUserDisplayName({ name, username })}</Username>
+            <Username>{name}</Username>
             <TapBalance>
               <CoinIcon src={coinsmall} alt="coin" />
               {formatNumber(tapBalance)}
