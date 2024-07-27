@@ -88,7 +88,7 @@ const ProgressBar = styled.div`
 
 const ProgressFill = styled.div`
   height: 100%;
-  background-color: #5bd173;
+  background-color: #094e9d;
   border-radius: 10px;
   transition: width 0.3s ease;
 `;
@@ -101,7 +101,7 @@ const ProgressLabels = styled.div`
 `;
 
 const ClaimButton = styled.button`
-  background-color: #5bd173;
+  background-color: #094e9d;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -194,8 +194,8 @@ const MilestoneRewards = () => {
                 <ProgressFill style={{ width: `${Math.min(progress, 100)}%` }} />
               </ProgressBar>
               <ProgressLabels>
-                <span>{formatNumber(tapBalance)}</span>
-                <span>{formatNumber(milestone.tapBalanceRequired)}</span>
+                <span>{formatNumber(tapBalance)} Taps</span>
+                <span>{formatNumber(milestone.tapBalanceRequired)} Taps</span>
               </ProgressLabels>
             </ProgressBarContainer>
             <ClaimButton 
