@@ -9,17 +9,10 @@ import { IoTrophyOutline, IoRocketOutline } from 'react-icons/io5';
 import coinsmall from "../images/main-logo.png";
 
 
-
-const PageContainer = styled.div`
-  margin: 50px
-  height: 85vh;
-  display: flex;
-  flex-direction: column;
-`;
-
 const LeaderboardContainer = styled.div`
   background-color: #f8fafc;
   border-radius: 16px;
+  height: 85vh;
   padding: 20px 10px; 
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -255,7 +248,7 @@ const TapsLeaderboard = () => {
 
   return (
     <Animate>
-      <PageContainer>
+  
       <LeaderboardContainer>
         <LeaderboardHeader>Taps Leaderboard</LeaderboardHeader>
         <LeaderboardList ref={listRef}>
@@ -296,7 +289,7 @@ const TapsLeaderboard = () => {
           </CurrentUserRank>
         </CurrentUserSection>
       </LeaderboardContainer>
-      </PageContainer>
+    
     </Animate>
   );
 };
