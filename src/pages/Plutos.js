@@ -14,6 +14,7 @@ import boopSfx from "../get.mp3";
 import burnSfx from "../burn.wav";
 import { NavLink } from "react-router-dom";
 import leaderboard from "../images/leaderboard.png";
+import EnergyBar from "../Components/energybar";
 
 const slideUp = keyframes`
   0% {
@@ -376,8 +377,7 @@ const Plutos = () => {
     }
   };
 
-  return (
-    
+ return (
     <>
       {loading ? (
         <Spinner />
@@ -392,6 +392,7 @@ const Plutos = () => {
                 {formatNumber(balance)}
               </h1>
             </div>
+            
             <div className="w-full ml-[6px] flex space-x-1 items-center justify-center mt-2">
               <img
                 src={level.imgUrl}
@@ -406,80 +407,65 @@ const Plutos = () => {
               </h2>
               <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#171717] mt-[2px]" />
             </div>
+            
             <div className="w-full flex justify-center items-center relative mt-8">
-  <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
-  <div className={`${tapGuru ? "block" : "hidden"} pyro`}>
-    <div className="before"></div>
-    <div className="after"></div>
-  </div>
-  <div className="w-[280px] h-[280px] relative flex items-center justify-center">
-    <img
-      src="/lihgt.gif"
-      alt="err"
-      className={`absolute w-[300px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
-    />
-    <div className="image-container flex-grow flex justify-center items-center">
-      {mainTap && (
-        <Container>
-          <img
-            onPointerDown={handleClick}
-            ref={imageRef}
-            src={level.imgTap}
-            alt="Wobble"
-            className="wobble-image !w-[280px] select-none"
-          />
-          {clicks.map((click) => (
-            <SlideUpText key={click.id} x={click.x} y={click.y}>
-              +{tapValue.value}
-            </SlideUpText>
-          ))}
-        </Container>
-      )}
-      {tapGuru && (
-        <Container>
-          <img
-            onPointerDown={handleClickGuru}
-            ref={imageRef}
-            src={level.imgBoost}
-            alt="Wobble"
-            className="wobble-image !w-[280px] select-none"
-          />
-          {clicks.map((click) => (
-            <SlideUpText key={click.id} x={click.x} y={click.y}>
-              +{tapValue.value * 5}
-            </SlideUpText>
-          ))}
-        </Container>
-      )}
-    </div>
-  </div>
-</div>
-<div className="flex flex-col space-y-6 fixed bottom-[120px] left-0 right-0 justify-center items-center px-5">
-  <div className="flex w-full items-end justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
-    <div className="flex flex-col w-[70%]">
-      <div className="flex pb-3 space-x-2 items-center text-[#fff]">
-        <img alt="flash" src={flash} className="w-[24px]" />
-        <div>
-          <span className="text-[20px] font-bold">{energy.toFixed(0)}</span>
-          <span className="text-[16px] font-medium ml-1">/ {battery.energy}</span>
-        </div>
-      </div>
-      <div className="flex w-full p-[4px] h-[24px] items-center bg-energybar rounded-[12px] border-[1px] border-borders2">
-        <div
-          className="bg-[#3f88e8] h-full rounded-full transition-width duration-100"
-          style={{ width: `${energyPercentage}%` }}
-        ></div>
-      </div>
-    </div>
-    <NavLink 
-      to="/tapsleaderboard" 
-      className="w-[28%] flex items-center justify-center space-x-2 bg-white bg-opacity-30 rounded-xl px-3 py-2 transition-all duration-300 hover:bg-opacity-50"
-    >
-      <img src={leaderboard} alt="Leaderboard" className="w-5 h-5" />
-      <span className="text-[11px] text-white font-semibold whitespace-nowrap">Leaderboard</span>
-    </NavLink>
-  </div>
-</div>    <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
+              <div className="bg-[#0077cc] blur-[50px] absolute w-[200px] h-[220px] rounded-full mb-[70px]"></div>
+              <div className={`${tapGuru ? "block" : "hidden"} pyro`}>
+                <div className="before"></div>
+                <div className="after"></div>
+              </div>
+              <div className="w-[280px] h-[280px] relative flex items-center justify-center">
+                <img
+                  src="/lihgt.gif"
+                  alt="err"
+                  className={`absolute w-[300px] rotate-45 mb-[100px] ${tapGuru ? "block" : "hidden"}`}
+                />
+                <div className="image-container flex-grow flex justify-center items-center">
+                  {mainTap && (
+                    <Container>
+                      <img
+                        onPointerDown={handleClick}
+                        ref={imageRef}
+                        src={level.imgTap}
+                        alt="Wobble"
+                        className="wobble-image !w-[280px] select-none"
+                      />
+                      {clicks.map((click) => (
+                        <SlideUpText key={click.id} x={click.x} y={click.y}>
+                          +{tapValue.value}
+                        </SlideUpText>
+                      ))}
+                    </Container>
+                  )}
+                  {tapGuru && (
+                    <Container>
+                      <img
+                        onPointerDown={handleClickGuru}
+                        ref={imageRef}
+                        src={level.imgBoost}
+                        alt="Wobble"
+                        className="wobble-image !w-[280px] select-none"
+                      />
+                      {clicks.map((click) => (
+                        <SlideUpText key={click.id} x={click.x} y={click.y}>
+                          +{tapValue.value * 5}
+                        </SlideUpText>
+                      ))}
+                    </Container>
+                  )}
+                </div>
+              </div>
+            </div>
+  
+            <EnergyBar 
+              energy={energy}
+              battery={battery}
+              energyPercentage={energyPercentage}
+              flash={flash}
+              leaderboard={leaderboard}
+            />
+  
+            <Levels showLevels={showLevels} setShowLevels={setShowLevels} />
           </div>
         </Animate>
       )}
