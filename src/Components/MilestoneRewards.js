@@ -5,7 +5,7 @@ import { useUser } from '../context/userContext';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import styled from 'styled-components';
 import congratspic from "../images/celebrate.gif";
-import coinsmall from "../images/coinsmall.webp";
+import coinsmall from "../images/main-logo.png";
 
 const milestones = [
   { name: 'Liboo Novice', icon: '/warm.webp', tapBalanceRequired: 500000, reward: 50000 },
