@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const EnergyBar = ({ energy, battery, energyPercentage, flash, leaderboard }) => {
   return (
-    <div className="w-full fixed bottom-[50px] left-0 right-0 px-5">
+    <div className="w-full fixed bottom-[100px] left-0 right-0 px-5">
       <div className="flex w-full items-end justify-between bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl p-3">
         <div className="flex flex-col w-[68%]">
           <div className="flex pb-3 space-x-2 items-center text-[#fff]">
