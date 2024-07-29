@@ -10,9 +10,8 @@ import Spinner from '../Components/Spinner';
 
 const PageContainer = styled.div`
   display: flex;
-  min-height: 100vh;
+  min-height: 85vh;
   flex-direction: column;
-  background-color: #f3f4f6;
 `;
 
 const ContentWrapper = styled.div`
@@ -31,14 +30,14 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 25px;
   font-weight: 700;
   color: #171717;
   margin-bottom: 0.5rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 1.1rem;
+  font-size: 18px;
   font-weight: 500;
   color: #171717;
 `;
@@ -146,8 +145,8 @@ const LeaderboardItem = styled.div`
 `;
 
 const RewardBadge = styled.span`
-  background-color: #fbbf24;
-  color: #171717;
+  background-color: #507cff;
+  color: #ffff;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
@@ -441,7 +440,7 @@ const Donate = () => {
                               {index + 1}. {donor.username}
                               {getReward(index) && <RewardBadge>{getReward(index)}</RewardBadge>}
                             </span>
-                            <span className="font-bold">{formatNumber(donor.amount)} points</span>
+                            <span className="font-bold">{formatNumber(donor.amount)}</span>
                           </LeaderboardItem>
                         ))}
                       </LeaderboardSection>
