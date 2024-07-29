@@ -12,7 +12,7 @@ const PageContainer = styled.div`
   display: flex;
   height: 85vh;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: scroll;
 `;
 
 const ContentWrapper = styled.div`
@@ -20,6 +20,7 @@ const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   flex: 1;
