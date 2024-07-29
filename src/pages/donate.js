@@ -10,8 +10,9 @@ import styled from 'styled-components';
 
 const PageContainer = styled.div`
   display: flex;
-  min-height: 85vh;
+  height: 85vh;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
@@ -26,7 +27,7 @@ const ContentWrapper = styled.div`
 
 const Header = styled.header`
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const Title = styled.h1`
