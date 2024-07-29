@@ -118,8 +118,8 @@ const PopupOverlay = styled(motion.div)`
 const PopupContent = styled(motion.div)`
   background-color: white;
   border-radius: 1rem;
-  padding: 1rem;
-  width: 95%;
+  padding: 10px;
+  width: 99%;
   max-width: 500px;
   max-height: 85vh;
   overflow-y: scroll;
