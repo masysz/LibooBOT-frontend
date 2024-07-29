@@ -52,7 +52,7 @@ const CampaignsList = styled.div`
 const CampaignCard = styled(motion.div)`
   background-color: white;
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -60,7 +60,7 @@ const CampaignCard = styled(motion.div)`
 
 const CampaignImage = styled.img`
   width: 100%;
-  height: 180px;
+  height: 150px;
   object-fit: cover;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
