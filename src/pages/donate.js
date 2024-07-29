@@ -1,62 +1,52 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { doc, collection, getDocs, runTransaction, query, orderBy, limit } from 'firebase/firestore';
+import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from 'react-icons/io5';
 import styled from 'styled-components';
 import Spinner from '../Components/Spinner';
-import coinsmall from '../images/main-logo.png';
 
 const PageContainer = styled.div`
   display: flex;
-  height: 85vh;
+  min-height: 100vh;
   flex-direction: column;
-  overflow: hidden;
+  background-color: #f3f4f6;
 `;
 
 const ContentWrapper = styled.div`
   width: 100%;
-  max-width: 64rem;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
   flex: 1;
 `;
 
 const Header = styled.header`
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const Title = styled.h1`
-  font-size: 25px;
+  font-size: 2rem;
   font-weight: 700;
-  color: #262626;
-  margin-bottom: 0.2rem;
+  color: #171717;
+  margin-bottom: 0.5rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 16px;
-  font-weight: 600;
-  color: #4b5563;
-`;
-
-const CampaignsSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #171717;
 `;
 
 const CampaignsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
-  padding-right: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 `;
 
 const CampaignCard = styled(motion.div)`
@@ -70,7 +60,7 @@ const CampaignCard = styled(motion.div)`
 
 const CampaignImage = styled.img`
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: cover;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -91,17 +81,23 @@ const ProgressFill = styled.div`
   border-radius: 5px;
 `;
 
-const DonateButton = styled.button`
+const Button = styled.button`
   background: linear-gradient(to right, #094e9d, #0b62c4);
   color: white;
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: 0.375rem;
   transition: all 0.3s;
-  margin-top: auto;
+  text-align: center;
+  width: 100%;
 
   &:hover {
     background: linear-gradient(to right, #0b62c4, #094e9d);
+  }
+
+  &:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
   }
 `;
 
@@ -141,6 +137,7 @@ const LeaderboardItem = styled.div`
   align-items: center;
   padding: 0.5rem 0;
   border-bottom: 1px solid #e5e7eb;
+  color: #171717;
 
   &:last-child {
     border-bottom: none;
@@ -149,7 +146,7 @@ const LeaderboardItem = styled.div`
 
 const RewardBadge = styled.span`
   background-color: #fbbf24;
-  color: #1f2937;
+  color: #171717;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
@@ -262,6 +259,27 @@ const Donate = () => {
             amount: amount
           });
         }
+
+        // Check if target is reached and update winners
+        if (newCampaignPoints >= campaignDoc.data().targetPoints && !campaignDoc.data().winnersSet) {
+          const leaderboardQuery = query(
+            collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
+            orderBy('amount', 'desc'),
+            limit(3)
+          );
+          const leaderboardSnapshot = await getDocs(leaderboardQuery);
+          const winners = leaderboardSnapshot.docs.map((doc, index) => ({
+            id: doc.id,
+            username: doc.data().username,
+            amount: doc.data().amount,
+            reward: index === 0 ? 10 : index === 1 ? 5 : 1
+          }));
+
+          transaction.update(campaignRef, { 
+            winnersSet: true,
+            winners: winners
+          });
+        }
       });
 
       setBalance(prevBalance => prevBalance - amount);
@@ -282,11 +300,12 @@ const Donate = () => {
 
       setShowPopup(false);
       setDonationAmount('');
+      fetchCampaigns(); // Refresh campaigns to get updated data
     } catch (error) {
       console.error("Error processing donation:", error);
       alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance]);
+  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns]);
 
   const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
     const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
@@ -307,7 +326,7 @@ const Donate = () => {
       .slice(0, 5);
   }, []);
 
- const formatNumber = useCallback((num) => {
+  const formatNumber = useCallback((num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   }, []);
 
@@ -337,38 +356,36 @@ const Donate = () => {
                 <Subtitle>Support causes you care about</Subtitle>
               </Header>
 
-              <CampaignsSection>
-                <CampaignsList>
-                  <AnimatePresence>
-                    {campaigns.map((campaign) => (
-                      <CampaignCard
-                        key={campaign.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {campaign.image && (
-                          <CampaignImage src={campaign.image} alt={campaign.title} />
-                        )}
-                        <h2 className="text-xl font-semibold mb-2">{campaign.title}</h2>
-                        <p className="text-sm text-gray-600 mb-4">{campaign['short-description'] || 'No description available'}</p>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium">
-                            {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-                          </span>
-                        </div>
-                        <ProgressBar>
-                          <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
-                        </ProgressBar>
-                        <DonateButton onClick={() => handleCampaignClick(campaign)}>
-                          View Campaign
-                        </DonateButton>
-                      </CampaignCard>
-                    ))}
-                  </AnimatePresence>
-                </CampaignsList>
-              </CampaignsSection>
+              <CampaignsList>
+                <AnimatePresence>
+                  {campaigns.map((campaign) => (
+                    <CampaignCard
+                      key={campaign.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {campaign.image && (
+                        <CampaignImage src={campaign.image} alt={campaign.title} />
+                      )}
+                      <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
+                      <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                      <div className="flex justify-between items-center mb-2 text-[#171717]">
+                        <span className="text-sm font-medium">
+                          {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                        </span>
+                      </div>
+                      <ProgressBar>
+                        <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
+                      </ProgressBar>
+                      <Button onClick={() => handleCampaignClick(campaign)}>
+                        View Campaign
+                      </Button>
+                    </CampaignCard>
+                  ))}
+                </AnimatePresence>
+              </CampaignsList>
 
               <AnimatePresence>
                 {showPopup && selectedCampaign && (
@@ -386,7 +403,7 @@ const Donate = () => {
                       <button onClick={() => setShowPopup(false)} className="absolute top-4 right-4 text-gray-500">
                         <IoClose size={24} />
                       </button>
-                      <h2 className="text-2xl font-semibold mb-4">{selectedCampaign.title}</h2>
+                      <h2 className="text-2xl font-semibold mb-4 text-[#171717]">{selectedCampaign.title}</h2>
                       {selectedCampaign.image && (
                         <img 
                           src={selectedCampaign.image} 
@@ -394,11 +411,11 @@ const Donate = () => {
                           className="w-full h-[200px] object-cover rounded-lg mb-4"
                         />
                       )}
-                      <p className="text-gray-600 mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
+                      <p className="text-[#171717] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
                       <div className="mb-4">
-                        <h3 className="text-lg font-semibold mb-2">Progress</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-[#171717]">Progress</h3>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm">
+                          <span className="text-sm text-[#171717]">
                             {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
                           </span>
                         </div>
@@ -408,7 +425,7 @@ const Donate = () => {
                       </div>
                       
                       <LeaderboardSection>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center">
+                        <h3 className="text-lg font-semibold mb-2 flex items-center text-[#171717]">
                           <IoTrophy size={24} color="#fbbf24" className="mr-2" />
                           Top Donors
                         </h3>
@@ -424,22 +441,21 @@ const Donate = () => {
                       </LeaderboardSection>
                       
                       <div className="mt-4">
-                        <h3 className="text-lg font-semibold mb-2">Donate</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
                         <input
                           type="number"
                           value={donationAmount}
                           onChange={(e) => setDonationAmount(e.target.value)}
-                          className="w-full bg-gray-100 rounded-lg p-2 mb-2"
+                          className="w-full bg-gray-100 rounded-lg p-2 mb-2 text-[#171717]"
                           placeholder="Enter donation amount"
                         />
-                        <p className="text-sm text-gray-600 mb-2">Your current balance: {formatNumber(balance)} points</p>
-                        <DonateButton
+                        <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                        <Button
                           onClick={handleDonationSubmit}
                           disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-                          className="w-full"
                         >
                           Confirm Donation
-                        </DonateButton>
+                        </Button>
                       </div>
                     </PopupContent>
                   </PopupOverlay>
