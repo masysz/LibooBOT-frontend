@@ -112,7 +112,7 @@ const PopupOverlay = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
+  z-index: 100;
 `;
 
 const PopupContent = styled(motion.div)`
@@ -121,10 +121,9 @@ const PopupContent = styled(motion.div)`
   padding: 1rem;
   width: 95%;
   max-width: 500px;
-  max-height: 100vh;
-  overflow-y: auto;
+  max-height: 85vh;
+  overflow-y: scroll;
   position: relative;
-   z-index: 100000;
 `;
 
 const LeaderboardSection = styled.div`
@@ -153,7 +152,7 @@ const RewardBadge = styled.span`
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 14px;
   margin-left: 0.5rem;
 `;
 
