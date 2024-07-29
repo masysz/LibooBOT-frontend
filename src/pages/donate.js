@@ -12,6 +12,7 @@ const PageContainer = styled.div`
   display: flex;
   height: 85vh;
   flex-direction: column;
+  border-radius: 20px
 `;
 
 const ContentWrapper = styled.div`
@@ -111,7 +112,7 @@ const PopupOverlay = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000;
 `;
 
 const PopupContent = styled(motion.div)`
@@ -120,9 +121,10 @@ const PopupContent = styled(motion.div)`
   padding: 2rem;
   width: 90%;
   max-width: 500px;
-  max-height: 90vh;
+  max-height: 100vh;
   overflow-y: auto;
   position: relative;
+   z-index: 100000;
 `;
 
 const LeaderboardSection = styled.div`
