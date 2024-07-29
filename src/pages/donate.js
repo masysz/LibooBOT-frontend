@@ -30,16 +30,16 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 25px;
-  font-weight: 700;
-  color: #171717;
+  font-size: 28px;
+  font-weight: bold;
+  color: #262626;;
   margin-bottom: 0.5rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  color: #171717;
+  color: #4b5563;
 `;
 
 const CampaignsList = styled.div`
