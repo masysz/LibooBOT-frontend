@@ -122,6 +122,7 @@ const PopupContent = styled(motion.div)`
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
 `;
 
 const LeaderboardSection = styled.div`
@@ -260,7 +261,6 @@ const Donate = () => {
           });
         }
 
-        // Check if target is reached and update winners
         if (newCampaignPoints >= campaignDoc.data().targetPoints && !campaignDoc.data().winnersSet) {
           const leaderboardQuery = query(
             collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
@@ -300,7 +300,7 @@ const Donate = () => {
 
       setShowPopup(false);
       setDonationAmount('');
-      fetchCampaigns(); // Refresh campaigns to get updated data
+      fetchCampaigns();
     } catch (error) {
       console.error("Error processing donation:", error);
       alert(error.message || "An error occurred while processing your donation. Please try again.");
@@ -327,7 +327,13 @@ const Donate = () => {
   }, []);
 
   const formatNumber = useCallback((num) => {
-    return new Intl.NumberFormat().format(num).replace(/,/g, " ");
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'k';
+    } else {
+      return num.toString();
+    }
   }, []);
 
   const getReward = useCallback((index) => {
