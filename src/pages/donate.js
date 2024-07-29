@@ -12,7 +12,6 @@ const PageContainer = styled.div`
   display: flex;
   height: 85vh;
   flex-direction: column;
-  overflow-y: scroll;
 `;
 
 const ContentWrapper = styled.div`
