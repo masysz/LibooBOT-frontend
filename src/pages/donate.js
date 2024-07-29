@@ -20,7 +20,7 @@ const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -118,8 +118,8 @@ const PopupOverlay = styled(motion.div)`
 const PopupContent = styled(motion.div)`
   background-color: white;
   border-radius: 1rem;
-  padding: 2rem;
-  width: 90%;
+  padding: 1rem;
+  width: 95%;
   max-width: 500px;
   max-height: 100vh;
   overflow-y: auto;
