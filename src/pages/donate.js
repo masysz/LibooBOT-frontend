@@ -6,7 +6,7 @@ import Animate from '../Components/Animate';
 import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from 'react-icons/io5';
 import styled from 'styled-components';
-import Spinner from '../Components/Spinner';
+
 
 const PageContainer = styled.div`
   display: flex;
@@ -352,9 +352,7 @@ const Donate = () => {
     <Animate>
       <PageContainer>
         <ContentWrapper>
-          {isLoading ? (
-            <Spinner />
-          ) : (
+
             <>
               <Header>
                 <Title>Donate to Campaigns</Title>
@@ -483,7 +481,7 @@ const Donate = () => {
                 )}
               </AnimatePresence>
             </>
-          )}
+          
         </ContentWrapper>
       </PageContainer>
     </Animate>
