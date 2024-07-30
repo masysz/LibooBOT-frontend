@@ -333,6 +333,7 @@ const Staking = () => {
   const [stakeAmount, setStakeAmount] = useState(0);
   const [activeStakes, setActiveStakes] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [congrats, setCongrats] = useState(false);
 
   const stakingOptions = [
     { id: 1, apr: 2, duration: 4, label: '4 Days' },
@@ -437,11 +438,14 @@ const Staking = () => {
       setBalance(prevBalance => prevBalance + stake.amount + reward);
       setActiveStakes(updatedStakes);
       alert(`Successfully claimed ${formatNumber(stake.amount + reward)} points!`);
+      setCongrats(true);
+      setTimeout(() => setCongrats(false), 3000);
     } catch (error) {
       console.error("Error claiming stake:", error);
       alert("An error occurred while claiming your stake. Please try again.");
     }
   };
+
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
