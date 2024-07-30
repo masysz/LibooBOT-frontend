@@ -239,7 +239,6 @@ const Boost = () => {
     } else if (num < 1000000) {
       return new Intl.NumberFormat().format(num).replace(/,/g, " ");
     } else {
-      // return (num / 1000000).toFixed(3).replace(".", ".") + " M";
       return new Intl.NumberFormat().format(num).replace(/,/g, " ");
     }
   };
@@ -374,7 +373,7 @@ const Boost = () => {
       startTimer();
       setMainTap(false);
       setTapGuru(true);
-      location('/'); // Navigate to /home without refreshing the page
+      location('/'); 
       setCongrats(true)
       setTimeout(() => {
         setCongrats(false)
@@ -442,19 +441,7 @@ const Boost = () => {
         <Animate>
           <div className="w-full justify-center flex-col space-y-3 px-5">
             <div className="flex flex-col w-full">
-              {/* <div className="w-full items-center justify-center pb-2 flex">
-                <h2 className="text-[#9d99a9] text-[20px] font-medium">
-                  Your Share balance
-                </h2>
-              </div>
-              <div className="flex space-x-1 ml-[-8px] justify-center items-center">
-                <div className="w-[50px] h-[50px]">
-                  <img src={coinsmall} className="w-full" alt="coin" />
-                </div>
-                <h1 className="text-[#fff] text-[42px] font-extrabold">
-                  {formatNumber(balance + refBonus)}
-                </h1>
-              </div> */}
+
               <div>
 
     </div>
@@ -642,36 +629,7 @@ const Boost = () => {
              
 
     
-                {/*  */}
-                {/* <button
-                  onClick={() => setBot(true)}
-                  className="bg-[#fafcff] rounded-[10px] px-[14px] py-[8px] flex justify-between items-center"
-                >
-                  <div className="flex flex-1 items-center space-x-2">
-                    <div className="">
-                      <img src={botr} alt="bot" className="w-[35px]" />
-                    </div>
-                    <div className="flex flex-col space-y-1 text-left">
-                      <span className="font-semibold text-[17px]">Tap Bot</span>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-[20px] h-[20px]">
-                          <img src={coinsmall} className="w-full" alt="coin" />
-                        </span>
-                        <span className="font-medium flex items-center">
-                          <span className="text-[15px]">1 000 000</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div> */}
 
-                  {/*  */}
-
-                  {/* <div className="">
-                    <MdOutlineKeyboardArrowRight className="w-[20px] h-[20px] text-[#e0e0e0] mt-[2px]" />
-                  </div>
-                </button> */}
-
-                {/*  */}
               </div>
             </div>
 
