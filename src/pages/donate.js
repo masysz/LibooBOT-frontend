@@ -7,12 +7,11 @@ import { useUser } from '../context/userContext';
 import { IoClose, IoCheckmarkCircle, IoTrophy } from 'react-icons/io5';
 import styled from 'styled-components';
 
-
 const PageContainer = styled.div`
   display: flex;
   height: 85vh;
   flex-direction: column;
-  border-radius: 20px
+  border-radius: 20px;
 `;
 
 const ContentWrapper = styled.div`
@@ -24,6 +23,23 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 const Header = styled.header`
@@ -34,7 +50,7 @@ const Header = styled.header`
 const Title = styled.h1`
   font-size: 28px;
   font-weight: bold;
-  color: #262626;;
+  color: #262626;
   margin-bottom: 0.5rem;
 `;
 
@@ -118,12 +134,29 @@ const PopupOverlay = styled(motion.div)`
 const PopupContent = styled(motion.div)`
   background-color: white;
   border-radius: 1rem;
-  padding: 10px;
-  width: 99%;
+  padding: 2rem;
+  width: 90%;
   max-width: 500px;
   max-height: 85vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 const LeaderboardSection = styled.div`
@@ -156,10 +189,47 @@ const RewardBadge = styled.span`
   margin-left: 0.5rem;
 `;
 
+const SliderContainer = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const StyledSlider = styled.input`
+  width: 100%;
+  -webkit-appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1890ff;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1890ff;
+    cursor: pointer;
+  }
+`;
+
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
-  const [donationAmount, setDonationAmount] = useState('');
+  const [donationAmount, setDonationAmount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -208,6 +278,12 @@ const Donate = () => {
   const handleCampaignClick = useCallback((campaign) => {
     setSelectedCampaign(campaign);
     setShowPopup(true);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  const handleClosePopup = useCallback(() => {
+    setShowPopup(false);
+    document.body.style.overflow = 'auto';
   }, []);
 
   const handleDonationSubmit = useCallback(async () => {
@@ -299,14 +375,14 @@ const Donate = () => {
       setCongrats(true);
       setTimeout(() => setCongrats(false), 3000);
 
-      setShowPopup(false);
-      setDonationAmount('');
+      handleClosePopup();
+      setDonationAmount(0);
       fetchCampaigns();
     } catch (error) {
       console.error("Error processing donation:", error);
       alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns]);
+  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup]);
 
   const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
     const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
@@ -346,6 +422,11 @@ const Donate = () => {
     }
   }, []);
 
+  const handleSliderChange = useCallback((e) => {
+    const value = Math.min(Number(e.target.value), balance);
+    setDonationAmount(value);
+  }, [balance]);
+
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
@@ -354,136 +435,135 @@ const Donate = () => {
     <Animate>
       <PageContainer>
         <ContentWrapper>
+          <Header>
+            <Title>Donate to Campaigns</Title>
+            <Subtitle>Support causes you care about</Subtitle>
+          </Header>
 
-            <>
-              <Header>
-                <Title>Donate to Campaigns</Title>
-                <Subtitle>Support causes you care about</Subtitle>
-              </Header>
+          <CampaignsList>
+            <AnimatePresence>
+              {campaigns.map((campaign) => (
+                <CampaignCard
+                  key={campaign.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {campaign.image && (
+                    <CampaignImage src={campaign.image} alt={campaign.title} />
+                  )}
+                  <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
+                  <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                  <div className="flex justify-between items-center mb-2 text-[#171717]">
+                    <span className="text-sm font-medium">
+                      {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                    </span>
+                  </div>
+                  <ProgressBar>
+                    <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
+                  </ProgressBar>
+                  <Button onClick={() => handleCampaignClick(campaign)}>
+                    View Campaign
+                  </Button>
+                </CampaignCard>
+              ))}
+            </AnimatePresence>
+          </CampaignsList>
 
-              <CampaignsList>
-                <AnimatePresence>
-                  {campaigns.map((campaign) => (
-                    <CampaignCard
-                      key={campaign.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {campaign.image && (
-                        <CampaignImage src={campaign.image} alt={campaign.title} />
-                      )}
-                      <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
-                      <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
-                      <div className="flex justify-between items-center mb-2 text-[#171717]">
-                        <span className="text-sm font-medium">
-                          {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-                        </span>
-                      </div>
-                      <ProgressBar>
-                        <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
-                      </ProgressBar>
-                      <Button onClick={() => handleCampaignClick(campaign)}>
-                        View Campaign
-                      </Button>
-                    </CampaignCard>
-                  ))}
-                </AnimatePresence>
-              </CampaignsList>
-
-              <AnimatePresence>
-                {showPopup && selectedCampaign && (
-                  <PopupOverlay
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <PopupContent
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
-                      transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                    >
-                      <button onClick={() => setShowPopup(false)} className="absolute top-4 right-4 text-gray-500">
-                        <IoClose size={24} />
-                      </button>
-                      <h2 className="text-2xl font-semibold mb-4 text-[#171717]">{selectedCampaign.title}</h2>
-                      {selectedCampaign.image && (
-                        <img 
-                          src={selectedCampaign.image} 
-                          alt={selectedCampaign.title}
-                          className="w-full h-[200px] object-cover rounded-lg mb-4"
-                        />
-                      )}
-                      <p className="text-[#171717] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
-                      <div className="mb-4">
-                        <h3 className="text-lg font-semibold mb-2 text-[#171717]">Progress</h3>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-[#171717]">
-                            {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
-                          </span>
-                        </div>
-                        <ProgressBar>
-                          <ProgressFill style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }} />
-                        </ProgressBar>
-                      </div>
-                      
-                      <LeaderboardSection>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center text-[#171717]">
-                          <IoTrophy size={24} color="#fbbf24" className="mr-2" />
-                          Top Donors
-                        </h3>
-                        {selectedCampaign.leaderboard.map((donor, index) => (
-                          <LeaderboardItem key={donor.id}>
-                            <span>
-                              {index + 1}. {donor.username}
-                              {getReward(index) && <RewardBadge>{getReward(index)}</RewardBadge>}
-                            </span>
-                            <span className="font-bold">{formatNumber(donor.amount)}</span>
-                          </LeaderboardItem>
-                        ))}
-                      </LeaderboardSection>
-                      
-                      <div className="mt-4">
-                        <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
-                        <input
-                          type="number"
-                          value={donationAmount}
-                          onChange={(e) => setDonationAmount(e.target.value)}
-                          className="w-full bg-gray-100 rounded-lg p-2 mb-2 text-[#171717]"
-                          placeholder="Enter donation amount"
-                        />
-                        <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
-                        <Button
-                          onClick={handleDonationSubmit}
-                          disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-                        >
-                          Confirm Donation
-                        </Button>
-                      </div>
-                    </PopupContent>
-                  </PopupOverlay>
-                )}
-              </AnimatePresence>
-
-              <AnimatePresence>
-                {congrats && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 50 }}
-                    className="fixed bottom-6 left-0 right-0 px-4 z-50"
-                  >
-                    <div className="w-full text-green-500 flex items-center space-x-2 px-4 bg-white rounded-lg py-2 shadow-lg">
-                      <IoCheckmarkCircle size={24} />
-                      <span className="text-lg font-semibold">Donation Successful!</span>
+          <AnimatePresence>
+            {showPopup && selectedCampaign && (
+              <PopupOverlay
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <PopupContent
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                >
+                  <button onClick={handleClosePopup} className="absolute top-4 right-4 text-gray-500">
+                    <IoClose size={24} />
+                  </button>
+                  <h2 className="text-2xl font-semibold mb-4 text-[#171717]">{selectedCampaign.title}</h2>
+                  {selectedCampaign.image && (
+                    <img 
+                      src={selectedCampaign.image} 
+                      alt={selectedCampaign.title}
+                      className="w-full h-[200px] object-cover rounded-lg mb-4"
+                    />
+                  )}
+                  <p className="text-[#171717] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Progress</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-[#171717]">
+                        {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
+                      </span>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </>
-          
+                    <ProgressBar>
+                      <ProgressFill style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }} />
+                    </ProgressBar>
+                  </div>
+                  
+                  <LeaderboardSection>
+                    <h3 className="text-lg font-semibold mb-2 flex items-center text-[#171717]">
+                      <IoTrophy size={24} color="#fbbf24" className="mr-2" />
+                      Top Donors
+                    </h3>
+                    {selectedCampaign.leaderboard.map((donor, index) => (
+                      <LeaderboardItem key={donor.id}>
+                        <span>
+                          {index + 1}. {donor.username}
+                          {getReward(index) && <RewardBadge>{getReward(index)}</RewardBadge>}
+                        </span>
+                        <span className="font-bold">{formatNumber(donor.amount)}</span>
+                      </LeaderboardItem>
+                    ))}
+                  </LeaderboardSection>
+                  
+                  <div className="mt-4">
+                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
+                    <SliderContainer>
+                      <StyledSlider
+                        type="range"
+                        min="0"
+                        max={balance}
+                        value={donationAmount}
+                        onChange={handleSliderChange}
+                      />
+                    </SliderContainer>
+                    <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
+                    <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                    <Button
+                      onClick={handleDonationSubmit}
+                      disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
+                    >
+                      Confirm Donation
+                    </Button>
+                  </div>
+                </PopupContent>
+              </PopupOverlay>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {congrats && (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                className="fixed bottom-6 left-0 right-0 px-4 z-50"
+              >
+                <div className="w-full text-green-500 flex items-center space-x-2 px-4 bg-white rounded-lg py-2 shadow-lg">
+                  <IoCheckmarkCircle size={24} />
+                  <span className="text-lg font-semibold">Donation Successful!</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </ContentWrapper>
       </PageContainer>
     </Animate>
