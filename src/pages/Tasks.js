@@ -62,11 +62,11 @@ const TabContainer = styled.div`
 
 const Tab = styled.button`
   flex: 1;
-  padding: 0.1rem;
-  border-radius: 1rem;
+  padding: 0.5rem;
+  border-radius: 10px;
   font-weight: 500;
   transition: all 0.3s;
-  font-size: 12px;
+  font-size: 13px;
   background-color: ${props => props.active ? '#ffffff' : 'transparent'};
   box-shadow: ${props => props.active ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none'};
 `;
@@ -79,7 +79,7 @@ const TaskContainer = styled.div`
 
 const TaskItem = styled.div`
   background-color: #ffffff;
-  border-radius: 0.5rem;
+  border-radius: 10px;
   padding: 0.5rem;
   display: flex;
   align-items: center;

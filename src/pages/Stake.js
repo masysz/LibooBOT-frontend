@@ -75,10 +75,12 @@ const StakingOption = styled.div`
   border-radius: 0.5rem;
   padding: 1rem;
   cursor: pointer;
+  text-align: center;
   transition: all 0.3s ease;
 
   &:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
   }
 `;
 
@@ -107,6 +109,7 @@ const StakeAmountSection = styled.div`
   padding: 1.5rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
 `;
 
 const BalanceInfo = styled.div`
@@ -168,7 +171,7 @@ const AmountInput = styled.input`
   padding: 0.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 0.25rem;
-  font-size: 16px;
+  font-size: 15px;
   margin-bottom: 1rem;
 `;
 
@@ -180,7 +183,7 @@ const RewardsPreview = styled.div`
 `;
 
 const RewardsTitle = styled.h3`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #262626;
   margin-bottom: 1rem;
