@@ -7,6 +7,8 @@ import { useUser } from '../context/userContext';
 import coinsmall from "../images/main-logo.png";
 import { IoClose, IoCheckmarkCircle } from 'react-icons/io5';
 
+const maxStakingPerUser = 2
+
 const PageContainer = styled.div`
   display: flex;
   height: 85vh;
