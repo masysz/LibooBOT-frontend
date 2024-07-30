@@ -339,7 +339,7 @@ const Staking = () => {
 
   const calculateRewards = useMemo(() => {
     if (!selectedOption || stakeAmount <= 0) return 0;
-    const dailyRate = selectedOption.apr / 365 / 100;
+    const dailyRate = selectedOption.apr / 1 / 100;
     return stakeAmount * dailyRate * selectedOption.duration;
   }, [selectedOption, stakeAmount]);
 
@@ -411,7 +411,7 @@ const Staking = () => {
               onClick={() => handleOptionSelect(option)}
             >
               <OptionTitle>{option.label}</OptionTitle>
-              <APR>{option.apr}% APR</APR>
+              <APR>{option.apr}% DPR</APR>
               <Duration>{option.duration} days lock-up</Duration>
             </StakingOption>
           ))}
@@ -474,7 +474,7 @@ const Staking = () => {
               <StakeItem key={index}>
                 <StakeInfo>
                   <StakeAmount>{formatNumber(stake.amount)} points</StakeAmount>
-                  <StakeDetails>{stake.apr}% APR for {stake.duration} days</StakeDetails>
+                  <StakeDetails>{stake.apr}% DPR for {stake.duration} days</StakeDetails>
                 </StakeInfo>
                 <StakeProgress>
                   <ProgressFill progress={calculateProgress(stake)} />
