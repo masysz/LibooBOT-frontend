@@ -61,7 +61,7 @@ const Subtitle = styled.p`
 `;
 
 const StakingOptionsContainer = styled.div`
-  display: grid;
+  display: inline-flex;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
