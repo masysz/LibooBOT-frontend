@@ -21,22 +21,13 @@ const EnergyBar = ({ energy, battery, energyPercentage, flash, leaderboard }) =>
             ></div>
           </div>
         </div>
-        <div className="w-[30%] flex flex-col space-y-2">
-          <NavLink 
-            to="/stake" 
-            className="w-full flex items-center justify-center bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
-          >
-            <img src="stake-icon.png" alt="Staking" className="w-5 h-5 mr-1" />
-            <span className="text-[11px] text-white font-semibold whitespace-nowrap">Staking</span>
-          </NavLink>
-          <NavLink 
-            to="/tapsleaderboard" 
-            className="w-full flex items-center justify-center bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
-          >
-            <img src={leaderboard} alt="Leaderboard" className="w-5 h-5 mr-1" />
-            <span className="text-[11px] text-white font-semibold whitespace-nowrap">Leaderboard</span>
-          </NavLink>
-        </div>
+        <NavLink 
+          to="/tapsleaderboard" 
+          className="w-[30%] flex items-center justify-center bg-white bg-opacity-30 rounded-xl p-2 transition-all duration-300 hover:bg-opacity-50"
+        >
+          <img src={leaderboard} alt="Leaderboard" className="w-5 h-5 mr-1" />
+          <span className="text-[11px] text-white font-semibold whitespace-nowrap">Leaderboard</span>
+        </NavLink>
       </div>
     </div>
   );
