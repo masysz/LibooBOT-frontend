@@ -17,7 +17,7 @@ import DeviceCheck from "./Components/DeviceCheck";
 import Plutos from "./pages/Plutos";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import Leaderboard from "./pages/TapsLeaderboard";
-
+import Stake from "./pages/Stake";
 const manifestUrl =
   "https://github.com/kiwiplusapp/LibooBOT-frontend/blob/main/public/tonconnect-manifest.json";
 
@@ -58,6 +58,10 @@ const router = createBrowserRouter([
       {
         path:"/tapsleaderboard",
         element: <Leaderboard />,
+      },
+      {
+        path:"/stake",
+        element: <Stake />,
       },
       
     ]
