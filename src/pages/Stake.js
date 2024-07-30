@@ -4,10 +4,10 @@ import styled from 'styled-components';
 import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
-import coinsmall from "../images/main-logo.png";
-import { IoClose, IoCheckmarkCircle } from 'react-icons/io5';
+import { IoCheckmarkCircle, IoTrophyOutline } from 'react-icons/io5';
+import { FaLock } from 'react-icons/fa';
 
-const maxStakingPerUser = 2
+const maxStakingPerUser = 2;
 
 const PageContainer = styled.div`
   display: flex;
@@ -109,7 +109,6 @@ const StakeAmountSection = styled.div`
   padding: 1.5rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
 `;
 
 const BalanceInfo = styled.div`
@@ -247,6 +246,13 @@ const StakeItem = styled.div`
   background-color: #f9fafb;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const StakeInfo = styled.div`
@@ -301,6 +307,26 @@ const PopupContent = styled(motion.div)`
   text-align: center;
 `;
 
+const ClaimButton = styled.button`
+  background: linear-gradient(to right, #10B981, #059669);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 14px;
+  transition: all 0.3s;
+
+  &:hover {
+    background: linear-gradient(to right, #059669, #10B981);
+  }
+`;
+
+const StakeLimitMessage = styled.p`
+  color: #EF4444;
+  font-size: 14px;
+  margin-top: 1rem;
+`;
+
 const Staking = () => {
   const { id, balance, setBalance } = useUser();
   const [selectedOption, setSelectedOption] = useState(null);
@@ -348,8 +374,12 @@ const Staking = () => {
     return stakeAmount * dailyRate * selectedOption.duration;
   }, [selectedOption, stakeAmount]);
 
+  const canStake = useMemo(() => {
+    return activeStakes.length < maxStakingPerUser;
+  }, [activeStakes]);
+
   const handleStake = async () => {
-    if (!selectedOption || stakeAmount <= 0 || stakeAmount > balance) return;
+    if (!selectedOption || stakeAmount <= 0 || stakeAmount > balance || !canStake) return;
 
     try {
       const userRef = doc(db, 'telegramUsers', id.toString());
@@ -387,6 +417,32 @@ const Staking = () => {
     }
   };
 
+  const handleClaim = async (stakeIndex) => {
+    try {
+      const userRef = doc(db, 'telegramUsers', id.toString());
+      const userStakesRef = doc(db, 'userStakes', id);
+
+      const stake = activeStakes[stakeIndex];
+      const reward = Math.floor(stake.amount * (stake.apr / 100) * (stake.duration / 365));
+
+      await updateDoc(userRef, {
+        balance: balance + stake.amount + reward
+      });
+
+      const updatedStakes = activeStakes.filter((_, index) => index !== stakeIndex);
+      await updateDoc(userStakesRef, {
+        stakes: updatedStakes
+      });
+
+      setBalance(prevBalance => prevBalance + stake.amount + reward);
+      setActiveStakes(updatedStakes);
+      alert(`Successfully claimed ${formatNumber(stake.amount + reward)} points!`);
+    } catch (error) {
+      console.error("Error claiming stake:", error);
+      alert("An error occurred while claiming your stake. Please try again.");
+    }
+  };
+
   const formatNumber = (num) => {
     return new Intl.NumberFormat().format(num).replace(/,/g, " ");
   };
@@ -400,14 +456,14 @@ const Staking = () => {
     return Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
   };
 
-  return (
+ return (
     <PageContainer>
       <ContentWrapper>
         <Header>
           <Title>Stake Your Points</Title>
           <Subtitle>Earn rewards by staking your points</Subtitle>
         </Header>
-
+  
         <StakingOptionsContainer>
           {stakingOptions.map(option => (
             <StakingOption
@@ -421,13 +477,13 @@ const Staking = () => {
             </StakingOption>
           ))}
         </StakingOptionsContainer>
-
+  
         <StakeAmountSection>
           <BalanceInfo>
             <BalanceText>Your Balance:</BalanceText>
             <BalanceAmount>{formatNumber(balance)} points</BalanceAmount>
           </BalanceInfo>
-
+  
           <SliderContainer>
             <StyledSlider
               type="range"
@@ -437,7 +493,7 @@ const Staking = () => {
               onChange={handleSliderChange}
             />
           </SliderContainer>
-
+  
           <AmountInput
             type="number"
             value={stakeAmount}
@@ -445,7 +501,7 @@ const Staking = () => {
             placeholder="Enter stake amount"
             max={balance}
           />
-
+  
           <RewardsPreview>
             <RewardsTitle>Rewards Preview</RewardsTitle>
             <RewardItem>
@@ -461,57 +517,66 @@ const Staking = () => {
               <RewardValue>{formatNumber(Math.floor(stakeAmount + calculateRewards))} points</RewardValue>
             </RewardItem>
           </RewardsPreview>
-
+  
           <StakeButton
             onClick={handleStake}
-            disabled={!selectedOption || stakeAmount <= 0 || stakeAmount > balance}
+            disabled={!selectedOption || stakeAmount <= 0 || stakeAmount > balance || !canStake}
           >
-            Stake Now
+            {canStake ? 'Stake Now' : <><FaLock /> Stake Limit Reached</>}
           </StakeButton>
+  
+          {!canStake && (
+            <StakeLimitMessage>
+              You have reached the maximum number of active stakes ({maxStakingPerUser}).
+            </StakeLimitMessage>
+          )}
         </StakeAmountSection>
-
+  
         <ActiveStakesSection>
           <ActiveStakesTitle>Your Active Stakes</ActiveStakesTitle>
           {activeStakes.length === 0 ? (
             <p>You don't have any active stakes.</p>
           ) : (
-            activeStakes.map((stake, index) => (
-              <StakeItem key={index}>
-                <StakeInfo>
-                  <StakeAmount>{formatNumber(stake.amount)} points</StakeAmount>
-                  <StakeDetails>{stake.apr}% PR for {stake.duration} days</StakeDetails>
-                </StakeInfo>
-                <StakeProgress>
-                  <ProgressFill progress={calculateProgress(stake)} />
-                </StakeProgress>
-              </StakeItem>
-            ))
+            activeStakes.map((stake, index) => {
+              const progress = calculateProgress(stake);
+              return (
+                <StakeItem key={index}>
+                  <StakeInfo>
+                    <StakeAmount>{formatNumber(stake.amount)} points</StakeAmount>
+                    <StakeDetails>{stake.apr}% APR for {stake.duration} days</StakeDetails>
+                  </StakeInfo>
+                  <StakeProgress>
+                    <ProgressFill progress={progress} />
+                  </StakeProgress>
+                  {progress === 100 && (
+                    <ClaimButton onClick={() => handleClaim(index)}>
+                      <IoTrophyOutline /> Claim
+                    </ClaimButton>
+                  )}
+                </StakeItem>
+              );
+            })
           )}
         </ActiveStakesSection>
       </ContentWrapper>
-
+  
       <AnimatePresence>
-        {showPopup && (
-          <PopupOverlay
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <PopupContent
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-            >
-              <IoCheckmarkCircle size={50} color="#4CAF50" />
-              <h2>Stake Successful!</h2>
-              <p>Your points have been successfully staked.</p>
-              <StakeButton onClick={() => setShowPopup(false)}>Close</StakeButton>
-            </PopupContent>
-          </PopupOverlay>
-        )}
-      </AnimatePresence>
+            {congrats && (
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                className="fixed bottom-6 left-0 right-0 px-4 z-50"
+              >
+                <div className="w-full text-green-500 flex items-center space-x-2 px-4 bg-black rounded-lg py-2 shadow-lg">
+                  <IoCheckmarkCircle size={24} />
+                  <span className="text-lg font-semibold">Stake Successful!</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
     </PageContainer>
   );
-};
-
-export default React.memo(Staking);
+  };
+  
+  export default React.memo(Staking);
