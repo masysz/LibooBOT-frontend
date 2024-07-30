@@ -509,4 +509,4 @@ const Staking = () => {
   );
 };
 
-export default React.memo(Stake);
+export default React.memo(Staking);
