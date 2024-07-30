@@ -412,6 +412,8 @@ const Staking = () => {
       setStakeAmount(0);
       setSelectedOption(null);
       setShowPopup(true);
+      setCongrats(true);
+      setTimeout(() => setCongrats(false), 3000);
     } catch (error) {
       console.error("Error processing stake:", error);
       alert("An error occurred while processing your stake. Please try again.");
@@ -438,8 +440,7 @@ const Staking = () => {
       setBalance(prevBalance => prevBalance + stake.amount + reward);
       setActiveStakes(updatedStakes);
       alert(`Successfully claimed ${formatNumber(stake.amount + reward)} points!`);
-      setCongrats(true);
-      setTimeout(() => setCongrats(false), 3000);
+      
     } catch (error) {
       console.error("Error claiming stake:", error);
       alert("An error occurred while claiming your stake. Please try again.");
