@@ -64,7 +64,7 @@ const StakingOptionsContainer = styled.div`
   display: inline-flex;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const StakingOption = styled.div`
@@ -88,14 +88,14 @@ const OptionTitle = styled.h3`
 `;
 
 const APR = styled.p`
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
   color: #1890ff;
   margin-bottom: 0.5rem;
 `;
 
 const Duration = styled.p`
-  font-size: 14px;
+  font-size: 13px;
   color: #4b5563;
 `;
 
@@ -103,7 +103,7 @@ const StakeAmountSection = styled.div`
   background-color: #ffffff;
   border-radius: 0.5rem;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -411,7 +411,7 @@ const Staking = () => {
               onClick={() => handleOptionSelect(option)}
             >
               <OptionTitle>{option.label}</OptionTitle>
-              <APR>{option.apr}% PR</APR>
+              <APR>{option.apr}%</APR>
               <Duration>{option.duration} days lock-up</Duration>
             </StakingOption>
           ))}
