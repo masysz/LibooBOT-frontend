@@ -240,14 +240,19 @@ const ActiveStakesTitle = styled.h3`
 
 const StakeItem = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
+  flex-direction: column;
   background-color: #f9fafb;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -258,6 +263,11 @@ const StakeItem = styled.div`
 const StakeInfo = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 1rem;
+
+  @media (min-width: 640px) {
+    margin-bottom: 0;
+  }
 `;
 
 const StakeAmount = styled.span`
@@ -271,18 +281,67 @@ const StakeDetails = styled.span`
   color: #4b5563;
 `;
 
+const StakeReward = styled.span`
+  font-size: 14px;
+  color: #10B981;
+  font-weight: 500;
+`;
+
+const StakeProgressWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+
+  @media (min-width: 640px) {
+    width: auto;
+    align-items: flex-end;
+  }
+`;
+
 const StakeProgress = styled.div`
-  width: 100px;
+  width: 100%;
   height: 8px;
   background-color: #e5e7eb;
   border-radius: 4px;
   overflow: hidden;
+  margin-bottom: 0.5rem;
+
+  @media (min-width: 640px) {
+    width: 100px;
+  }
 `;
 
 const ProgressFill = styled.div`
   height: 100%;
   background-color: #1890ff;
   width: ${props => props.progress}%;
+`;
+
+const ClaimButton = styled.button`
+  background: linear-gradient(to right, #10B981, #059669);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  @media (min-width: 640px) {
+    width: auto;
+  }
+
+  &:hover {
+    background: linear-gradient(to right, #059669, #10B981);
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
 `;
 
 const PopupOverlay = styled(motion.div)`
@@ -307,19 +366,6 @@ const PopupContent = styled(motion.div)`
   text-align: center;
 `;
 
-const ClaimButton = styled.button`
-  background: linear-gradient(to right, #10B981, #059669);
-  color: white;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 14px;
-  transition: all 0.3s;
-
-  &:hover {
-    background: linear-gradient(to right, #059669, #10B981);
-  }
-`;
 
 const StakeLimitMessage = styled.p`
   color: #EF4444;
@@ -544,24 +590,31 @@ const Staking = () => {
           ) : (
             activeStakes.map((stake, index) => {
               const progress = calculateProgress(stake);
+              const estimatedReward = Math.floor(stake.amount * (stake.apr / 100) * (stake.duration / 365));
               return (
                 <StakeItem key={index}>
                   <StakeInfo>
-                    <StakeAmount>{formatNumber(stake.amount)} points</StakeAmount>
+                    <StakeAmount>{formatNumber(stake.amount)} points staked</StakeAmount>
                     <StakeDetails>{stake.apr}% APR for {stake.duration} days</StakeDetails>
+                    <StakeReward>Estimated reward: {formatNumber(estimatedReward)} points</StakeReward>
                   </StakeInfo>
-                  <StakeProgress>
-                    <ProgressFill progress={progress} />
-                  </StakeProgress>
-                  {progress === 100 && (
-                    <ClaimButton onClick={() => handleClaim(index)}>
-                      <IoTrophyOutline /> Claim
-                    </ClaimButton>
-                  )}
+                  <StakeProgressWrapper>
+                    <StakeProgress>
+                      <ProgressFill progress={progress} />
+                    </StakeProgress>
+                    {progress === 100 ? (
+                      <ClaimButton onClick={() => handleClaim(index)}>
+                        <IoTrophyOutline /> Claim {formatNumber(stake.amount + estimatedReward)} points
+                      </ClaimButton>
+                    ) : (
+                      <StakeDetails>{Math.floor(progress)}% complete</StakeDetails>
+                    )}
+                  </StakeProgressWrapper>
                 </StakeItem>
-              );
-            })
-          )}
+            )}))};
+         
+            
+        
         </ActiveStakesSection>
       </ContentWrapper>
   
