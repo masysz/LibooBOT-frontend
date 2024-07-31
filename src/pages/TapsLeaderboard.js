@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { collection, query, orderBy, limit, getDocs, where, startAfter, runTransaction, doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, where, startAfter } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
 import styled from 'styled-components';
@@ -175,7 +175,6 @@ const TapsLeaderboard = () => {
       leaderboardRef,
       where('lastReferralTimestamp', '>=', startDate),
       orderBy('lastReferralTimestamp', 'desc'),
-      orderBy('referralCount', 'desc'),
       limit(20)
     );
 
@@ -185,18 +184,25 @@ const TapsLeaderboard = () => {
 
     try {
       const querySnapshot = await getDocs(leaderboardQuery);
-      const leaderboardData = await Promise.all(querySnapshot.docs.map(async (userDoc, index) => {
+      const leaderboardData = await Promise.all(querySnapshot.docs.map(async (userDoc) => {
         const referralsQuery = query(collection(db, `telegramUsers/${userDoc.id}/referrals`), where('timestamp', '>=', startDate));
         const referralsSnapshot = await getDocs(referralsQuery);
         const referralCount = referralsSnapshot.size;
 
         return {
           id: userDoc.id,
-          rank: index + 1,
           ...userDoc.data(),
           referralCount
         };
       }));
+
+      // Sort the leaderboard data by referral count
+      leaderboardData.sort((a, b) => b.referralCount - a.referralCount);
+
+      // Add rank to each user
+      leaderboardData.forEach((user, index) => {
+        user.rank = index + 1;
+      });
 
       if (startAfterDoc) {
         setLeaderboard(prev => [...prev, ...leaderboardData]);
@@ -236,7 +242,6 @@ const TapsLeaderboard = () => {
       }
     }
   };
-
   const getReward = (rank) => {
     if (activeTab === 'weekly') {
       if (rank === 1) return '10 TON';
