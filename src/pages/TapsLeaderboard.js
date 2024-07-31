@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { collection, query, orderBy, limit, getDocs, where, startAfter, runTransaction, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useUser } from '../context/userContext';
 import styled from 'styled-components';
@@ -7,23 +7,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaCrown, FaMedal } from 'react-icons/fa';
 import { IoTrophyOutline, IoRefreshOutline } from 'react-icons/io5';
 
-const LeaderboardContainer = styled(motion.div)`
-  border-radius: 1rem;
+const PageContainer = styled.div`
+  display: flex;
   height: 85vh;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+const ContentWrapper = styled.div`
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
   padding: 1rem;
-  margin: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  overflow-y: auto;
+  flex: 1;
+`;
+
+const Header = styled.header`
+  text-align: center;
+  margin-bottom: 1rem;
 `;
 
 const Title = styled.h1`
   font-size: 28px;
   font-weight: bold;
   color: #262626;
-  text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.2rem;
+`;
+
+const Subtitle = styled.p`
+  font-size: 16px;
+  font-weight: 500;
+  color: #4b5563;
 `;
 
 const TabContainer = styled.div`
@@ -122,6 +139,16 @@ const ReferralsCount = styled.span`
   align-items: center;
 `;
 
+const RewardBadge = styled(motion.span)`
+  background-color: #22c55e;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 8px;
+`;
+
 const RefreshButton = styled(motion.button)`
   position: absolute;
   top: 20px;
@@ -143,9 +170,11 @@ const TapsLeaderboard = () => {
   const { id } = useUser();
   const [leaderboard, setLeaderboard] = useState([]);
   const [activeTab, setActiveTab] = useState('weekly');
+  const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
+  const listRef = useRef(null);
 
-  const fetchLeaderboard = useCallback(async (tab) => {
+  const fetchLeaderboard = useCallback(async (tab, startAfterDoc = null) => {
     setLoading(true);
     const leaderboardRef = collection(db, 'telegramUsers');
     let leaderboardQuery;
@@ -171,38 +200,35 @@ const TapsLeaderboard = () => {
       leaderboardRef,
       where('lastReferralTimestamp', '>=', startDate),
       orderBy('lastReferralTimestamp', 'desc'),
-      limit(100)
+      orderBy('referralCount', 'desc'),
+      limit(20)
     );
+
+    if (startAfterDoc) {
+      leaderboardQuery = query(leaderboardQuery, startAfter(startAfterDoc));
+    }
 
     try {
       const querySnapshot = await getDocs(leaderboardQuery);
-      const leaderboardData = await Promise.all(querySnapshot.docs.map(async (userDoc) => {
-        const referralsQuery = query(collection(db, `telegramUsers/${userDoc.id}/referrals`), where('timestamp', '>=', startDate));
-        const referralsSnapshot = await getDocs(referralsQuery);
-        const referralCount = referralsSnapshot.size;
-
-        return {
-          id: userDoc.id,
-          ...userDoc.data(),
-          referralCount
-        };
+      const leaderboardData = querySnapshot.docs.map((doc, index) => ({
+        id: doc.id,
+        ...doc.data(),
+        rank: index + 1 + (leaderboard.length || 0)
       }));
 
-      // Sort the leaderboard data by referral count in descending order
-      leaderboardData.sort((a, b) => b.referralCount - a.referralCount);
+      if (startAfterDoc) {
+        setLeaderboard(prev => [...prev, ...leaderboardData]);
+      } else {
+        setLeaderboard(leaderboardData);
+      }
 
-      // Add rank to each user
-      leaderboardData.forEach((user, index) => {
-        user.rank = index + 1;
-      });
-
-      setLeaderboard(leaderboardData);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [leaderboard.length]);
 
   useEffect(() => {
     fetchLeaderboard(activeTab);
@@ -210,6 +236,36 @@ const TapsLeaderboard = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    setLastVisible(null);
+    setLeaderboard([]);
+  };
+
+  const loadMore = () => {
+    if (lastVisible && !loading) {
+      fetchLeaderboard(activeTab, lastVisible);
+    }
+  };
+
+  const handleScroll = () => {
+    if (listRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 5) {
+        loadMore();
+      }
+    }
+  };
+
+  const getReward = (rank) => {
+    if (activeTab === 'weekly') {
+      if (rank === 1) return '10 TON';
+      if (rank === 2) return '5 TON';
+      if (rank === 3) return '2 TON';
+    } else if (activeTab === 'monthly') {
+      if (rank === 1) return '15 TON';
+      if (rank === 2) return '8 TON';
+      if (rank === 3) return '5 TON';
+    }
+    return null;
   };
 
   const getRankIcon = (rank) => {
@@ -225,62 +281,124 @@ const TapsLeaderboard = () => {
     }
   };
 
+  const distributeRewards = async () => {
+    const rewardsRef = doc(db, 'rewards', activeTab);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const rewardsDoc = await transaction.get(rewardsRef);
+        const lastDistribution = rewardsDoc.data()?.lastDistribution?.toDate() || new Date(0);
+
+        const now = new Date();
+        let shouldDistribute = false;
+
+        if (activeTab === 'weekly' && now - lastDistribution >= 7 * 24 * 60 * 60 * 1000) {
+          shouldDistribute = true;
+        } else if (activeTab === 'monthly' && now.getMonth() !== lastDistribution.getMonth()) {
+          shouldDistribute = true;
+        }
+
+        if (shouldDistribute) {
+          leaderboard.slice(0, 3).forEach((user, index) => {
+            const userRef = doc(db, 'telegramUsers', user.id);
+            const reward = getReward(index + 1);
+            if (reward) {
+              const [amount, currency] = reward.split(' ');
+              transaction.update(userRef, {
+                [`rewards.${activeTab}`]: {
+                  amount: parseFloat(amount),
+                  currency,
+                  distributedAt: serverTimestamp()
+                }
+              });
+            }
+          });
+
+          transaction.set(rewardsRef, { lastDistribution: serverTimestamp() }, { merge: true });
+        }
+      });
+
+      console.log(`${activeTab} rewards distributed successfully`);
+    } catch (error) {
+      console.error("Error distributing rewards:", error);
+    }
+  };
+
+  useEffect(() => {
+    distributeRewards();
+  }, [activeTab, leaderboard]);
+
   return (
-    <LeaderboardContainer
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Title>Referrals Leaderboard</Title>
-      <TabContainer>
-        {['weekly', 'monthly', 'allTime'].map((tab) => (
-          <Tab
-            key={tab}
-            active={activeTab === tab}
-            onClick={() => handleTabChange(tab)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </Tab>
-        ))}
-      </TabContainer>
-      <LeaderboardList
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <AnimatePresence>
-          {leaderboard.map((user, index) => (
-            <LeaderboardItem
-              key={user.id}
-              isCurrentUser={user.id === id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+    <PageContainer>
+      <ContentWrapper>
+        <Header>
+          <Title>Referral Leaderboard</Title>
+          <Subtitle>Top referrers compete for rewards</Subtitle>
+        </Header>
+
+        <TabContainer>
+          {['weekly', 'monthly', 'allTime'].map((tab) => (
+            <Tab
+              key={tab}
+              active={activeTab === tab}
+              onClick={() => handleTabChange(tab)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Rank>{getRankIcon(user.rank) || `#${user.rank}`}</Rank>
-              <UserInfo>
-                <Username>{user.username || `User ${user.id}`}</Username>
-              </UserInfo>
-              <ReferralsCount>
-                <IoTrophyOutline size={16} style={{ marginRight: '4px' }} />
-                {user.referralCount || 0}
-              </ReferralsCount>
-            </LeaderboardItem>
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </Tab>
           ))}
-        </AnimatePresence>
-      </LeaderboardList>
-      <RefreshButton
-        onClick={() => fetchLeaderboard(activeTab)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <IoRefreshOutline size={24} />
-      </RefreshButton>
-    </LeaderboardContainer>
+        </TabContainer>
+
+        <LeaderboardList
+          ref={listRef}
+          onScroll={handleScroll}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <AnimatePresence>
+            {leaderboard.map((user, index) => (
+              <LeaderboardItem
+                key={user.id}
+                isCurrentUser={user.id === id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <Rank>{getRankIcon(user.rank) || `#${user.rank}`}</Rank>
+                <UserInfo>
+                  <Username>{user.username || `User ${user.id}`}</Username>
+                </UserInfo>
+                <ReferralsCount>
+                  <IoTrophyOutline size={16} style={{ marginRight: '4px' }} />
+                  {user.referralCount || 0}
+                  {getReward(user.rank) && (
+                    <RewardBadge
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                    >
+                      {getReward(user.rank)}
+                    </RewardBadge>
+                  )}
+                </ReferralsCount>
+              </LeaderboardItem>
+            ))}
+          </AnimatePresence>
+        </LeaderboardList>
+
+        <RefreshButton
+          onClick={() => fetchLeaderboard(activeTab)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <IoRefreshOutline size={24} />
+        </RefreshButton>
+      </ContentWrapper>
+    </PageContainer>
   );
 };
 
-export default TapsLeaderboard;
+export default React.memo(TapsLeaderboard);
