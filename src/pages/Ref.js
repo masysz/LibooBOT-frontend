@@ -141,12 +141,7 @@ const Ref = () => {
   }, []);
 
   const ReferralItem = React.memo(({ user, index }) => (
-    <ReferralItemWrapper
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-    >
+    <ReferralItemWrapper>
       <div className="flex items-center space-x-3 mb-2 sm:mb-0">
         <img src={user.level?.imgUrl} alt={user.level?.name} className="w-10 h-10" />
         <div>
@@ -165,10 +160,8 @@ const Ref = () => {
       </div>
       <div className="w-full mt-3 sm:w-32">
         <div className="bg-gray-200 rounded-full h-2 w-full">
-          <div
-            className="bg-gradient-to-r from-[#094e9d] to-[#0b62c4] h-2 rounded-full"
-            style={{ width: `${((user.balance || 0) / 10000) * 100}%` }}
-          ></div>
+         
+          
         </div>
       </div>
     </ReferralItemWrapper>
