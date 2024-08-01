@@ -359,12 +359,12 @@ const Donate = () => {
             amount: doc.data().amount,
             reward: index === 0 ? 10 : index === 1 ? 5 : 1
           }));
-
+        
           transaction.update(campaignRef, { 
             winnersSet: true,
             winners: winners
           });
-
+        
           // Create winners collection
           const winnersCollectionRef = collection(db, `campaigns/${selectedCampaign.id}/winners`);
           winners.forEach((winner, index) => {
