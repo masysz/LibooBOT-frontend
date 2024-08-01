@@ -12,8 +12,6 @@ const PageContainer = styled.div`
   height: 85vh;
   flex-direction: column;
   border-radius: 20px;
-  background-color: #121620;
-  color: #ffffff;
 `;
 
 const ContentWrapper = styled.div`
@@ -31,72 +29,66 @@ const ContentWrapper = styled.div`
   }
 
   &::-webkit-scrollbar-track {
-    background: #1e2635;
+    background: #f1f1f1;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #3a4556;
+    background: #888;
     border-radius: 3px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #4a5a70;
+    background: #555;
   }
 `;
 
 const Header = styled.header`
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
+  font-size: 28px;
   font-weight: bold;
-  color: #ffffff;
+  color: #262626;
   margin-bottom: 0.5rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
-  color: #a0aec0;
+  color: #4b5563;
 `;
 
 const CampaignsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
 `;
 
 const CampaignCard = styled(motion.div)`
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transition: all 0.3s ease;
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
   position: relative;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
-  }
 `;
 
 const CampaignImage = styled.img`
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0.5rem;
   margin-bottom: 1rem;
 `;
 
 const ProgressBar = styled.div`
   width: 100%;
   height: 10px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #e5e7eb;
   border-radius: 5px;
   overflow: hidden;
   margin: 0.5rem 0;
@@ -104,34 +96,27 @@ const ProgressBar = styled.div`
 
 const ProgressFill = styled.div`
   height: 100%;
-  background: linear-gradient(90deg, #094e9d, #0b62c4);
+  background: linear-gradient(to right, #094e9d, #0b62c4);
   border-radius: 5px;
-  transition: width 0.5s ease-out;
 `;
 
 const Button = styled.button`
-  background: linear-gradient(90deg, #094e9d, #0b62c4);
+  background: linear-gradient(to right, #094e9d, #0b62c4);
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   padding: 0.75rem 1rem;
-  border-radius: 10px;
+  border-radius: 0.375rem;
   transition: all 0.3s;
   text-align: center;
   width: 100%;
-  border: none;
-  cursor: pointer;
 
   &:hover {
-    background: linear-gradient(90deg, #0b62c4, #094e9d);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(9, 78, 157, 0.3);
+    background: linear-gradient(to right, #0b62c4, #094e9d);
   }
 
   &:disabled {
-    background: #3a4556;
+    background: #cbd5e0;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
   }
 `;
 
@@ -141,7 +126,7 @@ const PopupOverlay = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -149,39 +134,36 @@ const PopupOverlay = styled(motion.div)`
 `;
 
 const PopupContent = styled(motion.div)`
-  background-color: rgba(18, 22, 32, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 25px;
-  padding: 2.5rem;
-  width: 95%;
-  max-width: 550px;
-  max-height: 90vh;
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
   overflow-y: auto;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #1e2635;
+    background: #f1f1f1;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #3a4556;
+    background: #888;
     border-radius: 3px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #4a5a70;
+    background: #555;
   }
 `;
 
 const LeaderboardSection = styled.div`
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
   padding: 1rem;
   margin-top: 1rem;
 `;
@@ -190,9 +172,9 @@ const LeaderboardItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  color: #171717;
 
   &:last-child {
     border-bottom: none;
@@ -200,8 +182,8 @@ const LeaderboardItem = styled.div`
 `;
 
 const RewardBadge = styled.span`
-  background-color: #0b62c4;
-  color: #ffffff;
+  background-color: #507cff;
+  color: #ffff;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
@@ -214,33 +196,35 @@ const SliderContainer = styled.div`
 `;
 
 const StyledSlider = styled.input`
-  -webkit-appearance: none;
   width: 100%;
+  -webkit-appearance: none;
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(90deg, #094e9d, #0b62c4);
+  background: #e5e7eb;
   outline: none;
   opacity: 0.7;
   transition: opacity 0.2s;
 
+  &:hover {
+    opacity: 1;
+  }
+
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: #fff;
+    background: #1890ff;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(9, 78, 157, 0.5);
   }
 
   &::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: #fff;
+    background: #1890ff;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(9, 78, 157, 0.5);
   }
 `;
 
@@ -252,27 +236,7 @@ const CheckIcon = styled(IoCheckmarkCircle)`
   font-size: 24px;
 `;
 
-const LoadingSpinner = styled.div`
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top: 4px solid #ffffff;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`;
-
-const ErrorMessage = styled.div`
-  color: #ff6b6b;
-  text-align: center;
-  font-size: 18px;
-  margin: 20px 0;
-`;
 
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -383,49 +347,49 @@ const Donate = () => {
         const campaignRef = doc(db, 'campaigns', selectedCampaign.id);
         const userRef = doc(db, 'telegramUsers', id.toString());
         const leaderboardRef = doc(db, `campaigns/${selectedCampaign.id}/leaderboard`, id.toString());
-  
+
         const campaignDoc = await transaction.get(campaignRef);
         const userDoc = await transaction.get(userRef);
         const leaderboardDoc = await transaction.get(leaderboardRef);
-  
+
         const leaderboardQuery = query(
           collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
           orderBy('amount', 'desc'),
           limit(5)
         );
         const leaderboardSnapshot = await getDocs(leaderboardQuery);
-  
+
         if (!campaignDoc.exists()) {
           throw new Error("Campaign does not exist!");
         }
         if (!userDoc.exists()) {
           throw new Error("User does not exist!");
         }
-  
+
         const currentCampaignPoints = campaignDoc.data().pointsRaised || 0;
         const targetPoints = campaignDoc.data().targetPoints || 0;
         const newCampaignPoints = currentCampaignPoints + amount;
         const newUserBalance = (userDoc.data().balance || 0) - amount;
-  
+
         if (newUserBalance < 0) {
           throw new Error("Insufficient balance!");
         }
-  
+
         if (currentCampaignPoints >= targetPoints) {
           throw new Error("Campaign has already reached its goal!");
         }
-  
+
         const updatedLeaderboard = updateLeaderboardData(leaderboardSnapshot.docs, leaderboardDoc.data(), id, username, amount);
-  
+
         const topDonors = updatedLeaderboard.map((doc, index) => ({
           id: doc.id,
           username: doc.username,
           amount: doc.amount,
           reward: index === 0 ? 10 : index === 1 ? 5 : index === 2 ? 1 : 0
         }));
-  
+
         const campaignCompleted = newCampaignPoints >= targetPoints;
-  
+
         transaction.update(campaignRef, { 
           pointsRaised: newCampaignPoints,
           topDonors: topDonors,
@@ -433,15 +397,15 @@ const Donate = () => {
           completed: campaignCompleted,
           winnersSet: campaignCompleted
         });
-  
+
         transaction.update(userRef, { balance: newUserBalance });
-  
+
         transaction.set(leaderboardRef, {
           username: username,
           amount: amount + (leaderboardDoc.data()?.amount || 0)
         }, { merge: true });
       });
-  
+
       setBalance(prevBalance => prevBalance - amount);
       setCampaigns(prevCampaigns => 
         prevCampaigns.map(campaign =>
@@ -458,7 +422,7 @@ const Donate = () => {
       
       setCongrats(true);
       setTimeout(() => setCongrats(false), 3000);
-  
+
       handleClosePopup();
       setDonationAmount(0);
       fetchCampaigns();
@@ -466,7 +430,7 @@ const Donate = () => {
       console.error("Error processing donation:", error);
       alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup, updateLeaderboardLocally]);
+  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup, updateLeaderboardData, updateLeaderboardLocally]);
 
   const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
     const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
@@ -487,7 +451,7 @@ const Donate = () => {
       .slice(0, 5);
   }, []);
 
-  const formatNumber = useMemo(() => (num) => {
+  const formatNumber = useCallback((num) => {
     if (num == null) return '0';
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
@@ -498,7 +462,7 @@ const Donate = () => {
     }
   }, []);
 
-  const getReward = useMemo(() => (index) => {
+  const getReward = useCallback((index) => {
     switch (index) {
       case 0: return '10 TON';
       case 1: return '5 TON';
@@ -512,8 +476,13 @@ const Donate = () => {
     setDonationAmount(value);
   }, [balance]);
 
-  if (isLoading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage>{error}</ErrorMessage>;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
     <Animate>
@@ -539,9 +508,9 @@ const Donate = () => {
                   {campaign.image && (
                     <CampaignImage src={campaign.image} alt={campaign.title} />
                   )}
-                  <h2 className="text-xl font-semibold mb-2 text-white">{campaign.title}</h2>
-                  <p className="text-sm text-gray-300 mb-4">{campaign['short-description'] || 'No description available'}</p>
-                  <div className="flex justify-between items-center mb-2 text-white">
+                  <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
+                  <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                  <div className="flex justify-between items-center mb-2 text-[#171717]">
                     <span className="text-sm font-medium">
                       {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
                     </span>
@@ -567,10 +536,10 @@ const Donate = () => {
                   exit={{ scale: 0.9, opacity: 0 }}
                   transition={{ type: 'spring', damping: 20, stiffness: 300 }}
                 >
-                  <button onClick={handleClosePopup} className="absolute top-4 right-4 text-gray-400 hover:text-white">
+                  <button onClick={handleClosePopup} className="absolute top-4 right-4 text-gray-500">
                     <IoClose size={24} />
                   </button>
-                  <h2 className="text-2xl font-semibold mb-4 text-white">{selectedCampaign.title}</h2>
+                  <h2 className="text-2xl font-semibold mb-4 text-[#171717]">{selectedCampaign.title}</h2>
                   {selectedCampaign.image && (
                     <img 
                       src={selectedCampaign.image} 
@@ -578,11 +547,11 @@ const Donate = () => {
                       className="w-full h-[200px] object-cover rounded-lg mb-4"
                     />
                   )}
-                  <p className="text-gray-300 mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
+                  <p className="text-[#171717] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2 text-white">Progress</h3>
+                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Progress</h3>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-300">
+                      <span className="text-sm text-[#171717]">
                         {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
                       </span>
                     </div>
@@ -592,7 +561,7 @@ const Donate = () => {
                   </div>
                   
                   <LeaderboardSection>
-                    <h3 className="text-lg font-semibold mb-2 flex items-center text-white">
+                    <h3 className="text-lg font-semibold mb-2 flex items-center text-[#171717]">
                       <IoTrophy size={24} color="#fbbf24" className="mr-2" />
                       Top Donors
                     </h3>
@@ -609,7 +578,7 @@ const Donate = () => {
                   
                   {!selectedCampaign.completed && (
                     <div className="mt-4">
-                      <h3 className="text-lg font-semibold mb-2 text-white">Donate</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
                       <SliderContainer>
                         <StyledSlider
                           type="range"
@@ -619,8 +588,8 @@ const Donate = () => {
                           onChange={handleSliderChange}
                         />
                       </SliderContainer>
-                      <p className="text-sm text-gray-300 mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
-                      <p className="text-sm text-gray-300 mb-2">Your current balance: {formatNumber(balance)} points</p>
+                      <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
+                      <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
                       <Button
                         onClick={handleDonationSubmit}
                         disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
@@ -647,9 +616,9 @@ const Donate = () => {
                 exit={{ opacity: 0, y: 50 }}
                 className="fixed bottom-6 left-0 right-0 px-4 z-50"
               >
-                <div className="w-full text-green-500 flex items-center space-x-2 px-4 bg-gray-800 h-[50px] rounded-[8px]">
-                  <IoCheckmarkCircle size={24} />
-                  <span className="font-medium">Donation successful!</span>
+        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
+          <IoCheckmarkCircle size={24} />
+          <span className="font-medium">Good</span>
                 </div>
               </motion.div>
             )}
