@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc } from 'firebase/firestore';
+import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
 import { useUser } from '../context/userContext';
@@ -243,7 +243,7 @@ const Donate = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { balance, setBalance, loading: userLoading, id, username } = useUser();
+  const { balance = 0, setBalance, loading: userLoading, id, username } = useUser() || {};
   const [congrats, setCongrats] = useState(false);
 
   const fetchCampaigns = useCallback(async () => {
@@ -253,13 +253,21 @@ const Donate = () => {
       const campaignsCollection = collection(db, 'campaigns');
       const campaignsSnapshot = await getDocs(campaignsCollection);
       const campaignsList = await Promise.all(campaignsSnapshot.docs.map(async doc => {
+        const data = doc.data();
+        // Asegurar que todos los campos necesarios existan
         const campaignData = {
           id: doc.id,
-          ...doc.data(),
-          image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null,
-          completed: doc.data().pointsRaised >= doc.data().targetPoints
+          title: data.title || 'Unnamed Campaign',
+          'short-description': data['short-description'] || '',
+          'large-description': data['large-description'] || '',
+          pointsRaised: data.pointsRaised || 0,
+          targetPoints: data.targetPoints || 0,
+          image: data.image && typeof data.image === 'string' ? data.image : null,
+          completed: (data.pointsRaised || 0) >= (data.targetPoints || 0),
+          winnersSet: data.winnersSet || false
         };
         
+        // Obtener el leaderboard
         const leaderboardQuery = query(
           collection(db, `campaigns/${doc.id}/leaderboard`),
           orderBy('amount', 'desc'),
@@ -320,59 +328,67 @@ const Donate = () => {
 
         const campaignDoc = await transaction.get(campaignRef);
         const userDoc = await transaction.get(userRef);
-        const leaderboardDoc = await transaction.get(leaderboardRef);
 
-        if (!campaignDoc.exists() || !userDoc.exists()) {
-          throw new Error("Document does not exist!");
-        }
-
-        const newCampaignPoints = campaignDoc.data().pointsRaised + amount;
-        const newUserBalance = userDoc.data().balance - amount;
-
-        if (newUserBalance < 0) {
-          throw new Error("Insufficient balance!");
-        }
-
-        // Verificar si la campaña ya alcanzó su objetivo
-        if (campaignDoc.data().pointsRaised >= campaignDoc.data().targetPoints) {
-          throw new Error("Campaign has already reached its goal!");
-        }
-
-        transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
-        transaction.update(userRef, { balance: newUserBalance });
-
-        if (leaderboardDoc.exists()) {
-          const currentAmount = leaderboardDoc.data().amount;
-          transaction.update(leaderboardRef, { 
-            amount: currentAmount + amount,
+        if (!campaignDoc.exists()) {
+          // Si el documento de la campaña no existe, créalo
+          transaction.set(campaignRef, {
+            ...selectedCampaign,
+            pointsRaised: amount,
+            winnersSet: false
+          });
+        } else if (!userDoc.exists()) {
+          // Si el documento del usuario no existe, créalo
+          transaction.set(userRef, {
+            balance: balance - amount,
             username: username
           });
         } else {
-          transaction.set(leaderboardRef, {
-            username: username,
-            amount: amount
-          });
+          const newCampaignPoints = (campaignDoc.data().pointsRaised || 0) + amount;
+          const newUserBalance = (userDoc.data().balance || 0) - amount;
+
+          if (newUserBalance < 0) {
+            throw new Error("Insufficient balance!");
+          }
+
+          // Verificar si la campaña ya alcanzó su objetivo
+          if ((campaignDoc.data().pointsRaised || 0) >= (campaignDoc.data().targetPoints || 0)) {
+            throw new Error("Campaign has already reached its goal!");
+          }
+
+          transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
+          transaction.update(userRef, { balance: newUserBalance });
         }
 
-        // Actualizar winners si se alcanza el objetivo
-        if (newCampaignPoints >= campaignDoc.data().targetPoints && !campaignDoc.data().winnersSet) {
-          const leaderboardQuery = query(
-            collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
-            orderBy('amount', 'desc'),
-            limit(3)
-          );
-          const leaderboardSnapshot = await getDocs(leaderboardQuery);
-          const winners = leaderboardSnapshot.docs.map((doc, index) => ({
-            id: doc.id,
-            username: doc.data().username,
-            amount: doc.data().amount,
-            reward: index === 0 ? 10 : index === 1 ? 5 : 1
-          }));
+        // Actualizar o crear el documento del leaderboard
+        transaction.set(leaderboardRef, {
+          username: username,
+          amount: amount + (await transaction.get(leaderboardRef)).data()?.amount || 0
+        }, { merge: true });
 
+        // Actualizar winners y top donors
+        const leaderboardQuery = query(
+          collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
+          orderBy('amount', 'desc'),
+          limit(5)
+        );
+        const leaderboardSnapshot = await getDocs(leaderboardQuery);
+        const topDonors = leaderboardSnapshot.docs.map((doc, index) => ({
+          id: doc.id,
+          username: doc.data().username,
+          amount: doc.data().amount,
+          reward: index === 0 ? 10 : index === 1 ? 5 : index === 2 ? 1 : 0
+        }));
+
+        transaction.update(campaignRef, { 
+          topDonors: topDonors,
+          winners: topDonors.filter(donor => donor.reward > 0)
+        });
+
+        // Verificar si se alcanzó el objetivo
+        if ((campaignDoc.data().pointsRaised || 0) + amount >= (campaignDoc.data().targetPoints || 0)) {
           transaction.update(campaignRef, { 
-            winnersSet: true,
-            winners: winners,
-            completed: true
+            completed: true,
+            winnersSet: true
           });
         }
       });
@@ -383,9 +399,9 @@ const Donate = () => {
           campaign.id === selectedCampaign.id
             ? { 
                 ...campaign, 
-                pointsRaised: campaign.pointsRaised + amount,
+                pointsRaised: (campaign.pointsRaised || 0) + amount,
                 leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, amount),
-                completed: campaign.pointsRaised + amount >= campaign.targetPoints
+                completed: (campaign.pointsRaised || 0) + amount >= (campaign.targetPoints || 0)
               }
             : campaign
         )
@@ -410,7 +426,7 @@ const Donate = () => {
     if (existingUserIndex !== -1) {
       updatedLeaderboard = leaderboard.map((donor, index) => 
         index === existingUserIndex 
-          ? { ...donor, amount: donor.amount + amount }
+          ? { ...donor, amount: (donor.amount || 0) + amount }
           : donor
       );
     } else {
@@ -418,11 +434,12 @@ const Donate = () => {
     }
 
     return updatedLeaderboard
-      .sort((a, b) => b.amount - a.amount)
+      .sort((a, b) => (b.amount || 0) - (a.amount || 0))
       .slice(0, 5);
   }, []);
 
   const formatNumber = useCallback((num) => {
+    if (num == null) return '0';
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
@@ -442,7 +459,7 @@ const Donate = () => {
   }, []);
 
   const handleSliderChange = useCallback((e) => {
-    const value = Math.min(Number(e.target.value), balance);
+    const value = Math.min(Number(e.target.value), balance || 0);
     setDonationAmount(value);
   }, [balance]);
 
@@ -482,7 +499,7 @@ const Donate = () => {
                     </span>
                   </div>
                   <ProgressBar>
-                    <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
+                    <ProgressFill style={{ width: `${Math.min(100, ((campaign.pointsRaised || 0) / (campaign.targetPoints || 1)) * 100)}%` }} />
                   </ProgressBar>
                 </CampaignCard>
               ))}
@@ -522,7 +539,7 @@ const Donate = () => {
                       </span>
                     </div>
                     <ProgressBar>
-                      <ProgressFill style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }} />
+                      <ProgressFill style={{ width: `${Math.min(100, ((selectedCampaign.pointsRaised || 0) / (selectedCampaign.targetPoints || 1)) * 100)}%` }} />
                     </ProgressBar>
                   </div>
                   
@@ -531,13 +548,13 @@ const Donate = () => {
                       <IoTrophy size={24} color="#fbbf24" className="mr-2" />
                       Top Donors
                     </h3>
-                    {selectedCampaign.leaderboard.map((donor, index) => (
-                      <LeaderboardItem key={donor.id}>
+                    {(selectedCampaign.leaderboard || []).map((donor, index) => (
+                      <LeaderboardItem key={donor?.id || index}>
                         <span>
-                          {index + 1}. {donor.username}
+                          {index + 1}. {donor?.username || 'Anonymous'}
                           {getReward(index) && <RewardBadge>{getReward(index)}</RewardBadge>}
                         </span>
-                        <span className="font-bold">{formatNumber(donor.amount)}</span>
+                        <span className="font-bold">{formatNumber(donor?.amount)}</span>
                       </LeaderboardItem>
                     ))}
                   </LeaderboardSection>
@@ -549,7 +566,7 @@ const Donate = () => {
                         <StyledSlider
                           type="range"
                           min="0"
-                          max={balance}
+                          max={balance || 0}
                           value={donationAmount}
                           onChange={handleSliderChange}
                         />
