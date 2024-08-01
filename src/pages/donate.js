@@ -319,6 +319,42 @@ const Donate = () => {
       alert("You must be logged in to donate.");
       return;
     }
+
+
+    const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
+      const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
+      let updatedLeaderboard;
+  
+      if (existingUserIndex !== -1) {
+        updatedLeaderboard = leaderboard.map((donor, index) => 
+          index === existingUserIndex 
+            ? { ...donor, amount: (donor.amount || 0) + amount }
+            : donor
+        );
+      } else {
+        updatedLeaderboard = [...leaderboard, { id: userId, username, amount }];
+      }
+  
+      return updatedLeaderboard
+        .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+        .slice(0, 5);
+    }, []);
+  
+    const handleDonationSubmit = useCallback(async () => {
+      const amount = Number(donationAmount);
+      if (amount <= 0 || isNaN(amount)) {
+        alert("Please enter a valid donation amount.");
+        return;
+      }
+      if (amount > balance) {
+        alert("Insufficient balance!");
+        return;
+      }
+      if (!id || !username) {
+        alert("You must be logged in to donate.");
+        return;
+      }
+ 
   
     try {
       await runTransaction(db, async (transaction) => {
@@ -344,6 +380,7 @@ const Donate = () => {
         }
         if (!userDoc.exists()) {
           throw new Error("User does not exist!");
+          
         }
   
         const currentCampaignPoints = campaignDoc.data().pointsRaised || 0;
@@ -435,7 +472,7 @@ const Donate = () => {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
   };
-  
+
   const formatNumber = useCallback((num) => {
     if (num == null) return '0';
     if (num >= 1000000) {
@@ -608,6 +645,6 @@ const Donate = () => {
       </PageContainer>
     </Animate>
   );
-};
-
+});
+}
 export default React.memo(Donate);
