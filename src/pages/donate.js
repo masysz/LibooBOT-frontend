@@ -582,9 +582,9 @@ const Donate = () => {
                 exit={{ opacity: 0, y: 50 }}
                 className="fixed bottom-6 left-0 right-0 px-4 z-50"
               >
-                <div className="w-full text-green-500 flex items-center space-x-2 px-4 bg-white rounded-lg py-2 shadow-lg">
-                  <IoCheckmarkCircle size={24} />
-                  <span className="text-lg font-semibold">Donation Successful!</span>
+        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
+          <IoCheckmarkCircle size={24} />
+          <span className="font-medium">Good</span>
                 </div>
               </motion.div>
             )}
