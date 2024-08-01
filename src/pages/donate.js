@@ -319,80 +319,74 @@ const Donate = () => {
       alert("You must be logged in to donate.");
       return;
     }
-
+  
     try {
       await runTransaction(db, async (transaction) => {
+        // 1. Perform all reads
         const campaignRef = doc(db, 'campaigns', selectedCampaign.id);
         const userRef = doc(db, 'telegramUsers', id.toString());
         const leaderboardRef = doc(db, `campaigns/${selectedCampaign.id}/leaderboard`, id.toString());
-
+  
         const campaignDoc = await transaction.get(campaignRef);
         const userDoc = await transaction.get(userRef);
-
-        if (!campaignDoc.exists()) {
-          // Si el documento de la campaña no existe, créalo
-          transaction.set(campaignRef, {
-            ...selectedCampaign,
-            pointsRaised: amount,
-            winnersSet: false
-          });
-        } else if (!userDoc.exists()) {
-          // Si el documento del usuario no existe, créalo
-          transaction.set(userRef, {
-            balance: balance - amount,
-            username: username
-          });
-        } else {
-          const newCampaignPoints = (campaignDoc.data().pointsRaised || 0) + amount;
-          const newUserBalance = (userDoc.data().balance || 0) - amount;
-
-          if (newUserBalance < 0) {
-            throw new Error("Insufficient balance!");
-          }
-
-          // Verificar si la campaña ya alcanzó su objetivo
-          if ((campaignDoc.data().pointsRaised || 0) >= (campaignDoc.data().targetPoints || 0)) {
-            throw new Error("Campaign has already reached its goal!");
-          }
-
-          transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
-          transaction.update(userRef, { balance: newUserBalance });
-        }
-
-        // Actualizar o crear el documento del leaderboard
-        transaction.set(leaderboardRef, {
-          username: username,
-          amount: amount + (await transaction.get(leaderboardRef)).data()?.amount || 0
-        }, { merge: true });
-
-        // Actualizar winners y top donors
+        const leaderboardDoc = await transaction.get(leaderboardRef);
+  
         const leaderboardQuery = query(
           collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
           orderBy('amount', 'desc'),
           limit(5)
         );
         const leaderboardSnapshot = await getDocs(leaderboardQuery);
-        const topDonors = leaderboardSnapshot.docs.map((doc, index) => ({
+  
+        // 2. Process data and prepare updates
+        if (!campaignDoc.exists()) {
+          throw new Error("Campaign does not exist!");
+        }
+        if (!userDoc.exists()) {
+          throw new Error("User does not exist!");
+        }
+  
+        const currentCampaignPoints = campaignDoc.data().pointsRaised || 0;
+        const targetPoints = campaignDoc.data().targetPoints || 0;
+        const newCampaignPoints = currentCampaignPoints + amount;
+        const newUserBalance = (userDoc.data().balance || 0) - amount;
+  
+        if (newUserBalance < 0) {
+          throw new Error("Insufficient balance!");
+        }
+  
+        if (currentCampaignPoints >= targetPoints) {
+          throw new Error("Campaign has already reached its goal!");
+        }
+  
+        const updatedLeaderboard = updateLeaderboardData(leaderboardSnapshot.docs, leaderboardDoc.data(), id, username, amount);
+  
+        const topDonors = updatedLeaderboard.map((doc, index) => ({
           id: doc.id,
-          username: doc.data().username,
-          amount: doc.data().amount,
+          username: doc.username,
+          amount: doc.amount,
           reward: index === 0 ? 10 : index === 1 ? 5 : index === 2 ? 1 : 0
         }));
-
+  
+        const campaignCompleted = newCampaignPoints >= targetPoints;
+  
+        // 3. Perform all writes
         transaction.update(campaignRef, { 
+          pointsRaised: newCampaignPoints,
           topDonors: topDonors,
-          winners: topDonors.filter(donor => donor.reward > 0)
+          winners: topDonors.filter(donor => donor.reward > 0),
+          completed: campaignCompleted,
+          winnersSet: campaignCompleted
         });
-
-        // Verificar si se alcanzó el objetivo
-        if ((campaignDoc.data().pointsRaised || 0) + amount >= (campaignDoc.data().targetPoints || 0)) {
-          transaction.update(campaignRef, { 
-            completed: true,
-            winnersSet: true
-          });
-        }
+  
+        transaction.update(userRef, { balance: newUserBalance });
+  
+        transaction.set(leaderboardRef, {
+          username: username,
+          amount: amount + (leaderboardDoc.data()?.amount || 0)
+        }, { merge: true });
       });
-
+  
       setBalance(prevBalance => prevBalance - amount);
       setCampaigns(prevCampaigns => 
         prevCampaigns.map(campaign =>
@@ -409,7 +403,7 @@ const Donate = () => {
       
       setCongrats(true);
       setTimeout(() => setCongrats(false), 3000);
-
+  
       handleClosePopup();
       setDonationAmount(0);
       fetchCampaigns();
@@ -417,27 +411,31 @@ const Donate = () => {
       console.error("Error processing donation:", error);
       alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup]);
-
-  const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
-    const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
-    let updatedLeaderboard;
-
+  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup, updateLeaderboardLocally]);
+  
+  // Helper function to update leaderboard data
+  const updateLeaderboardData = (leaderboardDocs, currentUserData, userId, username, amount) => {
+    let updatedLeaderboard = leaderboardDocs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  
+    const existingUserIndex = updatedLeaderboard.findIndex(donor => donor.id === userId);
     if (existingUserIndex !== -1) {
-      updatedLeaderboard = leaderboard.map((donor, index) => 
-        index === existingUserIndex 
-          ? { ...donor, amount: (donor.amount || 0) + amount }
-          : donor
-      );
+      updatedLeaderboard[existingUserIndex].amount += amount;
     } else {
-      updatedLeaderboard = [...leaderboard, { id: userId, username, amount }];
+      updatedLeaderboard.push({
+        id: userId,
+        username: username,
+        amount: amount + (currentUserData?.amount || 0)
+      });
     }
-
+  
     return updatedLeaderboard
-      .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+      .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
-  }, []);
-
+  };
+  
   const formatNumber = useCallback((num) => {
     if (num == null) return '0';
     if (num >= 1000000) {
