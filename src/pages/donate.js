@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc, setDoc } from 'firebase/firestore';
+import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
 import { useUser } from '../context/userContext';
@@ -73,13 +73,11 @@ const CampaignCard = styled(motion.div)`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  cursor: pointer;
-  position: relative;
 `;
 
 const CampaignImage = styled.img`
   width: 100%;
-  height: 100%;
+  height: 150px;
   object-fit: cover;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -228,16 +226,6 @@ const StyledSlider = styled.input`
   }
 `;
 
-const CheckIcon = styled(IoCheckmarkCircle)`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: #10B981;
-  font-size: 24px;
-`;
-
-
-
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -245,7 +233,7 @@ const Donate = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { balance = 0, setBalance, loading: userLoading, id, username } = useUser() || {};
+  const { balance, setBalance, loading: userLoading, id, username } = useUser();
   const [congrats, setCongrats] = useState(false);
 
   const fetchCampaigns = useCallback(async () => {
@@ -255,17 +243,10 @@ const Donate = () => {
       const campaignsCollection = collection(db, 'campaigns');
       const campaignsSnapshot = await getDocs(campaignsCollection);
       const campaignsList = await Promise.all(campaignsSnapshot.docs.map(async doc => {
-        const data = doc.data();
         const campaignData = {
           id: doc.id,
-          title: data.title || 'Unnamed Campaign',
-          'short-description': data['short-description'] || '',
-          'large-description': data['large-description'] || '',
-          pointsRaised: data.pointsRaised || 0,
-          targetPoints: data.targetPoints || 0,
-          image: data.image && typeof data.image === 'string' ? data.image : null,
-          completed: (data.pointsRaised || 0) >= (data.targetPoints || 0),
-          winnersSet: data.winnersSet || false
+          ...doc.data(),
+          image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null
         };
         
         const leaderboardQuery = query(
@@ -305,28 +286,6 @@ const Donate = () => {
     document.body.style.overflow = 'auto';
   }, []);
 
-  const updateLeaderboardData = useCallback((leaderboardDocs, currentUserData, userId, username, amount) => {
-    let updatedLeaderboard = leaderboardDocs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-  
-    const existingUserIndex = updatedLeaderboard.findIndex(donor => donor.id === userId);
-    if (existingUserIndex !== -1) {
-      updatedLeaderboard[existingUserIndex].amount += amount;
-    } else {
-      updatedLeaderboard.push({
-        id: userId,
-        username: username,
-        amount: amount + (currentUserData?.amount || 0)
-      });
-    }
-  
-    return updatedLeaderboard
-      .sort((a, b) => b.amount - a.amount)
-      .slice(0, 5);
-  }, []);
-
   const handleDonationSubmit = useCallback(async () => {
     const amount = Number(donationAmount);
     if (amount <= 0 || isNaN(amount)) {
@@ -352,58 +311,52 @@ const Donate = () => {
         const userDoc = await transaction.get(userRef);
         const leaderboardDoc = await transaction.get(leaderboardRef);
 
-        const leaderboardQuery = query(
-          collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
-          orderBy('amount', 'desc'),
-          limit(5)
-        );
-        const leaderboardSnapshot = await getDocs(leaderboardQuery);
-
-        if (!campaignDoc.exists()) {
-          throw new Error("Campaign does not exist!");
-        }
-        if (!userDoc.exists()) {
-          throw new Error("User does not exist!");
+        if (!campaignDoc.exists() || !userDoc.exists()) {
+          throw new Error("Document does not exist!");
         }
 
-        const currentCampaignPoints = campaignDoc.data().pointsRaised || 0;
-        const targetPoints = campaignDoc.data().targetPoints || 0;
-        const newCampaignPoints = currentCampaignPoints + amount;
-        const newUserBalance = (userDoc.data().balance || 0) - amount;
+        const newCampaignPoints = campaignDoc.data().pointsRaised + amount;
+        const newUserBalance = userDoc.data().balance - amount;
 
         if (newUserBalance < 0) {
           throw new Error("Insufficient balance!");
         }
 
-        if (currentCampaignPoints >= targetPoints) {
-          throw new Error("Campaign has already reached its goal!");
-        }
-
-        const updatedLeaderboard = updateLeaderboardData(leaderboardSnapshot.docs, leaderboardDoc.data(), id, username, amount);
-
-        const topDonors = updatedLeaderboard.map((doc, index) => ({
-          id: doc.id,
-          username: doc.username,
-          amount: doc.amount,
-          reward: index === 0 ? 10 : index === 1 ? 5 : index === 2 ? 1 : 0
-        }));
-
-        const campaignCompleted = newCampaignPoints >= targetPoints;
-
-        transaction.update(campaignRef, { 
-          pointsRaised: newCampaignPoints,
-          topDonors: topDonors,
-          winners: topDonors.filter(donor => donor.reward > 0),
-          completed: campaignCompleted,
-          winnersSet: campaignCompleted
-        });
-
+        transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
         transaction.update(userRef, { balance: newUserBalance });
 
-        transaction.set(leaderboardRef, {
-          username: username,
-          amount: amount + (leaderboardDoc.data()?.amount || 0)
-        }, { merge: true });
+        if (leaderboardDoc.exists()) {
+          const currentAmount = leaderboardDoc.data().amount;
+          transaction.update(leaderboardRef, { 
+            amount: currentAmount + amount,
+            username: username
+          });
+        } else {
+          transaction.set(leaderboardRef, {
+            username: username,
+            amount: amount
+          });
+        }
+
+        if (newCampaignPoints >= campaignDoc.data().targetPoints && !campaignDoc.data().winnersSet) {
+          const leaderboardQuery = query(
+            collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
+            orderBy('amount', 'desc'),
+            limit(3)
+          );
+          const leaderboardSnapshot = await getDocs(leaderboardQuery);
+          const winners = leaderboardSnapshot.docs.map((doc, index) => ({
+            id: doc.id,
+            username: doc.data().username,
+            amount: doc.data().amount,
+            reward: index === 0 ? 10 : index === 1 ? 5 : 1
+          }));
+
+          transaction.update(campaignRef, { 
+            winnersSet: true,
+            winners: winners
+          });
+        }
       });
 
       setBalance(prevBalance => prevBalance - amount);
@@ -412,9 +365,8 @@ const Donate = () => {
           campaign.id === selectedCampaign.id
             ? { 
                 ...campaign, 
-                pointsRaised: (campaign.pointsRaised || 0) + amount,
-                leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, amount),
-                completed: (campaign.pointsRaised || 0) + amount >= (campaign.targetPoints || 0)
+                pointsRaised: campaign.pointsRaised + amount,
+                leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, amount)
               }
             : campaign
         )
@@ -430,7 +382,7 @@ const Donate = () => {
       console.error("Error processing donation:", error);
       alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
-  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup, updateLeaderboardData, updateLeaderboardLocally]);
+  }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup]);
 
   const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
     const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
@@ -439,7 +391,7 @@ const Donate = () => {
     if (existingUserIndex !== -1) {
       updatedLeaderboard = leaderboard.map((donor, index) => 
         index === existingUserIndex 
-          ? { ...donor, amount: (donor.amount || 0) + amount }
+          ? { ...donor, amount: donor.amount + amount }
           : donor
       );
     } else {
@@ -447,12 +399,11 @@ const Donate = () => {
     }
 
     return updatedLeaderboard
-      .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+      .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
   }, []);
 
   const formatNumber = useCallback((num) => {
-    if (num == null) return '0';
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
@@ -472,13 +423,9 @@ const Donate = () => {
   }, []);
 
   const handleSliderChange = useCallback((e) => {
-    const value = Math.min(Number(e.target.value), balance || 0);
+    const value = Math.min(Number(e.target.value), balance);
     setDonationAmount(value);
   }, [balance]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
@@ -498,13 +445,11 @@ const Donate = () => {
               {campaigns.map((campaign) => (
                 <CampaignCard
                   key={campaign.id}
-                  onClick={() => handleCampaignClick(campaign)}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {campaign.completed && <CheckIcon />}
                   {campaign.image && (
                     <CampaignImage src={campaign.image} alt={campaign.title} />
                   )}
@@ -516,8 +461,11 @@ const Donate = () => {
                     </span>
                   </div>
                   <ProgressBar>
-                    <ProgressFill style={{ width: `${Math.min(100, ((campaign.pointsRaised || 0) / (campaign.targetPoints || 1)) * 100)}%` }} />
+                    <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
                   </ProgressBar>
+                  <Button onClick={() => handleCampaignClick(campaign)}>
+                    View Campaign
+                  </Button>
                 </CampaignCard>
               ))}
             </AnimatePresence>
@@ -556,7 +504,7 @@ const Donate = () => {
                       </span>
                     </div>
                     <ProgressBar>
-                      <ProgressFill style={{ width: `${Math.min(100, ((selectedCampaign.pointsRaised || 0) / (selectedCampaign.targetPoints || 1)) * 100)}%` }} />
+                      <ProgressFill style={{ width: `${Math.min(100, (selectedCampaign.pointsRaised / selectedCampaign.targetPoints) * 100)}%` }} />
                     </ProgressBar>
                   </div>
                   
@@ -565,44 +513,37 @@ const Donate = () => {
                       <IoTrophy size={24} color="#fbbf24" className="mr-2" />
                       Top Donors
                     </h3>
-                    {(selectedCampaign.leaderboard || []).map((donor, index) => (
-                      <LeaderboardItem key={donor?.id || index}>
+                    {selectedCampaign.leaderboard.map((donor, index) => (
+                      <LeaderboardItem key={donor.id}>
                         <span>
-                          {index + 1}. {donor?.username || 'Anonymous'}
+                          {index + 1}. {donor.username}
                           {getReward(index) && <RewardBadge>{getReward(index)}</RewardBadge>}
                         </span>
-                        <span className="font-bold">{formatNumber(donor?.amount)}</span>
+                        <span className="font-bold">{formatNumber(donor.amount)}</span>
                       </LeaderboardItem>
                     ))}
                   </LeaderboardSection>
                   
-                  {!selectedCampaign.completed && (
-                    <div className="mt-4">
-                      <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
-                      <SliderContainer>
-                        <StyledSlider
-                          type="range"
-                          min="0"
-                          max={balance || 0}
-                          value={donationAmount}
-                          onChange={handleSliderChange}
-                        />
-                      </SliderContainer>
-                      <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
-                      <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
-                      <Button
-                        onClick={handleDonationSubmit}
-                        disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-                      >
-                        Confirm Donation
-                      </Button>
-                    </div>
-                  )}
-                  {selectedCampaign.completed && (
-                    <div className="mt-4 text-center text-green-500 font-semibold">
-                      This campaign has reached its goal!
-                    </div>
-                  )}
+                  <div className="mt-4">
+                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
+                    <SliderContainer>
+                      <StyledSlider
+                        type="range"
+                        min="0"
+                        max={balance}
+                        value={donationAmount}
+                        onChange={handleSliderChange}
+                      />
+                    </SliderContainer>
+                    <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
+                    <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                    <Button
+                      onClick={handleDonationSubmit}
+                      disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
+                    >
+                      Confirm Donation
+                    </Button>
+                  </div>
                 </PopupContent>
               </PopupOverlay>
             )}
@@ -616,9 +557,9 @@ const Donate = () => {
                 exit={{ opacity: 0, y: 50 }}
                 className="fixed bottom-6 left-0 right-0 px-4 z-50"
               >
-        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
-          <IoCheckmarkCircle size={24} />
-          <span className="font-medium">Good</span>
+                <div className="w-full text-green-500 flex items-center space-x-2 px-4 bg-white rounded-lg py-2 shadow-lg">
+                  <IoCheckmarkCircle size={24} />
+                  <span className="text-lg font-semibold">Donation Successful!</span>
                 </div>
               </motion.div>
             )}
