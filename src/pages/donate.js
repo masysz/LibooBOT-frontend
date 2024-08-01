@@ -300,10 +300,6 @@ const Donate = () => {
       alert("You must be logged in to donate.");
       return;
     }
-    if (selectedCampaign.pointsRaised >= selectedCampaign.targetPoints) {
-      alert("This campaign has already reached its target. Thank you for your support!");
-      return;
-    }
 
     try {
       await runTransaction(db, async (transaction) => {
@@ -360,16 +356,6 @@ const Donate = () => {
             winnersSet: true,
             winners: winners
           });
-
-          // Update user balances for winners
-          for (const winner of winners) {
-            const winnerRef = doc(db, 'telegramUsers', winner.id);
-            const winnerDoc = await transaction.get(winnerRef);
-            if (winnerDoc.exists()) {
-              const currentBalance = winnerDoc.data().balance;
-              transaction.update(winnerRef, { balance: currentBalance + winner.reward });
-            }
-          }
         }
       });
 
@@ -441,34 +427,6 @@ const Donate = () => {
     setDonationAmount(value);
   }, [balance]);
 
-  const renderCampaignCard = useCallback((campaign) => (
-    <CampaignCard
-      key={campaign.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      onClick={() => handleCampaignClick(campaign)}
-    >
-      {campaign.image && (
-        <CampaignImage src={campaign.image} alt={campaign.title} />
-      )}
-      <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
-      <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
-      <div className="flex justify-between items-center mb-2 text-[#171717]">
-        <span className="text-sm font-medium">
-          {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
-        </span>
-        {campaign.pointsRaised >= campaign.targetPoints && (
-          <IoCheckmarkCircle size={24} color="#10B981" />
-        )}
-      </div>
-      <ProgressBar>
-        <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
-      </ProgressBar>
-    </CampaignCard>
-  ), [formatNumber, handleCampaignClick]);
-
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
@@ -484,7 +442,32 @@ const Donate = () => {
 
           <CampaignsList>
             <AnimatePresence>
-              {campaigns.map(renderCampaignCard)}
+              {campaigns.map((campaign) => (
+                <CampaignCard
+                  key={campaign.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {campaign.image && (
+                    <CampaignImage src={campaign.image} alt={campaign.title} />
+                  )}
+                  <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
+                  <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
+                  <div className="flex justify-between items-center mb-2 text-[#171717]">
+                    <span className="text-sm font-medium">
+                      {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
+                    </span>
+                  </div>
+                  <ProgressBar>
+                    <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
+                  </ProgressBar>
+                  <Button onClick={() => handleCampaignClick(campaign)}>
+                    View Campaign
+                  </Button>
+                </CampaignCard>
+              ))}
             </AnimatePresence>
           </CampaignsList>
 
@@ -541,55 +524,26 @@ const Donate = () => {
                     ))}
                   </LeaderboardSection>
                   
-                  {selectedCampaign.pointsRaised < selectedCampaign.targetPoints && (
-                    <div className="mt-4">
-                      <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
-                      <SliderContainer>
-                        <StyledSlider
-                          type="range"
-                          min="0"
-                          max={balance}
-                          value={donationAmount}
-                          onChange={handleSliderChange}
-                        />
-                      </SliderContainer>
-                      <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
-                      <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
-                      <Button
-                        onClick={handleDonationSubmit}
-                        disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-                      >
-                        Confirm Donation
-                      </Button>
-                    </div>
-                  )}
- {selectedCampaign.pointsRaised < selectedCampaign.targetPoints && (
-  <div className="mt-4">
-    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
-    <SliderContainer>
-      <StyledSlider
-        type="range"
-        min="0"
-        max={balance}
-        value={donationAmount}
-        onChange={handleSliderChange}
-      />
-    </SliderContainer>
-    <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
-    <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
-    <Button
-      onClick={handleDonationSubmit}
-      disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-    >
-      Confirm Donation
-    </Button>
-  </div>
-)}
-{selectedCampaign.pointsRaised >= selectedCampaign.targetPoints && (
-  <div className="mt-4 text-green-500 font-semibold">
-    This campaign has reached its target. Thank you for your support!
-  </div>
-)}
+                  <div className="mt-4">
+                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
+                    <SliderContainer>
+                      <StyledSlider
+                        type="range"
+                        min="0"
+                        max={balance}
+                        value={donationAmount}
+                        onChange={handleSliderChange}
+                      />
+                    </SliderContainer>
+                    <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
+                    <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                    <Button
+                      onClick={handleDonationSubmit}
+                      disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
+                    >
+                      Confirm Donation
+                    </Button>
+                  </div>
                 </PopupContent>
               </PopupOverlay>
             )}
@@ -603,10 +557,10 @@ const Donate = () => {
                 exit={{ opacity: 0, y: 50 }}
                 className="fixed bottom-6 left-0 right-0 px-4 z-50"
               >
-                        <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
+                
+                <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
           <IoCheckmarkCircle size={24} />
-          <span className="font-medium">Donation Successful!</span>
-  
+          <span className="font-medium">Donation Successfull!</span>
                 </div>
               </motion.div>
             )}
