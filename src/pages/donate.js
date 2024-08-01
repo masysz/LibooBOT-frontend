@@ -73,6 +73,8 @@ const CampaignCard = styled(motion.div)`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  position: relative;
 `;
 
 const CampaignImage = styled.img`
@@ -226,6 +228,14 @@ const StyledSlider = styled.input`
   }
 `;
 
+const CheckIcon = styled(IoCheckmarkCircle)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #10B981;
+  font-size: 24px;
+`;
+
 const Donate = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -246,7 +256,8 @@ const Donate = () => {
         const campaignData = {
           id: doc.id,
           ...doc.data(),
-          image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null
+          image: doc.data().image && typeof doc.data().image === 'string' ? doc.data().image : null,
+          completed: doc.data().pointsRaised >= doc.data().targetPoints
         };
         
         const leaderboardQuery = query(
@@ -322,6 +333,11 @@ const Donate = () => {
           throw new Error("Insufficient balance!");
         }
 
+        // Verificar si la campaña ya alcanzó su objetivo
+        if (campaignDoc.data().pointsRaised >= campaignDoc.data().targetPoints) {
+          throw new Error("Campaign has already reached its goal!");
+        }
+
         transaction.update(campaignRef, { pointsRaised: newCampaignPoints });
         transaction.update(userRef, { balance: newUserBalance });
 
@@ -338,6 +354,7 @@ const Donate = () => {
           });
         }
 
+        // Actualizar winners si se alcanza el objetivo
         if (newCampaignPoints >= campaignDoc.data().targetPoints && !campaignDoc.data().winnersSet) {
           const leaderboardQuery = query(
             collection(db, `campaigns/${selectedCampaign.id}/leaderboard`),
@@ -354,7 +371,8 @@ const Donate = () => {
 
           transaction.update(campaignRef, { 
             winnersSet: true,
-            winners: winners
+            winners: winners,
+            completed: true
           });
         }
       });
@@ -366,7 +384,8 @@ const Donate = () => {
             ? { 
                 ...campaign, 
                 pointsRaised: campaign.pointsRaised + amount,
-                leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, amount)
+                leaderboard: updateLeaderboardLocally(campaign.leaderboard, id, username, amount),
+                completed: campaign.pointsRaised + amount >= campaign.targetPoints
               }
             : campaign
         )
@@ -445,11 +464,13 @@ const Donate = () => {
               {campaigns.map((campaign) => (
                 <CampaignCard
                   key={campaign.id}
+                  onClick={() => handleCampaignClick(campaign)}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
+                  {campaign.completed && <CheckIcon />}
                   {campaign.image && (
                     <CampaignImage src={campaign.image} alt={campaign.title} />
                   )}
@@ -463,9 +484,6 @@ const Donate = () => {
                   <ProgressBar>
                     <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
                   </ProgressBar>
-                  <Button onClick={() => handleCampaignClick(campaign)}>
-                    View Campaign
-                  </Button>
                 </CampaignCard>
               ))}
             </AnimatePresence>
@@ -524,26 +542,33 @@ const Donate = () => {
                     ))}
                   </LeaderboardSection>
                   
-                  <div className="mt-4">
-                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
-                    <SliderContainer>
-                      <StyledSlider
-                        type="range"
-                        min="0"
-                        max={balance}
-                        value={donationAmount}
-                        onChange={handleSliderChange}
-                      />
-                    </SliderContainer>
-                    <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
-                    <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
-                    <Button
-                      onClick={handleDonationSubmit}
-                      disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-                    >
-                      Confirm Donation
-                    </Button>
-                  </div>
+                  {!selectedCampaign.completed && (
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
+                      <SliderContainer>
+                        <StyledSlider
+                          type="range"
+                          min="0"
+                          max={balance}
+                          value={donationAmount}
+                          onChange={handleSliderChange}
+                        />
+                      </SliderContainer>
+                      <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
+                      <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                      <Button
+                        onClick={handleDonationSubmit}
+                        disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
+                      >
+                        Confirm Donation
+                      </Button>
+                    </div>
+                  )}
+                  {selectedCampaign.completed && (
+                    <div className="mt-4 text-center text-green-500 font-semibold">
+                      This campaign has reached its goal!
+                    </div>
+                  )}
                 </PopupContent>
               </PopupOverlay>
             )}
