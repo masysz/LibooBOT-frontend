@@ -305,41 +305,9 @@ const Donate = () => {
     document.body.style.overflow = 'auto';
   }, []);
 
-  const handleDonationSubmit = useCallback(async () => {
-    const amount = Number(donationAmount);
-    if (amount <= 0 || isNaN(amount)) {
-      alert("Please enter a valid donation amount.");
-      return;
-    }
-    if (amount > balance) {
-      alert("Insufficient balance!");
-      return;
-    }
-    if (!id || !username) {
-      alert("You must be logged in to donate.");
-      return;
-    }
 
 
-    const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
-      const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
-      let updatedLeaderboard;
-  
-      if (existingUserIndex !== -1) {
-        updatedLeaderboard = leaderboard.map((donor, index) => 
-          index === existingUserIndex 
-            ? { ...donor, amount: (donor.amount || 0) + amount }
-            : donor
-        );
-      } else {
-        updatedLeaderboard = [...leaderboard, { id: userId, username, amount }];
-      }
-  
-      return updatedLeaderboard
-        .sort((a, b) => (b.amount || 0) - (a.amount || 0))
-        .slice(0, 5);
-    }, []);
-  
+    
     const handleDonationSubmit = useCallback(async () => {
       const amount = Number(donationAmount);
       if (amount <= 0 || isNaN(amount)) {
@@ -354,6 +322,26 @@ const Donate = () => {
         alert("You must be logged in to donate.");
         return;
       }
+
+      const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
+        const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
+        let updatedLeaderboard;
+    
+        if (existingUserIndex !== -1) {
+          updatedLeaderboard = leaderboard.map((donor, index) => 
+            index === existingUserIndex 
+              ? { ...donor, amount: (donor.amount || 0) + amount }
+              : donor
+          );
+        } else {
+          updatedLeaderboard = [...leaderboard, { id: userId, username, amount }];
+        }
+    
+        return updatedLeaderboard
+          .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+          .slice(0, 5);
+      }, []);
+    
  
   
     try {
@@ -645,6 +633,6 @@ const Donate = () => {
       </PageContainer>
     </Animate>
   );
-});
-}
+};
+
 export default React.memo(Donate);
