@@ -323,25 +323,7 @@ const Donate = () => {
         return;
       }
 
-      const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
-        const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
-        let updatedLeaderboard;
-    
-        if (existingUserIndex !== -1) {
-          updatedLeaderboard = leaderboard.map((donor, index) => 
-            index === existingUserIndex 
-              ? { ...donor, amount: (donor.amount || 0) + amount }
-              : donor
-          );
-        } else {
-          updatedLeaderboard = [...leaderboard, { id: userId, username, amount }];
-        }
-    
-        return updatedLeaderboard
-          .sort((a, b) => (b.amount || 0) - (a.amount || 0))
-          .slice(0, 5);
-      }, []);
-    
+
  
   
     try {
@@ -437,6 +419,27 @@ const Donate = () => {
       alert(error.message || "An error occurred while processing your donation. Please try again.");
     }
   }, [donationAmount, balance, id, username, selectedCampaign, db, setBalance, fetchCampaigns, handleClosePopup, updateLeaderboardLocally]);
+
+
+  const updateLeaderboardLocally = useCallback((leaderboard, userId, username, amount) => {
+    const existingUserIndex = leaderboard.findIndex(donor => donor.id === userId);
+    let updatedLeaderboard;
+
+    if (existingUserIndex !== -1) {
+      updatedLeaderboard = leaderboard.map((donor, index) => 
+        index === existingUserIndex 
+          ? { ...donor, amount: (donor.amount || 0) + amount }
+          : donor
+      );
+    } else {
+      updatedLeaderboard = [...leaderboard, { id: userId, username, amount }];
+    }
+
+    return updatedLeaderboard
+      .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+      .slice(0, 5);
+  }, []);
+
   
   // Helper function to update leaderboard data
   const updateLeaderboardData = (leaderboardDocs, currentUserData, userId, username, amount) => {
