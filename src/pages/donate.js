@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc } from 'firebase/firestore';
+import { doc, collection, getDocs, runTransaction, query, orderBy, limit, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Animate from '../Components/Animate';
 import { useUser } from '../context/userContext';
@@ -25,7 +25,7 @@ const ContentWrapper = styled.div`
   flex: 1;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
 
   &::-webkit-scrollbar-track {
@@ -34,7 +34,7 @@ const ContentWrapper = styled.div`
 
   &::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 3px;
+    border-radius: 2px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -48,65 +48,72 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
   color: #262626;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 `;
 
 const Subtitle = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: #4b5563;
 `;
 
 const CampaignsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
 `;
 
 const CampaignCard = styled(motion.div)`
   background-color: white;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 
 const CampaignImage = styled.img`
   width: 100%;
-  height: 150px;
+  height: 120px;
   object-fit: cover;
   border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 `;
 
 const ProgressBar = styled.div`
   width: 100%;
-  height: 10px;
+  height: 6px;
   background-color: #e5e7eb;
-  border-radius: 5px;
+  border-radius: 3px;
   overflow: hidden;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
 `;
 
 const ProgressFill = styled.div`
   height: 100%;
   background: linear-gradient(to right, #094e9d, #0b62c4);
-  border-radius: 5px;
+  border-radius: 3px;
 `;
 
 const Button = styled.button`
   background: linear-gradient(to right, #094e9d, #0b62c4);
   color: white;
   font-weight: 500;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.375rem;
   transition: all 0.3s;
   text-align: center;
   width: 100%;
+  font-size: 14px;
 
   &:hover {
     background: linear-gradient(to right, #0b62c4, #094e9d);
@@ -133,16 +140,16 @@ const PopupOverlay = styled(motion.div)`
 
 const PopupContent = styled(motion.div)`
   background-color: white;
-  border-radius: 1rem;
-  padding: 2rem;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
   width: 90%;
-  max-width: 500px;
+  max-width: 450px;
   max-height: 85vh;
   overflow-y: auto;
   position: relative;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
 
   &::-webkit-scrollbar-track {
@@ -151,7 +158,7 @@ const PopupContent = styled(motion.div)`
 
   &::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 3px;
+    border-radius: 2px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -162,17 +169,18 @@ const PopupContent = styled(motion.div)`
 const LeaderboardSection = styled.div`
   background-color: #f3f4f6;
   border-radius: 0.5rem;
-  padding: 1rem;
-  margin-top: 1rem;
+  padding: 0.75rem;
+  margin-top: 0.75rem;
 `;
 
 const LeaderboardItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
   border-bottom: 1px solid #e5e7eb;
   color: #171717;
+  font-size: 14px;
 
   &:last-child {
     border-bottom: none;
@@ -183,21 +191,21 @@ const RewardBadge = styled.span`
   background-color: #507cff;
   color: #ffff;
   font-weight: bold;
-  padding: 0.25rem 0.5rem;
+  padding: 0.15rem 0.35rem;
   border-radius: 9999px;
-  font-size: 14px;
+  font-size: 12px;
   margin-left: 0.5rem;
 `;
 
 const SliderContainer = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 `;
 
 const StyledSlider = styled.input`
   width: 100%;
   -webkit-appearance: none;
-  height: 8px;
-  border-radius: 4px;
+  height: 6px;
+  border-radius: 3px;
   background: #e5e7eb;
   outline: none;
   opacity: 0.7;
@@ -210,16 +218,16 @@ const StyledSlider = styled.input`
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: #1890ff;
     cursor: pointer;
   }
 
   &::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: #1890ff;
     cursor: pointer;
@@ -356,6 +364,17 @@ const Donate = () => {
             winnersSet: true,
             winners: winners
           });
+
+          // Create winners collection
+          const winnersCollectionRef = collection(db, `campaigns/${selectedCampaign.id}/winners`);
+          winners.forEach((winner, index) => {
+            transaction.set(doc(winnersCollectionRef, winner.id), {
+              username: winner.username,
+              amount: winner.amount,
+              reward: winner.reward,
+              position: index + 1
+            });
+          });
         }
       });
 
@@ -427,8 +446,12 @@ const Donate = () => {
     setDonationAmount(value);
   }, [balance]);
 
+  const isTargetReached = useCallback((campaign) => {
+    return campaign.pointsRaised >= campaign.targetPoints;
+  }, []);
+
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <div className="text-red-500 text-sm">{error}</div>;
   }
 
   return (
@@ -449,23 +472,27 @@ const Donate = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
+                  onClick={() => handleCampaignClick(campaign)}
                 >
                   {campaign.image && (
                     <CampaignImage src={campaign.image} alt={campaign.title} />
                   )}
-                  <h2 className="text-xl font-semibold mb-2 text-[#171717]">{campaign.title}</h2>
-                  <p className="text-sm text-[#171717] mb-4">{campaign['short-description'] || 'No description available'}</p>
-                  <div className="flex justify-between items-center mb-2 text-[#171717]">
-                    <span className="text-sm font-medium">
+                  <h2 className="text-lg font-semibold mb-1 text-[#171717]">{campaign.title}</h2>
+                  <p className="text-xs text-[#4b5563] mb-2">{campaign['short-description'] || 'No description available'}</p>
+                  <div className="flex justify-between items-center mb-1 text-[#171717]">
+                    <span className="text-xs font-medium">
                       {formatNumber(campaign.pointsRaised)} / {formatNumber(campaign.targetPoints)} points
                     </span>
                   </div>
                   <ProgressBar>
                     <ProgressFill style={{ width: `${Math.min(100, (campaign.pointsRaised / campaign.targetPoints) * 100)}%` }} />
                   </ProgressBar>
-                  <Button onClick={() => handleCampaignClick(campaign)}>
-                    View Campaign
-                  </Button>
+                  {isTargetReached(campaign) && (
+                    <div className="mt-2 text-green-500 flex items-center justify-center">
+                      <IoCheckmarkCircle size={20} className="mr-1" />
+                      <span className="text-sm font-medium">Target Reached</span>
+                    </div>
+                  )}
                 </CampaignCard>
               ))}
             </AnimatePresence>
@@ -484,22 +511,22 @@ const Donate = () => {
                   exit={{ scale: 0.9, opacity: 0 }}
                   transition={{ type: 'spring', damping: 20, stiffness: 300 }}
                 >
-                  <button onClick={handleClosePopup} className="absolute top-4 right-4 text-gray-500">
-                    <IoClose size={24} />
+                  <button onClick={handleClosePopup} className="absolute top-2 right-2 text-gray-500">
+                    <IoClose size={20} />
                   </button>
-                  <h2 className="text-2xl font-semibold mb-4 text-[#171717]">{selectedCampaign.title}</h2>
+                  <h2 className="text-xl font-semibold mb-3 text-[#171717]">{selectedCampaign.title}</h2>
                   {selectedCampaign.image && (
                     <img 
                       src={selectedCampaign.image} 
                       alt={selectedCampaign.title}
-                      className="w-full h-[200px] object-cover rounded-lg mb-4"
+                      className="w-full h-[150px] object-cover rounded-lg mb-3"
                     />
                   )}
-                  <p className="text-[#171717] mb-4">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Progress</h3>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-[#171717]">
+                  <p className="text-sm text-[#171717] mb-3">{selectedCampaign['large-description'] || 'No detailed description available'}</p>
+                  <div className="mb-3">
+                    <h3 className="text-md font-semibold mb-1 text-[#171717]">Progress</h3>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-[#171717]">
                         {formatNumber(selectedCampaign.pointsRaised)} / {formatNumber(selectedCampaign.targetPoints)} points
                       </span>
                     </div>
@@ -509,8 +536,8 @@ const Donate = () => {
                   </div>
                   
                   <LeaderboardSection>
-                    <h3 className="text-lg font-semibold mb-2 flex items-center text-[#171717]">
-                      <IoTrophy size={24} color="#fbbf24" className="mr-2" />
+                    <h3 className="text-md font-semibold mb-2 flex items-center text-[#171717]">
+                      <IoTrophy size={20} color="#fbbf24" className="mr-1" />
                       Top Donors
                     </h3>
                     {selectedCampaign.leaderboard.map((donor, index) => (
@@ -524,26 +551,33 @@ const Donate = () => {
                     ))}
                   </LeaderboardSection>
                   
-                  <div className="mt-4">
-                    <h3 className="text-lg font-semibold mb-2 text-[#171717]">Donate</h3>
-                    <SliderContainer>
-                      <StyledSlider
-                        type="range"
-                        min="0"
-                        max={balance}
-                        value={donationAmount}
-                        onChange={handleSliderChange}
-                      />
-                    </SliderContainer>
-                    <p className="text-sm text-[#171717] mb-2">Amount to donate: {formatNumber(donationAmount)} points</p>
-                    <p className="text-sm text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
-                    <Button
-                      onClick={handleDonationSubmit}
-                      disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
-                    >
-                      Confirm Donation
-                    </Button>
-                  </div>
+                  {!isTargetReached(selectedCampaign) ? (
+                    <div className="mt-3">
+                      <h3 className="text-md font-semibold mb-2 text-[#171717]">Donate</h3>
+                      <SliderContainer>
+                        <StyledSlider
+                          type="range"
+                          min="0"
+                          max={balance}
+                          value={donationAmount}
+                          onChange={handleSliderChange}
+                        />
+                      </SliderContainer>
+                      <p className="text-xs text-[#171717] mb-1">Amount to donate: {formatNumber(donationAmount)} points</p>
+                      <p className="text-xs text-[#171717] mb-2">Your current balance: {formatNumber(balance)} points</p>
+                      <Button
+                        onClick={handleDonationSubmit}
+                        disabled={Number(donationAmount) <= 0 || Number(donationAmount) > balance}
+                      >
+                        Confirm Donation
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="mt-3 text-green-500 flex items-center justify-center">
+                      <IoCheckmarkCircle size={24} className="mr-2" />
+                      <span className="text-lg font-medium">Target Reached</span>
+                    </div>
+                  )}
                 </PopupContent>
               </PopupOverlay>
             )}
@@ -557,10 +591,9 @@ const Donate = () => {
                 exit={{ opacity: 0, y: 50 }}
                 className="fixed bottom-6 left-0 right-0 px-4 z-50"
               >
-                
                 <div className="w-full text-[#54d192] flex items-center space-x-2 px-4 bg-[#121620ef] h-[50px] rounded-[8px]">
-          <IoCheckmarkCircle size={24} />
-          <span className="font-medium">Donation Successfull!</span>
+                  <IoCheckmarkCircle size={24} />
+                  <span className="font-medium">Donation Successful!</span>
                 </div>
               </motion.div>
             )}
