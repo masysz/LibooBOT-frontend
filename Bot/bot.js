@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require("telegraf");
 const express = require("express");
 const app = express();
 
-const TOKEN = "7219246213:AAHJV1pqqvWo6AXL_sTPWOTm1j1RvIn2jrA";  // Asegúrate de reemplazar "YOUR_BOT_TOKEN" con tu token real
+const TOKEN = "7318294948:AAEviAaCJtKxF9L_1Pa4PPAD8TBdKPri-LM";  // Asegúrate de reemplazar "YOUR_BOT_TOKEN" con tu token real
 const bot = new Telegraf(TOKEN);
 
 app.use(express.json());
